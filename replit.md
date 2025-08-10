@@ -2,7 +2,7 @@
 
 ## Overview
 
-A Flask-based automotive marketplace web application similar to OLX, designed for buying and selling vehicles. The platform features a modern, mobile-first design with an intuitive customer catalog for browsing vehicles and a seller dashboard for managing listings. Built as an MVP with in-memory storage, the application provides comprehensive vehicle listings with image uploads, search/filter functionality, and streamlined seller authentication.
+A Flask-based automotive marketplace web application similar to OLX, designed for browsing vehicles. The platform features a modern, mobile-first design with an intuitive customer catalog for viewing vehicles and an admin-only dashboard for managing listings. Regular users can only browse and view vehicles, while administrators have exclusive access to add, edit, and manage vehicle listings with photos. Built as an MVP with in-memory storage, the application provides comprehensive vehicle browsing with search/filter functionality and admin authentication.
 
 ## User Preferences
 

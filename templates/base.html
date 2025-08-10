@@ -32,7 +32,7 @@
                     {% if session.admin_logged_in %}
                         <li class="nav-item">
                             <a class="nav-link fw-semibold text-success" href="{{ url_for('admin_dashboard') }}">
-                                <i class="fas fa-plus-circle me-1"></i>Sell Car
+                                <i class="fas fa-cog me-1"></i>Admin Panel
                             </a>
                         </li>
                         <li class="nav-item">
@@ -42,8 +42,8 @@
                         </li>
                     {% else %}
                         <li class="nav-item">
-                            <a class="nav-link fw-semibold text-success" href="{{ url_for('admin_login') }}">
-                                <i class="fas fa-plus-circle me-1"></i>Sell Car
+                            <a class="nav-link fw-semibold text-muted" href="{{ url_for('admin_login') }}">
+                                <i class="fas fa-user-shield me-1"></i>Admin
                             </a>
                         </li>
                     {% endif %}
@@ -74,7 +74,7 @@
             <div class="row">
                 <div class="col-md-6">
                     <h6 class="fw-bold text-primary mb-3">AutoMarket</h6>
-                    <p class="text-muted mb-0">Buy and sell cars with confidence. Your trusted automotive marketplace.</p>
+                    <p class="text-muted mb-0">Browse quality vehicles with confidence. Your trusted automotive marketplace.</p>
                 </div>
                 <div class="col-md-6 text-md-end">
                     <div class="d-flex justify-content-md-end gap-3 mt-3 mt-md-0">
