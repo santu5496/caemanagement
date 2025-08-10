@@ -60,14 +60,29 @@ def admin_login():
         return redirect(url_for('admin_dashboard'))
     
     form = LoginForm()
-    if form.validate_on_submit():
-        if verify_admin(form.username.data, form.password.data):
-            session['admin_logged_in'] = True
-            session['admin_username'] = form.username.data
-            flash('Logged in successfully', 'success')
-            return redirect(url_for('admin_dashboard'))
+    
+    if request.method == 'POST':
+        app.logger.debug(f"POST request received. Form data: {request.form}")
+        app.logger.debug(f"Form validation result: {form.validate_on_submit()}")
+        app.logger.debug(f"Form errors: {form.errors}")
+        
+        if form.validate_on_submit():
+            username = form.username.data
+            password = form.password.data
+            app.logger.debug(f"Attempting login with username: {username}")
+            
+            if verify_admin(username, password):
+                session['admin_logged_in'] = True
+                session['admin_username'] = username
+                flash('Logged in successfully', 'success')
+                app.logger.debug("Login successful, redirecting to admin dashboard")
+                return redirect(url_for('admin_dashboard'))
+            else:
+                app.logger.debug("Invalid credentials provided")
+                flash('Invalid username or password', 'error')
         else:
-            flash('Invalid username or password', 'error')
+            app.logger.debug("Form validation failed")
+            flash('Please correct the errors below', 'error')
     
     return render_template('admin_login.html', form=form)
 
