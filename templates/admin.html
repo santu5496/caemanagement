@@ -264,68 +264,68 @@
                     <div class="tab-content mt-3" id="vehicleTabContent">
                         <!-- Basic Information Tab -->
                         <div class="tab-pane fade show active" id="basic" role="tabpanel" aria-labelledby="basic-tab">
-                            <div class="card border-0 bg-light rounded-3 p-4 mb-4">
+                            <div class="card border-0 rounded-3 p-4 mb-4" style="background: linear-gradient(135deg, #f8f9fa 0%, #e3f2fd 100%); border: 1px solid #dee2e6 !important;">
                                 <h6 class="text-primary mb-3"><i class="fas fa-info-circle me-2"></i>Essential Vehicle Information</h6>
-                                <p class="text-muted mb-3">Please provide the basic details about the vehicle. All fields marked with <span class="text-danger">*</span> are required.</p>
+                                <p class="text-dark mb-3">Please provide the basic details about the vehicle. All fields marked with <span class="text-danger">*</span> are required.</p>
                                 
                                 <div class="row mb-3">
                                     <div class="col-md-8">
-                                        <label class="form-label fw-bold">{{ form.title.label.text }} <span class="text-danger">*</span></label>
-                                        {{ form.title(class="form-control form-control-lg", id="modal-title", placeholder="e.g., 2020 Honda Civic LX - Excellent Condition") }}
+                                        <label class="form-label fw-bold text-dark">{{ form.title.label.text }} <span class="text-danger">*</span></label>
+                                        {{ form.title(class="form-control form-control-lg shadow-sm", id="modal-title", placeholder="e.g., 2020 Honda Civic LX - Excellent Condition", style="border: 2px solid #dee2e6; background-color: white;") }}
                                         <div class="invalid-feedback"></div>
-                                        <div class="form-text">Create an attractive title that highlights key features</div>
+                                        <div class="form-text text-dark">Create an attractive title that highlights key features</div>
                                     </div>
                                     <div class="col-md-4">
-                                        <label class="form-label fw-bold">{{ form.category.label.text }} <span class="text-danger">*</span></label>
-                                        {{ form.category(class="form-select form-select-lg", id="modal-category") }}
+                                        <label class="form-label fw-bold text-dark">{{ form.category.label.text }} <span class="text-danger">*</span></label>
+                                        {{ form.category(class="form-select form-select-lg shadow-sm", id="modal-category", style="border: 2px solid #dee2e6; background-color: white;") }}
                                         <div class="invalid-feedback"></div>
                                     </div>
                                 </div>
 
                                 <div class="row mb-3">
                                     <div class="col-md-4">
-                                        <label class="form-label fw-bold">{{ form.make.label.text }} <span class="text-danger">*</span></label>
-                                        {{ form.make(class="form-control", id="modal-make", placeholder="e.g., Honda, Toyota, Ford") }}
+                                        <label class="form-label fw-bold text-dark">{{ form.make.label.text }} <span class="text-danger">*</span></label>
+                                        {{ form.make(class="form-control shadow-sm", id="modal-make", placeholder="e.g., Honda, Toyota, Ford", style="border: 2px solid #dee2e6; background-color: white;") }}
                                         <div class="invalid-feedback"></div>
                                     </div>
                                     <div class="col-md-4">
-                                        <label class="form-label fw-bold">{{ form.model.label.text }} <span class="text-danger">*</span></label>
-                                        {{ form.model(class="form-control", id="modal-model", placeholder="e.g., Civic, Camry, F-150") }}
+                                        <label class="form-label fw-bold text-dark">{{ form.model.label.text }} <span class="text-danger">*</span></label>
+                                        {{ form.model(class="form-control shadow-sm", id="modal-model", placeholder="e.g., Civic, Camry, F-150", style="border: 2px solid #dee2e6; background-color: white;") }}
                                         <div class="invalid-feedback"></div>
                                     </div>
                                     <div class="col-md-4">
-                                        <label class="form-label fw-bold">{{ form.year.label.text }} <span class="text-danger">*</span></label>
-                                        {{ form.year(class="form-control", id="modal-year", placeholder="e.g., 2020") }}
+                                        <label class="form-label fw-bold text-dark">{{ form.year.label.text }} <span class="text-danger">*</span></label>
+                                        {{ form.year(class="form-control shadow-sm", id="modal-year", placeholder="e.g., 2020", style="border: 2px solid #dee2e6; background-color: white;") }}
                                         <div class="invalid-feedback"></div>
                                     </div>
                                 </div>
 
                                 <div class="row mb-3">
                                     <div class="col-md-6">
-                                        <label class="form-label fw-bold">{{ form.price.label.text }} <span class="text-danger">*</span></label>
-                                        <div class="input-group input-group-lg">
+                                        <label class="form-label fw-bold text-dark">{{ form.price.label.text }} <span class="text-danger">*</span></label>
+                                        <div class="input-group input-group-lg shadow-sm">
                                             <span class="input-group-text bg-success text-white"><i class="fas fa-dollar-sign"></i></span>
-                                            {{ form.price(class="form-control", id="modal-price", placeholder="e.g., 25000") }}
+                                            {{ form.price(class="form-control", id="modal-price", placeholder="e.g., 25000", style="border: 2px solid #dee2e6; background-color: white;") }}
                                         </div>
                                         <div class="invalid-feedback"></div>
-                                        <div class="form-text">Enter the asking price in USD</div>
+                                        <div class="form-text text-dark">Enter the asking price in USD</div>
                                     </div>
                                     <div class="col-md-6">
-                                        <label class="form-label fw-bold">{{ form.mileage.label.text }} <span class="text-danger">*</span></label>
-                                        <div class="input-group input-group-lg">
-                                            {{ form.mileage(class="form-control", id="modal-mileage", placeholder="e.g., 45000") }}
+                                        <label class="form-label fw-bold text-dark">{{ form.mileage.label.text }} <span class="text-danger">*</span></label>
+                                        <div class="input-group input-group-lg shadow-sm">
+                                            {{ form.mileage(class="form-control", id="modal-mileage", placeholder="e.g., 45000", style="border: 2px solid #dee2e6; background-color: white;") }}
                                             <span class="input-group-text bg-info text-white"><i class="fas fa-road"></i> miles</span>
                                         </div>
                                         <div class="invalid-feedback"></div>
-                                        <div class="form-text">Current odometer reading</div>
+                                        <div class="form-text text-dark">Current odometer reading</div>
                                     </div>
                                 </div>
 
                                 <div class="mb-3">
-                                    <label class="form-label fw-bold">{{ form.description.label.text }}</label>
-                                    {{ form.description(class="form-control", rows="4", id="modal-description", placeholder="Describe the vehicle's condition, features, and any special details. Be detailed and honest to attract genuine buyers.") }}
+                                    <label class="form-label fw-bold text-dark">{{ form.description.label.text }}</label>
+                                    {{ form.description(class="form-control shadow-sm", rows="4", id="modal-description", placeholder="Describe the vehicle's condition, features, and any special details. Be detailed and honest to attract genuine buyers.", style="border: 2px solid #dee2e6; background-color: white;") }}
                                     <div class="invalid-feedback"></div>
-                                    <div class="form-text">A good description increases buyer interest</div>
+                                    <div class="form-text text-dark">A good description increases buyer interest</div>
                                 </div>
                             </div>
 
@@ -498,22 +498,25 @@
 
                         <!-- Contact & Images Tab -->
                         <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
-                            <div class="row mb-3">
-                                <div class="col-md-6">
-                                    {{ form.contact_name.label(class="form-label") }}
-                                    {{ form.contact_name(class="form-control", id="modal-contact-name") }}
-                                    <div class="invalid-feedback"></div>
-                                </div>
-                                <div class="col-md-6">
-                                    {{ form.contact_phone.label(class="form-label") }}
-                                    {{ form.contact_phone(class="form-control", id="modal-contact-phone") }}
-                                    <div class="invalid-feedback"></div>
+                            <div class="card border-0 rounded-3 p-4 mb-4" style="background: linear-gradient(135deg, #f8f9fa 0%, #e8f5e8 100%); border: 1px solid #dee2e6 !important;">
+                                <h6 class="text-success mb-3"><i class="fas fa-user me-2"></i>Contact Information</h6>
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-bold text-dark">{{ form.contact_name.label.text }} <span class="text-danger">*</span></label>
+                                        {{ form.contact_name(class="form-control shadow-sm", id="modal-contact-name", placeholder="Your full name", style="border: 2px solid #dee2e6; background-color: white;") }}
+                                        <div class="invalid-feedback"></div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-bold text-dark">{{ form.contact_phone.label.text }} <span class="text-danger">*</span></label>
+                                        {{ form.contact_phone(class="form-control shadow-sm", id="modal-contact-phone", placeholder="(555) 123-4567", style="border: 2px solid #dee2e6; background-color: white;") }}
+                                        <div class="invalid-feedback"></div>
+                                    </div>
                                 </div>
                             </div>
 
-                            <div class="mb-4">
-                                <label class="form-label fw-bold fs-5 text-primary"><i class="fas fa-images me-2"></i>Vehicle Images</label>
-                                <p class="text-muted mb-3">Upload up to 6 high-quality images to showcase your vehicle. Click on any slot below to select an image file.</p>
+                            <div class="card border-0 rounded-3 p-4" style="background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%); border: 1px solid #dee2e6 !important;">
+                                <label class="form-label fw-bold fs-5 text-warning"><i class="fas fa-images me-2"></i>Vehicle Images</label>
+                                <p class="text-dark mb-3">Upload up to 6 high-quality images to showcase your vehicle. Click on any slot below to select an image file.</p>
 
                                 <!-- 6 Image Upload Slots -->
                                 <div class="row g-4">
@@ -1171,7 +1174,6 @@ function resetToFirstTab() {
 
 function updateProgressIndicator(activeIndex) {
     const indicators = document.querySelectorAll('.step-indicator');
-    const stepTexts = document.querySelectorAll('.step-indicator').map((indicator, i) => indicator.parentNode);
     
     indicators.forEach((indicator, index) => {
         const stepContainer = indicator.parentNode;
