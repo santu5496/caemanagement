@@ -31,10 +31,10 @@ class VehicleForm(FlaskForm):
     transmission = SelectField('Transmission', 
                               choices=[('', 'Select Transmission'), ('Manual', 'Manual'), ('Automatic', 'Automatic'), ('CVT', 'CVT')],
                               validators=[Optional()])
-    engine_size = StringField('Engine Size (e.g., 2.0L, 3.5L V6)', validators=[Optional(), Length(max=20)])
-    horsepower = IntegerField('Horsepower', validators=[Optional(), NumberRange(min=0, max=2000)])
+    engine_size = StringField('Engine Size (Optional - e.g., 2.0L, 3.5L V6)', validators=[Optional(), Length(max=20)])
+    horsepower = IntegerField('Horsepower (Optional)', validators=[Optional(), NumberRange(min=0, max=2000)])
     fuel_economy = StringField('Fuel Economy (e.g., 25 city / 32 highway mpg)', validators=[Optional(), Length(max=30)])
-    drivetrain = SelectField('Drivetrain', 
+    drivetrain = SelectField('Drivetrain (Optional)', 
                             choices=[('', 'Select Drivetrain'), ('FWD', 'Front-Wheel Drive'), ('RWD', 'Rear-Wheel Drive'), 
                                     ('AWD', 'All-Wheel Drive'), ('4WD', '4-Wheel Drive')],
                             validators=[Optional()])
