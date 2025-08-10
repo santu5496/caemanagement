@@ -2,8 +2,8 @@ import os
 import uuid
 from flask import render_template, request, redirect, url_for, flash, session, jsonify
 from werkzeug.utils import secure_filename
-from app import app
-from models import Vehicle, add_vehicle, get_all_vehicles, get_vehicle, delete_vehicle, verify_admin, get_available_vehicles, get_vehicles_by_category
+from app import app, db
+from models import Vehicle, AdminUser, add_vehicle, get_all_vehicles, get_vehicle, delete_vehicle, verify_admin, get_available_vehicles, get_vehicles_by_category, initialize_sample_data
 from forms import VehicleForm, LoginForm
 
 def allowed_file(filename):
@@ -131,7 +131,7 @@ def add_vehicle_route():
     # Return validation errors
     errors = {}
     for field, error_list in form.errors.items():
-        errors[field] = error_list[0] if error_list else ''
+        errors[field] = error_list[0] if len(error_list) > 0 else ''
     return jsonify({'success': False, 'message': 'Validation failed', 'errors': errors}), 400
 
 @app.route('/admin/edit_vehicle/<vehicle_id>', methods=['POST'])
@@ -168,9 +168,10 @@ def edit_vehicle(vehicle_id):
             
             # Add new images to existing ones
             if new_images:
-                update_data['images'] = vehicle.images + new_images
+                update_data['images'] = vehicle.images_list + new_images
             
-            vehicle.update(**update_data)
+            vehicle.update_from_dict(**update_data)
+            db.session.commit()
             return jsonify({'success': True, 'message': 'Vehicle updated successfully', 'vehicle': vehicle.to_dict()})
             
         except Exception as e:
@@ -179,7 +180,7 @@ def edit_vehicle(vehicle_id):
     # Return validation errors
     errors = {}
     for field, error_list in form.errors.items():
-        errors[field] = error_list[0] if error_list else ''
+        errors[field] = error_list[0] if len(error_list) > 0 else ''
     return jsonify({'success': False, 'message': 'Validation failed', 'errors': errors}), 400
 
 @app.route('/admin/get_vehicle/<vehicle_id>')
@@ -214,7 +215,8 @@ def toggle_vehicle_status(vehicle_id):
     vehicle = get_vehicle(vehicle_id)
     if vehicle:
         new_status = 'sold' if vehicle.status == 'available' else 'available'
-        vehicle.update(status=new_status)
+        vehicle.update_from_dict(status=new_status)
+        db.session.commit()
         return jsonify({'success': True, 'message': f'Vehicle marked as {new_status}', 'new_status': new_status})
     else:
         return jsonify({'success': False, 'message': 'Vehicle not found'}), 404
