@@ -60,14 +60,20 @@ def admin_login():
         return redirect(url_for('admin_dashboard'))
     
     form = LoginForm()
-    if form.validate_on_submit():
-        if verify_admin(form.username.data, form.password.data):
-            session['admin_logged_in'] = True
-            session['admin_username'] = form.username.data
-            flash('Logged in successfully', 'success')
-            return redirect(url_for('admin_dashboard'))
+    if request.method == 'POST':
+        if form.validate_on_submit():
+            if verify_admin(form.username.data, form.password.data):
+                session['admin_logged_in'] = True
+                session['admin_username'] = form.username.data
+                flash('Logged in successfully', 'success')
+                return redirect(url_for('admin_dashboard'))
+            else:
+                flash('Invalid username or password', 'error')
         else:
-            flash('Invalid username or password', 'error')
+            # Log form validation errors for debugging
+            for field, errors in form.errors.items():
+                for error in errors:
+                    flash(f'{field}: {error}', 'error')
     
     return render_template('admin_login.html', form=form)
 
