@@ -434,17 +434,81 @@
                             <h6 class="text-primary mb-3">Vehicle Images</h6>
                             
                             <div class="mb-3">
-                                {{ form.images.label(class="form-label") }}
-                                {{ form.images(class="form-control", multiple=True, accept="image/*", id="modal-images") }}
-                                <div class="invalid-feedback"></div>
-                                <div class="form-text">Upload up to 6 high-quality images to showcase your vehicle from different angles.</div>
-                            </div>
-                            
-                            <div class="mb-3">
-                                <label class="form-label">Image Preview</label>
-                                <div id="image-preview-container" class="row g-2">
-                                    <!-- Image previews will be displayed here -->
+                                <label class="form-label">Vehicle Images (Upload up to 6 images)</label>
+                                <div class="form-text mb-3">Click on any slot below to upload an image. Each slot holds one image.</div>
+                                
+                                <!-- 6 Image Upload Slots -->
+                                <div class="row g-3">
+                                    <div class="col-md-4" id="image-slot-1">
+                                        <div class="image-upload-slot border rounded p-3 text-center" style="min-height: 200px; cursor: pointer; border: 2px dashed #dee2e6; transition: all 0.3s ease; background-color: #f8f9fa;" onclick="triggerImageUpload(1)" onmouseover="this.style.borderColor='#007bff'; this.style.backgroundColor='#e9ecef';" onmouseout="if(this.style.border.includes('dashed')) { this.style.borderColor='#dee2e6'; this.style.backgroundColor='#f8f9fa'; }"
+                                            <div class="slot-content">
+                                                <i class="fas fa-camera fa-3x text-muted mb-2"></i>
+                                                <p class="text-muted mb-0">Image 1</p>
+                                                <small class="text-muted">Click to upload</small>
+                                            </div>
+                                            <input type="file" id="image-input-1" accept="image/*" style="display: none;" onchange="handleImageUpload(1, this)">
+                                            <img id="image-preview-1" class="img-fluid rounded" style="display: none; max-height: 180px; object-fit: cover;">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4" id="image-slot-2">
+                                        <div class="image-upload-slot border rounded p-3 text-center" style="min-height: 200px; cursor: pointer; border: 2px dashed #dee2e6; transition: all 0.3s ease; background-color: #f8f9fa;" onclick="triggerImageUpload(2)" onmouseover="this.style.borderColor='#007bff'; this.style.backgroundColor='#e9ecef';" onmouseout="if(this.style.border.includes('dashed')) { this.style.borderColor='#dee2e6'; this.style.backgroundColor='#f8f9fa'; }"
+                                            <div class="slot-content">
+                                                <i class="fas fa-camera fa-3x text-muted mb-2"></i>
+                                                <p class="text-muted mb-0">Image 2</p>
+                                                <small class="text-muted">Click to upload</small>
+                                            </div>
+                                            <input type="file" id="image-input-2" accept="image/*" style="display: none;" onchange="handleImageUpload(2, this)">
+                                            <img id="image-preview-2" class="img-fluid rounded" style="display: none; max-height: 180px; object-fit: cover;">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4" id="image-slot-3">
+                                        <div class="image-upload-slot border rounded p-3 text-center" style="min-height: 200px; cursor: pointer; border: 2px dashed #dee2e6; transition: all 0.3s ease; background-color: #f8f9fa;" onclick="triggerImageUpload(3)" onmouseover="this.style.borderColor='#007bff'; this.style.backgroundColor='#e9ecef';" onmouseout="if(this.style.border.includes('dashed')) { this.style.borderColor='#dee2e6'; this.style.backgroundColor='#f8f9fa'; }"
+                                            <div class="slot-content">
+                                                <i class="fas fa-camera fa-3x text-muted mb-2"></i>
+                                                <p class="text-muted mb-0">Image 3</p>
+                                                <small class="text-muted">Click to upload</small>
+                                            </div>
+                                            <input type="file" id="image-input-3" accept="image/*" style="display: none;" onchange="handleImageUpload(3, this)">
+                                            <img id="image-preview-3" class="img-fluid rounded" style="display: none; max-height: 180px; object-fit: cover;">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4" id="image-slot-4">
+                                        <div class="image-upload-slot border rounded p-3 text-center" style="min-height: 200px; cursor: pointer; border: 2px dashed #dee2e6; transition: all 0.3s ease; background-color: #f8f9fa;" onclick="triggerImageUpload(4)" onmouseover="this.style.borderColor='#007bff'; this.style.backgroundColor='#e9ecef';" onmouseout="if(this.style.border.includes('dashed')) { this.style.borderColor='#dee2e6'; this.style.backgroundColor='#f8f9fa'; }"
+                                            <div class="slot-content">
+                                                <i class="fas fa-camera fa-3x text-muted mb-2"></i>
+                                                <p class="text-muted mb-0">Image 4</p>
+                                                <small class="text-muted">Click to upload</small>
+                                            </div>
+                                            <input type="file" id="image-input-4" accept="image/*" style="display: none;" onchange="handleImageUpload(4, this)">
+                                            <img id="image-preview-4" class="img-fluid rounded" style="display: none; max-height: 180px; object-fit: cover;">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4" id="image-slot-5">
+                                        <div class="image-upload-slot border rounded p-3 text-center" style="min-height: 200px; cursor: pointer; border: 2px dashed #dee2e6; transition: all 0.3s ease; background-color: #f8f9fa;" onclick="triggerImageUpload(5)" onmouseover="this.style.borderColor='#007bff'; this.style.backgroundColor='#e9ecef';" onmouseout="if(this.style.border.includes('dashed')) { this.style.borderColor='#dee2e6'; this.style.backgroundColor='#f8f9fa'; }"
+                                            <div class="slot-content">
+                                                <i class="fas fa-camera fa-3x text-muted mb-2"></i>
+                                                <p class="text-muted mb-0">Image 5</p>
+                                                <small class="text-muted">Click to upload</small>
+                                            </div>
+                                            <input type="file" id="image-input-5" accept="image/*" style="display: none;" onchange="handleImageUpload(5, this)">
+                                            <img id="image-preview-5" class="img-fluid rounded" style="display: none; max-height: 180px; object-fit: cover;">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4" id="image-slot-6">
+                                        <div class="image-upload-slot border rounded p-3 text-center" style="min-height: 200px; cursor: pointer; border: 2px dashed #dee2e6; transition: all 0.3s ease; background-color: #f8f9fa;" onclick="triggerImageUpload(6)" onmouseover="this.style.borderColor='#007bff'; this.style.backgroundColor='#e9ecef';" onmouseout="if(this.style.border.includes('dashed')) { this.style.borderColor='#dee2e6'; this.style.backgroundColor='#f8f9fa'; }"
+                                            <div class="slot-content">
+                                                <i class="fas fa-camera fa-3x text-muted mb-2"></i>
+                                                <p class="text-muted mb-0">Image 6</p>
+                                                <small class="text-muted">Click to upload</small>
+                                            </div>
+                                            <input type="file" id="image-input-6" accept="image/*" style="display: none;" onchange="handleImageUpload(6, this)">
+                                            <img id="image-preview-6" class="img-fluid rounded" style="display: none; max-height: 180px; object-fit: cover;">
+                                        </div>
+                                    </div>
                                 </div>
+                                
+                                <!-- Hidden input for form submission -->
+                                {{ form.images(style="display: none;", id="modal-images", multiple=True) }}
                             </div>
                             
                             <div id="current-images" style="display: none;">
@@ -494,9 +558,7 @@ function openAddModal() {
 }
 
 function clearImagePreviews() {
-    document.getElementById('image-preview-container').innerHTML = '';
-    const fileInput = document.getElementById('modal-images');
-    if (fileInput) fileInput.value = '';
+    clearAllImageSlots();
 }
 
 // Clear previews when modal is closed
@@ -578,90 +640,140 @@ function populateForm(vehicle) {
     document.getElementById('modal-contact-name').value = vehicle.contact_name;
     document.getElementById('modal-contact-phone').value = vehicle.contact_phone;
     
-    // Show current images
+    // Load existing images into slots
     if (vehicle.images && vehicle.images.length > 0) {
-        document.getElementById('current-images').style.display = 'block';
-        const container = document.getElementById('current-images-container');
-        container.innerHTML = '';
-        vehicle.images.forEach((image, index) => {
-            const div = document.createElement('div');
-            div.className = 'col-md-2';
-            div.innerHTML = `
-                <div class="position-relative">
-                    <img src="/static/uploads/${image}" class="img-thumbnail w-100" style="height: 100px; object-fit: cover;">
-                    <small class="text-muted d-block text-center mt-1">Image ${index + 1}</small>
-                </div>
-            `;
-            container.appendChild(div);
+        vehicle.images.forEach((imageName, index) => {
+            if (index < 6) { // Only load up to 6 images
+                const slotNumber = index + 1;
+                const slot = document.getElementById(`image-slot-${slotNumber}`);
+                const preview = document.getElementById(`image-preview-${slotNumber}`);
+                const slotContent = slot.querySelector('.slot-content');
+                
+                // Display existing image
+                preview.src = `/static/uploads/${imageName}`;
+                preview.style.display = 'block';
+                slotContent.style.display = 'none';
+                
+                // Add remove button for existing images
+                if (!slot.querySelector('.remove-image-btn')) {
+                    const removeBtn = document.createElement('button');
+                    removeBtn.type = 'button';
+                    removeBtn.className = 'btn btn-sm btn-danger position-absolute remove-image-btn';
+                    removeBtn.style.cssText = 'top: 10px; right: 10px; padding: 5px 8px; z-index: 10;';
+                    removeBtn.innerHTML = '<i class="fas fa-times"></i>';
+                    removeBtn.onclick = function() { removeImage(slotNumber); };
+                    slot.style.position = 'relative';
+                    slot.appendChild(removeBtn);
+                }
+                
+                // Update slot styling
+                slot.querySelector('.image-upload-slot').style.border = '2px solid #28a745';
+            }
         });
     }
     
     clearFormErrors();
 }
 
-// Image preview functionality
-document.getElementById('modal-images').addEventListener('change', function(e) {
-    const files = Array.from(e.target.files);
-    const previewContainer = document.getElementById('image-preview-container');
+// Professional 6-slot image upload system
+let uploadedImages = [];
+
+function triggerImageUpload(slotNumber) {
+    document.getElementById(`image-input-${slotNumber}`).click();
+}
+
+function handleImageUpload(slotNumber, input) {
+    const file = input.files[0];
+    if (!file) return;
     
-    // Clear previous previews
-    previewContainer.innerHTML = '';
-    
-    // Limit to 6 images
-    if (files.length > 6) {
-        showToast('Maximum 6 images allowed. Only first 6 images will be used.', 'warning');
-        // Remove excess files
-        const dt = new DataTransfer();
-        files.slice(0, 6).forEach(file => dt.items.add(file));
-        e.target.files = dt.files;
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+        showToast('Please select a valid image file.', 'error');
+        return;
     }
     
-    // Show preview for each image
-    files.slice(0, 6).forEach((file, index) => {
-        if (file.type.startsWith('image/')) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const div = document.createElement('div');
-                div.className = 'col-md-2';
-                div.innerHTML = `
-                    <div class="position-relative">
-                        <img src="${e.target.result}" class="img-thumbnail w-100" style="height: 100px; object-fit: cover;">
-                        <small class="text-muted d-block text-center mt-1">New ${index + 1}</small>
-                        <button type="button" class="btn btn-sm btn-danger position-absolute top-0 end-0" 
-                                onclick="removeImagePreview(this, ${index})" style="padding: 2px 6px;">
-                            <i class="fas fa-times" style="font-size: 10px;"></i>
-                        </button>
-                    </div>
-                `;
-                previewContainer.appendChild(div);
-            };
-            reader.readAsDataURL(file);
+    // Validate file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+        showToast('Image size should be less than 5MB.', 'error');
+        return;
+    }
+    
+    const slot = document.getElementById(`image-slot-${slotNumber}`);
+    const preview = document.getElementById(`image-preview-${slotNumber}`);
+    const slotContent = slot.querySelector('.slot-content');
+    
+    // Read and display the image
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        preview.src = e.target.result;
+        preview.style.display = 'block';
+        slotContent.style.display = 'none';
+        
+        // Add remove button
+        if (!slot.querySelector('.remove-image-btn')) {
+            const removeBtn = document.createElement('button');
+            removeBtn.type = 'button';
+            removeBtn.className = 'btn btn-sm btn-danger position-absolute remove-image-btn';
+            removeBtn.style.cssText = 'top: 10px; right: 10px; padding: 5px 8px; z-index: 10;';
+            removeBtn.innerHTML = '<i class="fas fa-times"></i>';
+            removeBtn.onclick = function() { removeImage(slotNumber); };
+            slot.style.position = 'relative';
+            slot.appendChild(removeBtn);
+        }
+        
+        // Update the uploaded images array
+        uploadedImages[slotNumber - 1] = file;
+        updateFormFileInput();
+        
+        // Update slot styling
+        slot.querySelector('.image-upload-slot').style.border = '2px solid #28a745';
+    };
+    reader.readAsDataURL(file);
+}
+
+function removeImage(slotNumber) {
+    const slot = document.getElementById(`image-slot-${slotNumber}`);
+    const preview = document.getElementById(`image-preview-${slotNumber}`);
+    const slotContent = slot.querySelector('.slot-content');
+    const removeBtn = slot.querySelector('.remove-image-btn');
+    const input = document.getElementById(`image-input-${slotNumber}`);
+    
+    // Reset the slot
+    preview.style.display = 'none';
+    preview.src = '';
+    slotContent.style.display = 'block';
+    input.value = '';
+    
+    // Remove the remove button
+    if (removeBtn) removeBtn.remove();
+    
+    // Reset slot styling
+    slot.querySelector('.image-upload-slot').style.border = '2px dashed #dee2e6';
+    
+    // Update uploaded images array
+    uploadedImages[slotNumber - 1] = null;
+    updateFormFileInput();
+}
+
+function updateFormFileInput() {
+    const formInput = document.getElementById('modal-images');
+    const dataTransfer = new DataTransfer();
+    
+    // Add all uploaded files to the form input
+    uploadedImages.forEach(file => {
+        if (file) {
+            dataTransfer.items.add(file);
         }
     });
-});
+    
+    formInput.files = dataTransfer.files;
+}
 
-function removeImagePreview(button, index) {
-    const fileInput = document.getElementById('modal-images');
-    const dt = new DataTransfer();
-    const files = Array.from(fileInput.files);
-    
-    // Remove the file at the specified index
-    files.splice(index, 1);
-    
-    // Rebuild the FileList
-    files.forEach(file => dt.items.add(file));
-    fileInput.files = dt.files;
-    
-    // Remove the preview element
-    button.closest('.col-md-2').remove();
-    
-    // Update remaining preview labels
-    document.querySelectorAll('#image-preview-container .col-md-2').forEach((div, newIndex) => {
-        const label = div.querySelector('small');
-        if (label) label.textContent = `New ${newIndex + 1}`;
-        const removeBtn = div.querySelector('button');
-        if (removeBtn) removeBtn.setAttribute('onclick', `removeImagePreview(this, ${newIndex})`);
-    });
+function clearAllImageSlots() {
+    for (let i = 1; i <= 6; i++) {
+        removeImage(i);
+    }
+    uploadedImages = [];
 }
 
 function clearFormErrors() {
