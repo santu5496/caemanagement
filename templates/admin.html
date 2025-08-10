@@ -970,13 +970,20 @@ function clearAllImageSlots() {
     uploadedImages = [];
 }
 
+// Fix any potential NodeList.map issues
+function safeQuerySelectorAll(selector) {
+    return Array.from(document.querySelectorAll(selector));
+}
+
 function clearFormErrors() {
     const formErrors = document.getElementById('form-errors');
     if (formErrors) formErrors.style.display = 'none';
-    document.querySelectorAll('.is-invalid').forEach(el => {
+    
+    Array.from(document.querySelectorAll('.is-invalid')).forEach(el => {
         if (el) el.classList.remove('is-invalid');
     });
-    document.querySelectorAll('.invalid-feedback').forEach(el => {
+    
+    Array.from(document.querySelectorAll('.invalid-feedback')).forEach(el => {
         if (el) el.textContent = '';
     });
 }
@@ -1084,20 +1091,24 @@ function showEmptyState() {
 }
 
 function updateStatistics() {
-    const rows = document.querySelectorAll('#vehicles-tbody tr');
+    const rows = Array.from(document.querySelectorAll('#vehicles-tbody tr'));
     const total = rows.length;
     let available = 0;
     let sold = 0;
 
     rows.forEach(row => {
         const badge = row.querySelector('.status-badge');
-        if (badge.textContent === 'Available') available++;
-        else sold++;
+        if (badge && badge.textContent === 'Available') available++;
+        else if (badge) sold++;
     });
 
-    document.getElementById('total-count').textContent = total;
-    document.getElementById('available-count').textContent = available;
-    document.getElementById('sold-count').textContent = sold;
+    const totalCount = document.getElementById('total-count');
+    const availableCount = document.getElementById('available-count');
+    const soldCount = document.getElementById('sold-count');
+    
+    if (totalCount) totalCount.textContent = total;
+    if (availableCount) availableCount.textContent = available;
+    if (soldCount) soldCount.textContent = sold;
 }
 
 function showLoading() {
@@ -1391,7 +1402,10 @@ tabButtons.forEach((tabId, index) => {
 function initializeImageSlots() {
     for (let i = 1; i <= 6; i++) {
         const slot = document.getElementById(`image-slot-${i}`);
+        if (!slot) continue;
+        
         const slotContent = slot.querySelector('.slot-content');
+        if (!slotContent) continue;
         
         slotContent.innerHTML = `
             <i class="fas fa-cloud-upload-alt fa-3x text-primary mb-2"></i>
@@ -1400,26 +1414,45 @@ function initializeImageSlots() {
             <small class="d-block text-muted mt-1">Max 5MB • JPG, PNG, GIF</small>
         `;
         
-        // Add drag and drop functionality
+        // Add drag and drop functionality with proper error handling
         slot.addEventListener('dragover', function(e) {
             e.preventDefault();
-            this.style.background = 'linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%)';
+            e.stopPropagation();
+            const uploadSlot = this.querySelector('.image-upload-slot');
+            if (uploadSlot) {
+                uploadSlot.style.background = 'linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%)';
+            }
         });
         
         slot.addEventListener('dragleave', function(e) {
             e.preventDefault();
-            this.style.background = 'linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)';
+            e.stopPropagation();
+            const uploadSlot = this.querySelector('.image-upload-slot');
+            if (uploadSlot) {
+                uploadSlot.style.background = 'linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)';
+            }
         });
         
         slot.addEventListener('drop', function(e) {
             e.preventDefault();
-            this.style.background = 'linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)';
+            e.stopPropagation();
+            const uploadSlot = this.querySelector('.image-upload-slot');
+            if (uploadSlot) {
+                uploadSlot.style.background = 'linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)';
+            }
             
             const files = e.dataTransfer.files;
             if (files.length > 0) {
                 const input = document.getElementById(`image-input-${i}`);
-                input.files = files;
-                handleImageUpload(i, input);
+                if (input) {
+                    try {
+                        input.files = files;
+                        handleImageUpload(i, input);
+                    } catch (error) {
+                        console.error('Error handling dropped file:', error);
+                        showToast('Error handling dropped file', 'danger');
+                    }
+                }
             }
         });
     }
@@ -1437,6 +1470,20 @@ document.getElementById('vehicleModal').addEventListener('hidden.bs.modal', func
 // Initialize enhanced UI when modal is shown
 document.getElementById('vehicleModal').addEventListener('shown.bs.modal', function() {
     initializeImageSlots();
+});
+
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('Auto Dealership app loaded successfully');
+    
+    // Initialize image slots when page loads
+    const modal = document.getElementById('vehicleModal');
+    if (modal) {
+        initializeImageSlots();
+    }
+    
+    // Update statistics on page load
+    updateStatistics();
 });
 
 // Auto-format price input
