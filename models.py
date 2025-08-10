@@ -12,6 +12,51 @@ admin_users = {
     }
 }
 
+# Add some sample vehicles for demonstration
+def initialize_sample_data():
+    if not vehicles:  # Only add if no vehicles exist
+        sample_vehicles = [
+            Vehicle(
+                title="2020 Honda Civic LX",
+                category="Cars",
+                make="Honda",
+                model="Civic",
+                year=2020,
+                price=18500,
+                mileage=45000,
+                description="Excellent condition, one owner, clean carfax. Great fuel economy and reliability.",
+                contact_name="Auto Dealership",
+                contact_phone="(555) 123-4567"
+            ),
+            Vehicle(
+                title="2019 Ford F-150 XLT",
+                category="Trucks",
+                make="Ford",
+                model="F-150",
+                year=2019,
+                price=32900,
+                mileage=68000,
+                description="4WD, crew cab, powerful V6 engine. Perfect for work and family use.",
+                contact_name="Auto Dealership", 
+                contact_phone="(555) 123-4567"
+            ),
+            Vehicle(
+                title="2021 Toyota Camry LE",
+                category="Cars",
+                make="Toyota",
+                model="Camry",
+                year=2021,
+                price=24800,
+                mileage=28000,
+                description="Low mileage, excellent condition. Advanced safety features included.",
+                contact_name="Auto Dealership",
+                contact_phone="(555) 123-4567"
+            )
+        ]
+        
+        for vehicle in sample_vehicles:
+            add_vehicle(vehicle)
+
 class Vehicle:
     def __init__(self, title, category, make, model, year, price, mileage, 
                  description, contact_name, contact_phone, images=None):

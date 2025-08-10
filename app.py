@@ -21,6 +21,10 @@ os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 # Import routes after app creation
 from routes import *
 
+# Initialize sample data
+from models import initialize_sample_data
+initialize_sample_data()
+
 if __name__ == '__main__':
     from werkzeug.serving import run_simple
     run_simple('0.0.0.0', 5000, app, use_reloader=True, use_debugger=True)
