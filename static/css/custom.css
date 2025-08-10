@@ -126,3 +126,80 @@
         padding: 0;
     }
 }
+
+/* Modal and loading overlay styles */
+.modal-lg {
+    max-width: 900px;
+}
+
+#loading-overlay {
+    backdrop-filter: blur(2px);
+}
+
+.toast-container {
+    z-index: 1060;
+}
+
+/* Form validation styles */
+.is-invalid {
+    border-color: #dc3545;
+}
+
+.invalid-feedback {
+    display: block;
+    color: #dc3545;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+}
+
+/* Enhanced table styles for better mobile responsiveness */
+@media (max-width: 768px) {
+    .table-responsive {
+        font-size: 0.85rem;
+    }
+    
+    .btn-group-sm .btn {
+        padding: 0.2rem 0.4rem;
+    }
+    
+    .modal-dialog {
+        margin: 0.5rem;
+    }
+    
+    .modal-lg {
+        max-width: none;
+    }
+}
+
+/* Status badge animations */
+.status-badge {
+    transition: all 0.3s ease;
+}
+
+/* Enhanced card hover effects for dashboard */
+.card:hover {
+    transform: translateY(-2px);
+}
+
+/* Loading spinner improvements */
+.spinner-border {
+    width: 3rem;
+    height: 3rem;
+}
+
+/* Better spacing for modal form sections */
+.modal-body h6.text-primary {
+    border-bottom: 2px solid var(--bs-primary);
+    padding-bottom: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+/* Image preview in forms */
+#current-images-container img {
+    border-radius: 0.375rem;
+    transition: transform 0.2s ease;
+}
+
+#current-images-container img:hover {
+    transform: scale(1.05);
+}

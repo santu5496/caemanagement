@@ -81,18 +81,19 @@ def admin_logout():
 
 @app.route('/admin')
 def admin_dashboard():
-    """Admin dashboard"""
+    """Admin dashboard with single-page CRUD"""
     if 'admin_logged_in' not in session:
         return redirect(url_for('admin_login'))
     
     vehicles = get_all_vehicles()
-    return render_template('admin.html', vehicles=vehicles)
+    form = VehicleForm()  # Form for modal dialogs
+    return render_template('admin.html', vehicles=vehicles, form=form)
 
-@app.route('/admin/add_vehicle', methods=['GET', 'POST'])
+@app.route('/admin/add_vehicle', methods=['POST'])
 def add_vehicle_route():
-    """Add new vehicle"""
+    """Add new vehicle via AJAX"""
     if 'admin_logged_in' not in session:
-        return redirect(url_for('admin_login'))
+        return jsonify({'success': False, 'message': 'Not authenticated'}), 401
     
     form = VehicleForm()
     if form.validate_on_submit():
@@ -116,26 +117,28 @@ def add_vehicle_route():
             )
             
             add_vehicle(vehicle)
-            flash('Vehicle added successfully', 'success')
-            return redirect(url_for('admin_dashboard'))
+            return jsonify({'success': True, 'message': 'Vehicle added successfully', 'vehicle': vehicle.to_dict()})
             
         except Exception as e:
-            flash(f'Error adding vehicle: {str(e)}', 'error')
+            return jsonify({'success': False, 'message': f'Error adding vehicle: {str(e)}'}), 500
     
-    return render_template('add_vehicle.html', form=form)
+    # Return validation errors
+    errors = {}
+    for field, error_list in form.errors.items():
+        errors[field] = error_list[0] if error_list else ''
+    return jsonify({'success': False, 'message': 'Validation failed', 'errors': errors}), 400
 
-@app.route('/admin/edit_vehicle/<vehicle_id>', methods=['GET', 'POST'])
+@app.route('/admin/edit_vehicle/<vehicle_id>', methods=['POST'])
 def edit_vehicle(vehicle_id):
-    """Edit existing vehicle"""
+    """Edit existing vehicle via AJAX"""
     if 'admin_logged_in' not in session:
-        return redirect(url_for('admin_login'))
+        return jsonify({'success': False, 'message': 'Not authenticated'}), 401
     
     vehicle = get_vehicle(vehicle_id)
     if not vehicle:
-        flash('Vehicle not found', 'error')
-        return redirect(url_for('admin_dashboard'))
+        return jsonify({'success': False, 'message': 'Vehicle not found'}), 404
     
-    form = VehicleForm(obj=vehicle)
+    form = VehicleForm()
     
     if form.validate_on_submit():
         try:
@@ -162,42 +165,53 @@ def edit_vehicle(vehicle_id):
                 update_data['images'] = vehicle.images + new_images
             
             vehicle.update(**update_data)
-            flash('Vehicle updated successfully', 'success')
-            return redirect(url_for('admin_dashboard'))
+            return jsonify({'success': True, 'message': 'Vehicle updated successfully', 'vehicle': vehicle.to_dict()})
             
         except Exception as e:
-            flash(f'Error updating vehicle: {str(e)}', 'error')
+            return jsonify({'success': False, 'message': f'Error updating vehicle: {str(e)}'}), 500
     
-    return render_template('edit_vehicle.html', form=form, vehicle=vehicle)
+    # Return validation errors
+    errors = {}
+    for field, error_list in form.errors.items():
+        errors[field] = error_list[0] if error_list else ''
+    return jsonify({'success': False, 'message': 'Validation failed', 'errors': errors}), 400
 
-@app.route('/admin/delete_vehicle/<vehicle_id>')
-def delete_vehicle_route(vehicle_id):
-    """Delete vehicle"""
+@app.route('/admin/get_vehicle/<vehicle_id>')
+def get_vehicle_data(vehicle_id):
+    """Get vehicle data for editing"""
     if 'admin_logged_in' not in session:
-        return redirect(url_for('admin_login'))
+        return jsonify({'success': False, 'message': 'Not authenticated'}), 401
+    
+    vehicle = get_vehicle(vehicle_id)
+    if not vehicle:
+        return jsonify({'success': False, 'message': 'Vehicle not found'}), 404
+    
+    return jsonify({'success': True, 'vehicle': vehicle.to_dict()})
+
+@app.route('/admin/delete_vehicle/<vehicle_id>', methods=['POST'])
+def delete_vehicle_route(vehicle_id):
+    """Delete vehicle via AJAX"""
+    if 'admin_logged_in' not in session:
+        return jsonify({'success': False, 'message': 'Not authenticated'}), 401
     
     if delete_vehicle(vehicle_id):
-        flash('Vehicle deleted successfully', 'success')
+        return jsonify({'success': True, 'message': 'Vehicle deleted successfully'})
     else:
-        flash('Vehicle not found', 'error')
-    
-    return redirect(url_for('admin_dashboard'))
+        return jsonify({'success': False, 'message': 'Vehicle not found'}), 404
 
-@app.route('/admin/toggle_status/<vehicle_id>')
+@app.route('/admin/toggle_status/<vehicle_id>', methods=['POST'])
 def toggle_vehicle_status(vehicle_id):
-    """Toggle vehicle status between available and sold"""
+    """Toggle vehicle status between available and sold via AJAX"""
     if 'admin_logged_in' not in session:
-        return redirect(url_for('admin_login'))
+        return jsonify({'success': False, 'message': 'Not authenticated'}), 401
     
     vehicle = get_vehicle(vehicle_id)
     if vehicle:
         new_status = 'sold' if vehicle.status == 'available' else 'available'
         vehicle.update(status=new_status)
-        flash(f'Vehicle marked as {new_status}', 'success')
+        return jsonify({'success': True, 'message': f'Vehicle marked as {new_status}', 'new_status': new_status})
     else:
-        flash('Vehicle not found', 'error')
-    
-    return redirect(url_for('admin_dashboard'))
+        return jsonify({'success': False, 'message': 'Vehicle not found'}), 404
 
 # Error handlers
 @app.errorhandler(404)

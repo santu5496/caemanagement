@@ -8,9 +8,9 @@
         <div class="col-12">
             <div class="d-flex justify-content-between align-items-center">
                 <h1><i class="fas fa-tachometer-alt me-2"></i>Admin Dashboard</h1>
-                <a href="{{ url_for('add_vehicle_route') }}" class="btn btn-primary">
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#vehicleModal" onclick="openAddModal()">
                     <i class="fas fa-plus me-1"></i>Add New Vehicle
-                </a>
+                </button>
             </div>
         </div>
     </div>
@@ -21,7 +21,7 @@
             <div class="card text-center">
                 <div class="card-body">
                     <h5 class="card-title">Total Vehicles</h5>
-                    <h2 class="text-primary">{{ vehicles|length }}</h2>
+                    <h2 class="text-primary" id="total-count">{{ vehicles|length }}</h2>
                 </div>
             </div>
         </div>
@@ -29,7 +29,7 @@
             <div class="card text-center">
                 <div class="card-body">
                     <h5 class="card-title">Available</h5>
-                    <h2 class="text-success">{{ vehicles|selectattr("status", "equalto", "available")|list|length }}</h2>
+                    <h2 class="text-success" id="available-count">{{ vehicles|selectattr("status", "equalto", "available")|list|length }}</h2>
                 </div>
             </div>
         </div>
@@ -37,7 +37,7 @@
             <div class="card text-center">
                 <div class="card-body">
                     <h5 class="card-title">Sold</h5>
-                    <h2 class="text-danger">{{ vehicles|selectattr("status", "equalto", "sold")|list|length }}</h2>
+                    <h2 class="text-danger" id="sold-count">{{ vehicles|selectattr("status", "equalto", "sold")|list|length }}</h2>
                 </div>
             </div>
         </div>
@@ -57,92 +57,506 @@
             <h5 class="mb-0"><i class="fas fa-car me-2"></i>Vehicle Management</h5>
         </div>
         <div class="card-body">
-            {% if vehicles %}
-                <div class="table-responsive">
-                    <table class="table table-hover">
-                        <thead>
-                            <tr>
-                                <th>Image</th>
-                                <th>Vehicle</th>
-                                <th>Category</th>
-                                <th>Year</th>
-                                <th>Price</th>
-                                <th>Mileage</th>
-                                <th>Status</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for vehicle in vehicles %}
+            <div id="vehicles-container">
+                {% if vehicles %}
+                    <div class="table-responsive">
+                        <table class="table table-hover" id="vehicles-table">
+                            <thead>
                                 <tr>
-                                    <td>
-                                        {% if vehicle.images %}
-                                            <img src="{{ url_for('static', filename='uploads/' + vehicle.images[0]) }}" 
-                                                 class="img-thumbnail" style="width: 60px; height: 45px; object-fit: cover;" 
-                                                 alt="{{ vehicle.title }}">
-                                        {% else %}
-                                            <div class="bg-secondary d-flex align-items-center justify-content-center" 
-                                                 style="width: 60px; height: 45px;">
-                                                <i class="fas fa-car text-muted"></i>
-                                            </div>
-                                        {% endif %}
-                                    </td>
-                                    <td>
-                                        <strong>{{ vehicle.title }}</strong><br>
-                                        <small class="text-muted">{{ vehicle.make }} {{ vehicle.model }}</small>
-                                    </td>
-                                    <td>
-                                        <span class="badge bg-secondary">{{ vehicle.category }}</span>
-                                    </td>
-                                    <td>{{ vehicle.year }}</td>
-                                    <td class="text-success">
-                                        <strong>${{ "{:,.0f}".format(vehicle.price) }}</strong>
-                                    </td>
-                                    <td>{{ "{:,}".format(vehicle.mileage) }} mi</td>
-                                    <td>
-                                        {% if vehicle.status == 'available' %}
-                                            <span class="badge bg-success">Available</span>
-                                        {% else %}
-                                            <span class="badge bg-danger">Sold</span>
-                                        {% endif %}
-                                    </td>
-                                    <td>
-                                        <div class="btn-group btn-group-sm" role="group">
-                                            <a href="{{ url_for('vehicle_detail', vehicle_id=vehicle.id) }}" 
-                                               class="btn btn-outline-info" title="View">
-                                                <i class="fas fa-eye"></i>
-                                            </a>
-                                            <a href="{{ url_for('edit_vehicle', vehicle_id=vehicle.id) }}" 
-                                               class="btn btn-outline-warning" title="Edit">
-                                                <i class="fas fa-edit"></i>
-                                            </a>
-                                            <a href="{{ url_for('toggle_vehicle_status', vehicle_id=vehicle.id) }}" 
-                                               class="btn btn-outline-secondary" title="Toggle Status">
-                                                <i class="fas fa-exchange-alt"></i>
-                                            </a>
-                                            <a href="{{ url_for('delete_vehicle_route', vehicle_id=vehicle.id) }}" 
-                                               class="btn btn-outline-danger" title="Delete"
-                                               onclick="return confirm('Are you sure you want to delete this vehicle?')">
-                                                <i class="fas fa-trash"></i>
-                                            </a>
-                                        </div>
-                                    </td>
+                                    <th>Image</th>
+                                    <th>Vehicle</th>
+                                    <th>Category</th>
+                                    <th>Year</th>
+                                    <th>Price</th>
+                                    <th>Mileage</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
                                 </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            {% else %}
-                <div class="text-center py-4">
-                    <i class="fas fa-car fa-3x text-muted mb-3"></i>
-                    <h4 class="text-muted">No vehicles listed yet</h4>
-                    <p class="text-muted">Start by adding your first vehicle to the inventory.</p>
-                    <a href="{{ url_for('add_vehicle_route') }}" class="btn btn-primary">
-                        <i class="fas fa-plus me-1"></i>Add First Vehicle
-                    </a>
-                </div>
-            {% endif %}
+                            </thead>
+                            <tbody id="vehicles-tbody">
+                                {% for vehicle in vehicles %}
+                                    <tr id="vehicle-{{ vehicle.id }}">
+                                        <td>
+                                            {% if vehicle.images %}
+                                                <img src="{{ url_for('static', filename='uploads/' + vehicle.images[0]) }}" 
+                                                     class="img-thumbnail" style="width: 60px; height: 45px; object-fit: cover;" 
+                                                     alt="{{ vehicle.title }}">
+                                            {% else %}
+                                                <div class="bg-secondary d-flex align-items-center justify-content-center" 
+                                                     style="width: 60px; height: 45px;">
+                                                    <i class="fas fa-car text-muted"></i>
+                                                </div>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <strong>{{ vehicle.title }}</strong><br>
+                                            <small class="text-muted">{{ vehicle.make }} {{ vehicle.model }}</small>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-secondary">{{ vehicle.category }}</span>
+                                        </td>
+                                        <td>{{ vehicle.year }}</td>
+                                        <td class="text-success">
+                                            <strong>${{ "{:,.0f}".format(vehicle.price) }}</strong>
+                                        </td>
+                                        <td>{{ "{:,}".format(vehicle.mileage) }} mi</td>
+                                        <td>
+                                            {% if vehicle.status == 'available' %}
+                                                <span class="badge bg-success status-badge">Available</span>
+                                            {% else %}
+                                                <span class="badge bg-danger status-badge">Sold</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <div class="btn-group btn-group-sm" role="group">
+                                                <a href="{{ url_for('vehicle_detail', vehicle_id=vehicle.id) }}" 
+                                                   class="btn btn-outline-info" title="View">
+                                                    <i class="fas fa-eye"></i>
+                                                </a>
+                                                <button type="button" class="btn btn-outline-warning" title="Edit"
+                                                        onclick="openEditModal('{{ vehicle.id }}')">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                                <button type="button" class="btn btn-outline-secondary" title="Toggle Status"
+                                                        onclick="toggleStatus('{{ vehicle.id }}')">
+                                                    <i class="fas fa-exchange-alt"></i>
+                                                </button>
+                                                <button type="button" class="btn btn-outline-danger" title="Delete"
+                                                        onclick="deleteVehicle('{{ vehicle.id }}')">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="text-center py-4" id="empty-state">
+                        <i class="fas fa-car fa-3x text-muted mb-3"></i>
+                        <h4 class="text-muted">No vehicles listed yet</h4>
+                        <p class="text-muted">Start by adding your first vehicle to the inventory.</p>
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#vehicleModal" onclick="openAddModal()">
+                            <i class="fas fa-plus me-1"></i>Add First Vehicle
+                        </button>
+                    </div>
+                {% endif %}
+            </div>
         </div>
     </div>
 </div>
+
+<!-- Vehicle Modal -->
+<div class="modal fade" id="vehicleModal" tabindex="-1" data-bs-backdrop="static">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="vehicleModalTitle">Add New Vehicle</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="vehicleForm" enctype="multipart/form-data">
+                {{ form.hidden_tag() }}
+                <div class="modal-body">
+                    <div id="form-errors" class="alert alert-danger" style="display: none;"></div>
+                    
+                    <!-- Basic Information -->
+                    <h6 class="text-primary mb-3">Basic Information</h6>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-8">
+                            {{ form.title.label(class="form-label") }}
+                            {{ form.title(class="form-control", id="modal-title") }}
+                            <div class="invalid-feedback"></div>
+                        </div>
+                        <div class="col-md-4">
+                            {{ form.category.label(class="form-label") }}
+                            {{ form.category(class="form-select", id="modal-category") }}
+                            <div class="invalid-feedback"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            {{ form.make.label(class="form-label") }}
+                            {{ form.make(class="form-control", id="modal-make") }}
+                            <div class="invalid-feedback"></div>
+                        </div>
+                        <div class="col-md-4">
+                            {{ form.model.label(class="form-label") }}
+                            {{ form.model(class="form-control", id="modal-model") }}
+                            <div class="invalid-feedback"></div>
+                        </div>
+                        <div class="col-md-4">
+                            {{ form.year.label(class="form-label") }}
+                            {{ form.year(class="form-control", id="modal-year") }}
+                            <div class="invalid-feedback"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            {{ form.price.label(class="form-label") }}
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                {{ form.price(class="form-control", id="modal-price") }}
+                            </div>
+                            <div class="invalid-feedback"></div>
+                        </div>
+                        <div class="col-md-6">
+                            {{ form.mileage.label(class="form-label") }}
+                            <div class="input-group">
+                                {{ form.mileage(class="form-control", id="modal-mileage") }}
+                                <span class="input-group-text">miles</span>
+                            </div>
+                            <div class="invalid-feedback"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        {{ form.description.label(class="form-label") }}
+                        {{ form.description(class="form-control", rows="3", id="modal-description") }}
+                        <div class="invalid-feedback"></div>
+                    </div>
+                    
+                    <div class="mb-3" id="status-field" style="display: none;">
+                        {{ form.status.label(class="form-label") }}
+                        {{ form.status(class="form-select", id="modal-status") }}
+                        <div class="invalid-feedback"></div>
+                    </div>
+                    
+                    <!-- Contact Information -->
+                    <h6 class="text-primary mb-3">Contact Information</h6>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            {{ form.contact_name.label(class="form-label") }}
+                            {{ form.contact_name(class="form-control", id="modal-contact-name") }}
+                            <div class="invalid-feedback"></div>
+                        </div>
+                        <div class="col-md-6">
+                            {{ form.contact_phone.label(class="form-label") }}
+                            {{ form.contact_phone(class="form-control", id="modal-contact-phone") }}
+                            <div class="invalid-feedback"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Images -->
+                    <h6 class="text-primary mb-3">Vehicle Images</h6>
+                    
+                    <div class="mb-3">
+                        {{ form.images.label(class="form-label") }}
+                        {{ form.images(class="form-control", multiple=True, accept="image/*", id="modal-images") }}
+                        <div class="invalid-feedback"></div>
+                        <div class="form-text">Select multiple images to showcase your vehicle.</div>
+                    </div>
+                    
+                    <div id="current-images" style="display: none;">
+                        <h6 class="text-muted mb-2">Current Images</h6>
+                        <div id="current-images-container" class="row g-2 mb-3"></div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="submit-btn">
+                        <i class="fas fa-save me-1"></i>Add Vehicle
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Loading Overlay -->
+<div id="loading-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 9999;">
+    <div class="d-flex justify-content-center align-items-center h-100">
+        <div class="spinner-border text-light" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+</div>
+
+<script>
+let currentVehicleId = null;
+let isEditMode = false;
+
+function openAddModal() {
+    currentVehicleId = null;
+    isEditMode = false;
+    document.getElementById('vehicleModalTitle').textContent = 'Add New Vehicle';
+    document.getElementById('submit-btn').innerHTML = '<i class="fas fa-save me-1"></i>Add Vehicle';
+    document.getElementById('status-field').style.display = 'none';
+    document.getElementById('current-images').style.display = 'none';
+    document.getElementById('vehicleForm').reset();
+    clearFormErrors();
+}
+
+function openEditModal(vehicleId) {
+    currentVehicleId = vehicleId;
+    isEditMode = true;
+    document.getElementById('vehicleModalTitle').textContent = 'Edit Vehicle';
+    document.getElementById('submit-btn').innerHTML = '<i class="fas fa-save me-1"></i>Update Vehicle';
+    document.getElementById('status-field').style.display = 'block';
+    
+    // Fetch vehicle data
+    showLoading();
+    fetch(`/admin/get_vehicle/${vehicleId}`)
+        .then(response => response.json())
+        .then(data => {
+            hideLoading();
+            if (data.success) {
+                populateForm(data.vehicle);
+                const modal = new bootstrap.Modal(document.getElementById('vehicleModal'));
+                modal.show();
+            } else {
+                showToast(data.message, 'danger');
+            }
+        })
+        .catch(error => {
+            hideLoading();
+            showToast('Error loading vehicle data', 'danger');
+        });
+}
+
+function populateForm(vehicle) {
+    document.getElementById('modal-title').value = vehicle.title;
+    document.getElementById('modal-category').value = vehicle.category;
+    document.getElementById('modal-make').value = vehicle.make;
+    document.getElementById('modal-model').value = vehicle.model;
+    document.getElementById('modal-year').value = vehicle.year;
+    document.getElementById('modal-price').value = vehicle.price;
+    document.getElementById('modal-mileage').value = vehicle.mileage;
+    document.getElementById('modal-description').value = vehicle.description || '';
+    document.getElementById('modal-contact-name').value = vehicle.contact_name;
+    document.getElementById('modal-contact-phone').value = vehicle.contact_phone;
+    document.getElementById('modal-status').value = vehicle.status;
+    
+    // Show current images
+    if (vehicle.images && vehicle.images.length > 0) {
+        document.getElementById('current-images').style.display = 'block';
+        const container = document.getElementById('current-images-container');
+        container.innerHTML = '';
+        vehicle.images.forEach(image => {
+            const div = document.createElement('div');
+            div.className = 'col-md-3';
+            div.innerHTML = `<img src="/static/uploads/${image}" class="img-thumbnail w-100" style="height: 120px; object-fit: cover;">`;
+            container.appendChild(div);
+        });
+    }
+    
+    clearFormErrors();
+}
+
+function clearFormErrors() {
+    document.getElementById('form-errors').style.display = 'none';
+    document.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
+    document.querySelectorAll('.invalid-feedback').forEach(el => el.textContent = '');
+}
+
+function showFormErrors(errors) {
+    clearFormErrors();
+    
+    let errorMessages = [];
+    for (const [field, message] of Object.entries(errors)) {
+        const input = document.getElementById(`modal-${field.replace('_', '-')}`);
+        if (input) {
+            input.classList.add('is-invalid');
+            const feedback = input.parentNode.querySelector('.invalid-feedback');
+            if (feedback) feedback.textContent = message;
+        }
+        errorMessages.push(`${field}: ${message}`);
+    }
+    
+    if (errorMessages.length > 0) {
+        const errorDiv = document.getElementById('form-errors');
+        errorDiv.innerHTML = errorMessages.join('<br>');
+        errorDiv.style.display = 'block';
+    }
+}
+
+function toggleStatus(vehicleId) {
+    if (!confirm('Are you sure you want to change the vehicle status?')) return;
+    
+    showLoading();
+    fetch(`/admin/toggle_status/${vehicleId}`, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': document.querySelector('[name=csrf_token]').value
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        hideLoading();
+        if (data.success) {
+            updateVehicleStatus(vehicleId, data.new_status);
+            showToast(data.message, 'success');
+            updateStatistics();
+        } else {
+            showToast(data.message, 'danger');
+        }
+    })
+    .catch(error => {
+        hideLoading();
+        showToast('Error updating vehicle status', 'danger');
+    });
+}
+
+function deleteVehicle(vehicleId) {
+    if (!confirm('Are you sure you want to delete this vehicle? This action cannot be undone.')) return;
+    
+    showLoading();
+    fetch(`/admin/delete_vehicle/${vehicleId}`, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': document.querySelector('[name=csrf_token]').value
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        hideLoading();
+        if (data.success) {
+            removeVehicleRow(vehicleId);
+            showToast(data.message, 'success');
+            updateStatistics();
+        } else {
+            showToast(data.message, 'danger');
+        }
+    })
+    .catch(error => {
+        hideLoading();
+        showToast('Error deleting vehicle', 'danger');
+    });
+}
+
+function updateVehicleStatus(vehicleId, newStatus) {
+    const row = document.getElementById(`vehicle-${vehicleId}`);
+    const badge = row.querySelector('.status-badge');
+    badge.className = `badge ${newStatus === 'available' ? 'bg-success' : 'bg-danger'} status-badge`;
+    badge.textContent = newStatus === 'available' ? 'Available' : 'Sold';
+}
+
+function removeVehicleRow(vehicleId) {
+    const row = document.getElementById(`vehicle-${vehicleId}`);
+    row.remove();
+    
+    // Check if table is empty
+    const tbody = document.getElementById('vehicles-tbody');
+    if (tbody.children.length === 0) {
+        showEmptyState();
+    }
+}
+
+function showEmptyState() {
+    document.getElementById('vehicles-container').innerHTML = `
+        <div class="text-center py-4" id="empty-state">
+            <i class="fas fa-car fa-3x text-muted mb-3"></i>
+            <h4 class="text-muted">No vehicles listed yet</h4>
+            <p class="text-muted">Start by adding your first vehicle to the inventory.</p>
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#vehicleModal" onclick="openAddModal()">
+                <i class="fas fa-plus me-1"></i>Add First Vehicle
+            </button>
+        </div>
+    `;
+}
+
+function updateStatistics() {
+    const rows = document.querySelectorAll('#vehicles-tbody tr');
+    const total = rows.length;
+    let available = 0;
+    let sold = 0;
+    
+    rows.forEach(row => {
+        const badge = row.querySelector('.status-badge');
+        if (badge.textContent === 'Available') available++;
+        else sold++;
+    });
+    
+    document.getElementById('total-count').textContent = total;
+    document.getElementById('available-count').textContent = available;
+    document.getElementById('sold-count').textContent = sold;
+}
+
+function showLoading() {
+    document.getElementById('loading-overlay').style.display = 'block';
+}
+
+function hideLoading() {
+    document.getElementById('loading-overlay').style.display = 'none';
+}
+
+function showToast(message, type = 'info') {
+    const toastContainer = document.querySelector('.toast-container') || createToastContainer();
+    
+    const toast = document.createElement('div');
+    toast.className = `toast align-items-center text-white bg-${type} border-0`;
+    toast.setAttribute('role', 'alert');
+    toast.innerHTML = `
+        <div class="d-flex">
+            <div class="toast-body">${message}</div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+        </div>
+    `;
+    
+    toastContainer.appendChild(toast);
+    
+    const bsToast = new bootstrap.Toast(toast);
+    bsToast.show();
+    
+    toast.addEventListener('hidden.bs.toast', function() {
+        toast.remove();
+    });
+}
+
+function createToastContainer() {
+    const container = document.createElement('div');
+    container.className = 'toast-container position-fixed bottom-0 end-0 p-3';
+    document.body.appendChild(container);
+    return container;
+}
+
+// Form submission handler
+document.getElementById('vehicleForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(this);
+    const url = isEditMode ? `/admin/edit_vehicle/${currentVehicleId}` : '/admin/add_vehicle';
+    
+    showLoading();
+    
+    fetch(url, {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        hideLoading();
+        if (data.success) {
+            showToast(data.message, 'success');
+            const modal = bootstrap.Modal.getInstance(document.getElementById('vehicleModal'));
+            modal.hide();
+            
+            // Reload page to refresh data
+            setTimeout(() => {
+                window.location.reload();
+            }, 1000);
+        } else {
+            if (data.errors) {
+                showFormErrors(data.errors);
+            } else {
+                showToast(data.message, 'danger');
+            }
+        }
+    })
+    .catch(error => {
+        hideLoading();
+        showToast('Error submitting form', 'danger');
+    });
+});
+
+// Reset form when modal is hidden
+document.getElementById('vehicleModal').addEventListener('hidden.bs.modal', function() {
+    document.getElementById('vehicleForm').reset();
+    clearFormErrors();
+});
+</script>
 {% endblock %}

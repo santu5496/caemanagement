@@ -13,8 +13,9 @@ Preferred communication style: Simple, everyday language.
 ### Frontend Architecture
 - **Template Engine**: Jinja2 templating with Bootstrap 5 dark theme for responsive UI
 - **Static Assets**: Custom CSS for vehicle image handling and hover effects, JavaScript for form enhancements and image galleries
-- **User Interface**: Dual interface design - customer catalog view and admin management dashboard
+- **User Interface**: Dual interface design - customer catalog view and single-page admin dashboard with modal-based CRUD
 - **Responsive Design**: Mobile-optimized layout with adaptive image sizing and touch-friendly controls
+- **Interactive Features**: AJAX-powered single-page CRUD operations with real-time updates and loading states
 
 ### Backend Architecture
 - **Framework**: Flask web framework with modular route organization
@@ -22,6 +23,7 @@ Preferred communication style: Simple, everyday language.
 - **File Management**: Werkzeug for secure file uploads with UUID-based naming to prevent conflicts
 - **Session Management**: Flask sessions for admin authentication state
 - **Data Layer**: In-memory storage using Python dictionaries and classes (MVP approach)
+- **API Design**: RESTful AJAX endpoints for single-page CRUD operations with JSON responses
 
 ### Authentication & Authorization
 - **Admin Authentication**: Simple username/password authentication with password hashing using Werkzeug
