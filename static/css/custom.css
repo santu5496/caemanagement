@@ -1,0 +1,128 @@
+/* Custom styles for the auto dealership website */
+
+.vehicle-image {
+    height: 250px;
+    object-fit: cover;
+    width: 100%;
+}
+
+.vehicle-image-placeholder {
+    height: 250px;
+    background-color: var(--bs-secondary);
+}
+
+.vehicle-detail-image {
+    height: 400px;
+    object-fit: cover;
+}
+
+.vehicle-card {
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.vehicle-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+.price-display {
+    padding: 0.5rem;
+    border-radius: 0.375rem;
+    background-color: rgba(var(--bs-success-rgb), 0.1);
+}
+
+.thumbnail-nav:hover {
+    opacity: 0.8;
+    border-color: var(--bs-primary);
+}
+
+/* Mobile optimizations */
+@media (max-width: 768px) {
+    .vehicle-image {
+        height: 200px;
+    }
+    
+    .vehicle-detail-image {
+        height: 300px;
+    }
+    
+    .container {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+    
+    .btn-group-sm .btn {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.875rem;
+    }
+}
+
+/* Professional styling for admin dashboard */
+.table th {
+    border-top: none;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+}
+
+.badge {
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+/* Loading states and interactions */
+.btn {
+    transition: all 0.2s ease-in-out;
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+}
+
+/* Form styling improvements */
+.form-control:focus, .form-select:focus {
+    border-color: var(--bs-primary);
+    box-shadow: 0 0 0 0.2rem rgba(var(--bs-primary-rgb), 0.25);
+}
+
+/* Card hover effects */
+.card {
+    transition: box-shadow 0.2s ease-in-out;
+}
+
+.card:hover {
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Responsive improvements for very small screens */
+@media (max-width: 576px) {
+    .display-4 {
+        font-size: 2rem;
+    }
+    
+    .lead {
+        font-size: 1rem;
+    }
+    
+    .btn-group .btn {
+        padding: 0.375rem 0.5rem;
+        font-size: 0.8rem;
+    }
+    
+    .table-responsive {
+        font-size: 0.9rem;
+    }
+}
+
+/* Print styles for vehicle details */
+@media print {
+    .navbar, .btn, .card-footer {
+        display: none !important;
+    }
+    
+    .container {
+        max-width: none;
+        padding: 0;
+    }
+}

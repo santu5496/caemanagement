@@ -1,0 +1,187 @@
+{% extends "base.html" %}
+
+{% block title %}{{ vehicle.title }} - Auto Dealership{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Back Navigation -->
+    <div class="row mb-3">
+        <div class="col-12">
+            <a href="{{ url_for('index') }}" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left me-1"></i>Back to Catalog
+            </a>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Image Gallery -->
+        <div class="col-lg-8">
+            {% if vehicle.images %}
+                <div class="card mb-4">
+                    <div class="card-body p-0">
+                        <!-- Main Image Display -->
+                        <div id="vehicleCarousel" class="carousel slide" data-bs-ride="carousel">
+                            <div class="carousel-inner">
+                                {% for image in vehicle.images %}
+                                    <div class="carousel-item {{ 'active' if loop.first else '' }}">
+                                        <img src="{{ url_for('static', filename='uploads/' + image) }}" 
+                                             class="d-block w-100 vehicle-detail-image" alt="{{ vehicle.title }}">
+                                    </div>
+                                {% endfor %}
+                            </div>
+                            
+                            {% if vehicle.images|length > 1 %}
+                                <button class="carousel-control-prev" type="button" data-bs-target="#vehicleCarousel" data-bs-slide="prev">
+                                    <span class="carousel-control-prev-icon"></span>
+                                </button>
+                                <button class="carousel-control-next" type="button" data-bs-target="#vehicleCarousel" data-bs-slide="next">
+                                    <span class="carousel-control-next-icon"></span>
+                                </button>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Thumbnail Navigation -->
+                        {% if vehicle.images|length > 1 %}
+                            <div class="p-3">
+                                <div class="row g-2">
+                                    {% for image in vehicle.images %}
+                                        <div class="col-3">
+                                            <img src="{{ url_for('static', filename='uploads/' + image) }}" 
+                                                 class="img-thumbnail w-100 thumbnail-nav" 
+                                                 data-bs-target="#vehicleCarousel" 
+                                                 data-bs-slide-to="{{ loop.index0 }}"
+                                                 style="cursor: pointer; height: 80px; object-fit: cover;"
+                                                 alt="{{ vehicle.title }}">
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            {% else %}
+                <div class="card mb-4">
+                    <div class="card-body text-center py-5">
+                        <i class="fas fa-car fa-5x text-muted mb-3"></i>
+                        <h5 class="text-muted">No images available</h5>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Vehicle Information -->
+        <div class="col-lg-4">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h4 class="mb-0">{{ vehicle.title }}</h4>
+                    <span class="badge bg-secondary">{{ vehicle.category }}</span>
+                    {% if vehicle.status == 'sold' %}
+                        <span class="badge bg-danger ms-2">SOLD</span>
+                    {% endif %}
+                </div>
+                <div class="card-body">
+                    <!-- Price Display -->
+                    <div class="text-center mb-4">
+                        <h2 class="text-success mb-0">${{ "{:,.0f}".format(vehicle.price) }}</h2>
+                        <small class="text-muted">Asking Price</small>
+                    </div>
+                    
+                    <!-- Vehicle Specifications -->
+                    <h6 class="text-primary mb-3">Specifications</h6>
+                    <div class="row g-3 mb-4">
+                        <div class="col-6">
+                            <div class="text-center p-2 bg-dark rounded">
+                                <div class="text-muted small">Make</div>
+                                <strong>{{ vehicle.make }}</strong>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="text-center p-2 bg-dark rounded">
+                                <div class="text-muted small">Model</div>
+                                <strong>{{ vehicle.model }}</strong>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="text-center p-2 bg-dark rounded">
+                                <div class="text-muted small">Year</div>
+                                <strong>{{ vehicle.year }}</strong>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="text-center p-2 bg-dark rounded">
+                                <div class="text-muted small">Mileage</div>
+                                <strong>{{ "{:,}".format(vehicle.mileage) }} mi</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contact Information -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h6 class="mb-0"><i class="fas fa-phone me-2"></i>Contact Information</h6>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <strong>{{ vehicle.contact_name }}</strong>
+                    </div>
+                    <div class="mb-3">
+                        <a href="tel:{{ vehicle.contact_phone }}" class="btn btn-primary w-100">
+                            <i class="fas fa-phone me-2"></i>Call {{ vehicle.contact_phone }}
+                        </a>
+                    </div>
+                    <div class="text-center">
+                        <small class="text-muted">
+                            <i class="fas fa-clock me-1"></i>
+                            Listed {{ vehicle.created_at[:10] }}
+                        </small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Share Button -->
+            <div class="card">
+                <div class="card-body text-center">
+                    <button class="btn btn-outline-primary w-100" onclick="shareVehicle()">
+                        <i class="fas fa-share me-2"></i>Share This Vehicle
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Vehicle Description -->
+    {% if vehicle.description %}
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h6 class="mb-0"><i class="fas fa-info-circle me-2"></i>Description</h6>
+                    </div>
+                    <div class="card-body">
+                        <p class="mb-0">{{ vehicle.description }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+</div>
+
+<script>
+function shareVehicle() {
+    if (navigator.share) {
+        navigator.share({
+            title: '{{ vehicle.title }}',
+            text: '{{ vehicle.year }} {{ vehicle.make }} {{ vehicle.model }} - ${{ "{:,.0f}".format(vehicle.price) }}',
+            url: window.location.href
+        });
+    } else {
+        // Fallback: copy URL to clipboard
+        navigator.clipboard.writeText(window.location.href).then(function() {
+            alert('Link copied to clipboard!');
+        });
+    }
+}
+</script>
+{% endblock %}

@@ -1,0 +1,158 @@
+{% extends "base.html" %}
+
+{% block title %}Vehicle Catalog - Auto Dealership{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Hero Section -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="bg-dark p-4 rounded">
+                <h1 class="display-4 text-center mb-3">
+                    <i class="fas fa-car-side me-3"></i>Premium Vehicle Collection
+                </h1>
+                <p class="lead text-center text-muted">
+                    Discover quality pre-owned vehicles with complete transparency and professional service
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Search and Filter Section -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <form method="GET" class="row g-3">
+                        <div class="col-md-6">
+                            <label for="search" class="form-label">Search Vehicles</label>
+                            <input type="text" class="form-control" id="search" name="search" 
+                                   value="{{ search }}" placeholder="Search by make, model, or title...">
+                        </div>
+                        <div class="col-md-4">
+                            <label for="category" class="form-label">Category</label>
+                            <select class="form-select" id="category" name="category">
+                                <option value="all" {{ 'selected' if current_category == 'all' else '' }}>All Categories</option>
+                                {% for cat in categories %}
+                                    <option value="{{ cat }}" {{ 'selected' if current_category == cat else '' }}>{{ cat }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label">&nbsp;</label>
+                            <button type="submit" class="btn btn-primary d-block w-100">
+                                <i class="fas fa-search me-1"></i>Search
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Results Summary -->
+    <div class="row mb-3">
+        <div class="col-12">
+            <h3>
+                {% if search %}
+                    Search Results for "{{ search }}"
+                {% elif current_category != 'all' %}
+                    {{ current_category }}
+                {% else %}
+                    All Available Vehicles
+                {% endif %}
+                <span class="badge bg-secondary">{{ vehicles|length }} found</span>
+            </h3>
+        </div>
+    </div>
+
+    <!-- Vehicle Grid -->
+    {% if vehicles %}
+        <div class="row g-4">
+            {% for vehicle in vehicles %}
+                <div class="col-lg-4 col-md-6">
+                    <div class="card h-100 vehicle-card">
+                        <!-- Vehicle Image -->
+                        <div class="position-relative">
+                            {% if vehicle.images %}
+                                <img src="{{ url_for('static', filename='uploads/' + vehicle.images[0]) }}" 
+                                     class="card-img-top vehicle-image" alt="{{ vehicle.title }}">
+                            {% else %}
+                                <div class="card-img-top vehicle-image-placeholder d-flex align-items-center justify-content-center">
+                                    <i class="fas fa-car fa-3x text-muted"></i>
+                                </div>
+                            {% endif %}
+                            
+                            <!-- Category Badge -->
+                            <span class="position-absolute top-0 start-0 m-2 badge bg-primary">
+                                {{ vehicle.category }}
+                            </span>
+                            
+                            <!-- Status Badge -->
+                            {% if vehicle.status == 'sold' %}
+                                <span class="position-absolute top-0 end-0 m-2 badge bg-danger">
+                                    SOLD
+                                </span>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="card-body">
+                            <h5 class="card-title">{{ vehicle.title }}</h5>
+                            <p class="text-muted mb-2">{{ vehicle.year }} {{ vehicle.make }} {{ vehicle.model }}</p>
+                            
+                            <div class="row text-center mb-3">
+                                <div class="col-6">
+                                    <div class="price-display">
+                                        <strong class="text-success fs-4">${{ "{:,.0f}".format(vehicle.price) }}</strong>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <small class="text-muted">Mileage</small><br>
+                                    <strong>{{ "{:,}".format(vehicle.mileage) }} mi</strong>
+                                </div>
+                            </div>
+                            
+                            {% if vehicle.description %}
+                                <p class="card-text text-muted small">
+                                    {{ vehicle.description[:100] }}{{ '...' if vehicle.description|length > 100 else '' }}
+                                </p>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="card-footer">
+                            <div class="d-grid">
+                                <a href="{{ url_for('vehicle_detail', vehicle_id=vehicle.id) }}" 
+                                   class="btn btn-outline-primary">
+                                    <i class="fas fa-eye me-1"></i>View Details
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <!-- Empty State -->
+        <div class="row">
+            <div class="col-12">
+                <div class="text-center py-5">
+                    <i class="fas fa-search fa-3x text-muted mb-3"></i>
+                    <h3 class="text-muted">No vehicles found</h3>
+                    <p class="text-muted">
+                        {% if search %}
+                            Try adjusting your search criteria or browse all categories.
+                        {% else %}
+                            Check back later for new vehicle listings.
+                        {% endif %}
+                    </p>
+                    {% if search or current_category != 'all' %}
+                        <a href="{{ url_for('index') }}" class="btn btn-outline-primary">
+                            <i class="fas fa-list me-1"></i>View All Vehicles
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

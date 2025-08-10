@@ -1,0 +1,148 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard - Auto Dealership{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <h1><i class="fas fa-tachometer-alt me-2"></i>Admin Dashboard</h1>
+                <a href="{{ url_for('add_vehicle_route') }}" class="btn btn-primary">
+                    <i class="fas fa-plus me-1"></i>Add New Vehicle
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h5 class="card-title">Total Vehicles</h5>
+                    <h2 class="text-primary">{{ vehicles|length }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h5 class="card-title">Available</h5>
+                    <h2 class="text-success">{{ vehicles|selectattr("status", "equalto", "available")|list|length }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h5 class="card-title">Sold</h5>
+                    <h2 class="text-danger">{{ vehicles|selectattr("status", "equalto", "sold")|list|length }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h5 class="card-title">Categories</h5>
+                    <h2 class="text-info">3</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Vehicles Management Table -->
+    <div class="card">
+        <div class="card-header">
+            <h5 class="mb-0"><i class="fas fa-car me-2"></i>Vehicle Management</h5>
+        </div>
+        <div class="card-body">
+            {% if vehicles %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Image</th>
+                                <th>Vehicle</th>
+                                <th>Category</th>
+                                <th>Year</th>
+                                <th>Price</th>
+                                <th>Mileage</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for vehicle in vehicles %}
+                                <tr>
+                                    <td>
+                                        {% if vehicle.images %}
+                                            <img src="{{ url_for('static', filename='uploads/' + vehicle.images[0]) }}" 
+                                                 class="img-thumbnail" style="width: 60px; height: 45px; object-fit: cover;" 
+                                                 alt="{{ vehicle.title }}">
+                                        {% else %}
+                                            <div class="bg-secondary d-flex align-items-center justify-content-center" 
+                                                 style="width: 60px; height: 45px;">
+                                                <i class="fas fa-car text-muted"></i>
+                                            </div>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <strong>{{ vehicle.title }}</strong><br>
+                                        <small class="text-muted">{{ vehicle.make }} {{ vehicle.model }}</small>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-secondary">{{ vehicle.category }}</span>
+                                    </td>
+                                    <td>{{ vehicle.year }}</td>
+                                    <td class="text-success">
+                                        <strong>${{ "{:,.0f}".format(vehicle.price) }}</strong>
+                                    </td>
+                                    <td>{{ "{:,}".format(vehicle.mileage) }} mi</td>
+                                    <td>
+                                        {% if vehicle.status == 'available' %}
+                                            <span class="badge bg-success">Available</span>
+                                        {% else %}
+                                            <span class="badge bg-danger">Sold</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <div class="btn-group btn-group-sm" role="group">
+                                            <a href="{{ url_for('vehicle_detail', vehicle_id=vehicle.id) }}" 
+                                               class="btn btn-outline-info" title="View">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                            <a href="{{ url_for('edit_vehicle', vehicle_id=vehicle.id) }}" 
+                                               class="btn btn-outline-warning" title="Edit">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <a href="{{ url_for('toggle_vehicle_status', vehicle_id=vehicle.id) }}" 
+                                               class="btn btn-outline-secondary" title="Toggle Status">
+                                                <i class="fas fa-exchange-alt"></i>
+                                            </a>
+                                            <a href="{{ url_for('delete_vehicle_route', vehicle_id=vehicle.id) }}" 
+                                               class="btn btn-outline-danger" title="Delete"
+                                               onclick="return confirm('Are you sure you want to delete this vehicle?')">
+                                                <i class="fas fa-trash"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="text-center py-4">
+                    <i class="fas fa-car fa-3x text-muted mb-3"></i>
+                    <h4 class="text-muted">No vehicles listed yet</h4>
+                    <p class="text-muted">Start by adding your first vehicle to the inventory.</p>
+                    <a href="{{ url_for('add_vehicle_route') }}" class="btn btn-primary">
+                        <i class="fas fa-plus me-1"></i>Add First Vehicle
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
