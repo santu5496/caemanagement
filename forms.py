@@ -55,15 +55,15 @@ class VehicleForm(FlaskForm):
     registration_number = StringField('Registration Number', validators=[Optional(), Length(max=50)])
     vin_number = StringField('VIN Number (17 characters)', validators=[Optional(), Length(min=17, max=17)])
     
-    # Additional Features & Condition
-    exterior_color = StringField('Exterior Color', validators=[Optional(), Length(max=30)])
-    interior_color = StringField('Interior Color', validators=[Optional(), Length(max=30)])
-    features = TextAreaField('Features (comma-separated)', validators=[Optional(), Length(max=1000)])
-    condition_rating = SelectField('Condition Rating', 
+    # Additional Features & Condition (Optional)
+    exterior_color = StringField('Exterior Color (Optional)', validators=[Optional(), Length(max=30)])
+    interior_color = StringField('Interior Color (Optional)', validators=[Optional(), Length(max=30)])
+    features = TextAreaField('Features (Optional - comma-separated)', validators=[Optional(), Length(max=1000)])
+    condition_rating = SelectField('Condition Rating (Optional)', 
                                   choices=[('', 'Select Condition'), ('Excellent', 'Excellent'), ('Good', 'Good'), 
                                           ('Fair', 'Fair'), ('Poor', 'Poor')],
                                   validators=[Optional()])
-    warranty_info = TextAreaField('Warranty Information', validators=[Optional(), Length(max=500)])
+    warranty_info = TextAreaField('Warranty Information (Optional)', validators=[Optional(), Length(max=500)])
     
     # Contact & Images
     contact_name = StringField('Contact Name', validators=[DataRequired(), Length(max=100)])
