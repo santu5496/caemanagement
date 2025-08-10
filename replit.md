@@ -33,10 +33,11 @@ Preferred communication style: Simple, everyday language.
 - **Security**: CSRF protection on all forms, secure filename handling for uploads
 
 ### Data Storage Solution
-- **Current Implementation**: In-memory storage using Python dictionaries and Vehicle class instances
-- **Data Persistence**: No persistent storage (data lost on restart) - designed for MVP/demonstration
-- **Data Structure**: Vehicle model with comprehensive attributes including pricing, specifications, contact info, and image references
-- **Admin Users**: Hardcoded admin credentials stored in memory with password hashing
+- **Current Implementation**: PostgreSQL database with Flask-SQLAlchemy ORM for production-ready persistence
+- **Data Persistence**: Full database persistence with proper schema and relationships
+- **Data Structure**: SQLAlchemy models with comprehensive attributes including pricing, specifications, contact info, and image references
+- **Admin Users**: Database-stored admin credentials with secure password hashing
+- **Database Migration**: Migrated from in-memory storage to PostgreSQL for Replit compatibility and data safety
 
 ### File Upload System
 - **Image Storage**: Local file system in static/uploads directory
