@@ -16,7 +16,7 @@ Preferred communication style: Simple, everyday language.
 - **Static Assets**: Custom CSS for marketplace styling, listing cards, favorite buttons, and mobile enhancements
 - **User Interface**: Dual interface - modern customer marketplace and single-page seller dashboard with modal-based CRUD
 - **Responsive Design**: Mobile-first design with touch-optimized controls, floating filter button, and adaptive layouts
-- **Interactive Features**: AJAX-powered CRUD operations, favorite toggles, breadcrumb navigation, and smooth animations
+- **Interactive Features**: AJAX-powered CRUD operations, favorite toggles, breadcrumb navigation, smooth animations, and tabbed comprehensive vehicle detail forms
 
 ### Backend Architecture
 - **Framework**: Flask web framework with modular route organization
@@ -35,9 +35,14 @@ Preferred communication style: Simple, everyday language.
 ### Data Storage Solution
 - **Current Implementation**: PostgreSQL database with Flask-SQLAlchemy ORM for production-ready persistence
 - **Data Persistence**: Full database persistence with proper schema and relationships
-- **Data Structure**: SQLAlchemy models with comprehensive attributes including pricing, specifications, contact info, and image references
+- **Data Structure**: SQLAlchemy models with comprehensive vehicle details including:
+  - Basic info (pricing, specifications, contact info, images)
+  - Engine & Performance (fuel type, transmission, horsepower, drivetrain)
+  - Ownership & History (number of owners, previous owner contact, odometer, accident history, service records)
+  - Insurance & Documentation (insurance company, policy number, VIN, registration)
+  - Features & Condition (colors, features list, condition rating, warranty info)
 - **Admin Users**: Database-stored admin credentials with secure password hashing
-- **Database Migration**: Migrated from in-memory storage to PostgreSQL for Replit compatibility and data safety
+- **Database Migration**: Enhanced with comprehensive vehicle detail fields for professional dealership management
 
 ### File Upload System
 - **Image Storage**: Local file system in static/uploads directory

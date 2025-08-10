@@ -121,7 +121,7 @@ def add_vehicle_route():
             # Save uploaded images
             image_filenames = save_uploaded_files(form.images.data)
             
-            # Create vehicle
+            # Create vehicle with comprehensive data
             vehicle = Vehicle(
                 title=form.title.data,
                 category=form.category.data,
@@ -133,7 +133,34 @@ def add_vehicle_route():
                 description=form.description.data,
                 contact_name=form.contact_name.data,
                 contact_phone=form.contact_phone.data,
-                images=image_filenames
+                images=image_filenames,
+                # Engine & Performance
+                fuel_type=form.fuel_type.data or None,
+                transmission=form.transmission.data or None,
+                engine_size=form.engine_size.data or None,
+                horsepower=form.horsepower.data or None,
+                fuel_economy=form.fuel_economy.data or None,
+                drivetrain=form.drivetrain.data or None,
+                # Ownership & History
+                number_of_owners=form.number_of_owners.data or None,
+                previous_owner_name=form.previous_owner_name.data or None,
+                previous_owner_phone=form.previous_owner_phone.data or None,
+                previous_owner_email=form.previous_owner_email.data or None,
+                odometer_reading=form.odometer_reading.data or None,
+                accident_history=form.accident_history.data or None,
+                service_records=form.service_records.data or None,
+                # Insurance & Documentation
+                insurance_company=form.insurance_company.data or None,
+                insurance_policy_number=form.insurance_policy_number.data or None,
+                insurance_expiry=form.insurance_expiry.data or None,
+                registration_number=form.registration_number.data or None,
+                vin_number=form.vin_number.data or None,
+                # Features & Condition
+                exterior_color=form.exterior_color.data or None,
+                interior_color=form.interior_color.data or None,
+                features=form.features.data or None,
+                condition_rating=form.condition_rating.data or None,
+                warranty_info=form.warranty_info.data or None
             )
             
             add_vehicle(vehicle)
@@ -165,7 +192,7 @@ def edit_vehicle(vehicle_id):
             # Handle new image uploads
             new_images = save_uploaded_files(form.images.data)
             
-            # Update vehicle
+            # Update vehicle with comprehensive data
             update_data = {
                 'title': form.title.data,
                 'category': form.category.data,
@@ -177,7 +204,34 @@ def edit_vehicle(vehicle_id):
                 'description': form.description.data,
                 'contact_name': form.contact_name.data,
                 'contact_phone': form.contact_phone.data,
-                'status': form.status.data
+                'status': form.status.data,
+                # Engine & Performance
+                'fuel_type': form.fuel_type.data or None,
+                'transmission': form.transmission.data or None,
+                'engine_size': form.engine_size.data or None,
+                'horsepower': form.horsepower.data or None,
+                'fuel_economy': form.fuel_economy.data or None,
+                'drivetrain': form.drivetrain.data or None,
+                # Ownership & History
+                'number_of_owners': form.number_of_owners.data or None,
+                'previous_owner_name': form.previous_owner_name.data or None,
+                'previous_owner_phone': form.previous_owner_phone.data or None,
+                'previous_owner_email': form.previous_owner_email.data or None,
+                'odometer_reading': form.odometer_reading.data or None,
+                'accident_history': form.accident_history.data or None,
+                'service_records': form.service_records.data or None,
+                # Insurance & Documentation
+                'insurance_company': form.insurance_company.data or None,
+                'insurance_policy_number': form.insurance_policy_number.data or None,
+                'insurance_expiry': form.insurance_expiry.data or None,
+                'registration_number': form.registration_number.data or None,
+                'vin_number': form.vin_number.data or None,
+                # Features & Condition
+                'exterior_color': form.exterior_color.data or None,
+                'interior_color': form.interior_color.data or None,
+                'features': form.features.data or None,
+                'condition_rating': form.condition_rating.data or None,
+                'warranty_info': form.warranty_info.data or None
             }
             
             # Add new images to existing ones

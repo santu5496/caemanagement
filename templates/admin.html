@@ -160,8 +160,31 @@
                 <div class="modal-body">
                     <div id="form-errors" class="alert alert-danger" style="display: none;"></div>
                     
-                    <!-- Basic Information -->
-                    <h6 class="text-primary mb-3">Basic Information</h6>
+                    <!-- Tabbed Interface for Better Organization -->
+                    <ul class="nav nav-tabs" id="vehicleTab" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="basic-tab" data-bs-toggle="tab" data-bs-target="#basic" type="button" role="tab">Basic Info</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="engine-tab" data-bs-toggle="tab" data-bs-target="#engine" type="button" role="tab">Engine & Performance</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="ownership-tab" data-bs-toggle="tab" data-bs-target="#ownership" type="button" role="tab">Ownership & History</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="insurance-tab" data-bs-toggle="tab" data-bs-target="#insurance" type="button" role="tab">Insurance & Docs</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="features-tab" data-bs-toggle="tab" data-bs-target="#features" type="button" role="tab">Features & Condition</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#contact" type="button" role="tab">Contact & Images</button>
+                        </li>
+                    </ul>
+                    
+                    <div class="tab-content mt-3" id="vehicleTabContent">
+                        <!-- Basic Information Tab -->
+                        <div class="tab-pane fade show active" id="basic" role="tabpanel" aria-labelledby="basic-tab">
                     
                     <div class="row mb-3">
                         <div class="col-md-8">
@@ -219,41 +242,196 @@
                         <div class="invalid-feedback"></div>
                     </div>
                     
-                    <div class="mb-3" id="status-field" style="display: none;">
-                        {{ form.status.label(class="form-label") }}
-                        {{ form.status(class="form-select", id="modal-status") }}
-                        <div class="invalid-feedback"></div>
-                    </div>
-                    
-                    <!-- Contact Information -->
-                    <h6 class="text-primary mb-3">Contact Information</h6>
-                    
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            {{ form.contact_name.label(class="form-label") }}
-                            {{ form.contact_name(class="form-control", id="modal-contact-name") }}
-                            <div class="invalid-feedback"></div>
+                            <div class="mb-3" id="status-field" style="display: none;">
+                                {{ form.status.label(class="form-label") }}
+                                {{ form.status(class="form-select", id="modal-status") }}
+                                <div class="invalid-feedback"></div>
+                            </div>
                         </div>
-                        <div class="col-md-6">
-                            {{ form.contact_phone.label(class="form-label") }}
-                            {{ form.contact_phone(class="form-control", id="modal-contact-phone") }}
-                            <div class="invalid-feedback"></div>
+                        
+                        <!-- Engine & Performance Tab -->
+                        <div class="tab-pane fade" id="engine" role="tabpanel" aria-labelledby="engine-tab">
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    {{ form.fuel_type.label(class="form-label") }}
+                                    {{ form.fuel_type(class="form-select", id="modal-fuel-type") }}
+                                    <div class="invalid-feedback"></div>
+                                </div>
+                                <div class="col-md-6">
+                                    {{ form.transmission.label(class="form-label") }}
+                                    {{ form.transmission(class="form-select", id="modal-transmission") }}
+                                    <div class="invalid-feedback"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="row mb-3">
+                                <div class="col-md-4">
+                                    {{ form.engine_size.label(class="form-label") }}
+                                    {{ form.engine_size(class="form-control", id="modal-engine-size") }}
+                                    <div class="invalid-feedback"></div>
+                                </div>
+                                <div class="col-md-4">
+                                    {{ form.horsepower.label(class="form-label") }}
+                                    {{ form.horsepower(class="form-control", id="modal-horsepower") }}
+                                    <div class="invalid-feedback"></div>
+                                </div>
+                                <div class="col-md-4">
+                                    {{ form.drivetrain.label(class="form-label") }}
+                                    {{ form.drivetrain(class="form-select", id="modal-drivetrain") }}
+                                    <div class="invalid-feedback"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                {{ form.fuel_economy.label(class="form-label") }}
+                                {{ form.fuel_economy(class="form-control", id="modal-fuel-economy") }}
+                                <div class="invalid-feedback"></div>
+                            </div>
                         </div>
-                    </div>
-                    
-                    <!-- Images -->
-                    <h6 class="text-primary mb-3">Vehicle Images</h6>
-                    
-                    <div class="mb-3">
-                        {{ form.images.label(class="form-label") }}
-                        {{ form.images(class="form-control", multiple=True, accept="image/*", id="modal-images") }}
-                        <div class="invalid-feedback"></div>
-                        <div class="form-text">Select multiple images to showcase your vehicle.</div>
-                    </div>
-                    
-                    <div id="current-images" style="display: none;">
-                        <h6 class="text-muted mb-2">Current Images</h6>
-                        <div id="current-images-container" class="row g-2 mb-3"></div>
+                        
+                        <!-- Ownership & History Tab -->
+                        <div class="tab-pane fade" id="ownership" role="tabpanel" aria-labelledby="ownership-tab">
+                            <div class="row mb-3">
+                                <div class="col-md-4">
+                                    {{ form.number_of_owners.label(class="form-label") }}
+                                    {{ form.number_of_owners(class="form-control", id="modal-number-of-owners") }}
+                                    <div class="invalid-feedback"></div>
+                                </div>
+                                <div class="col-md-4">
+                                    {{ form.odometer_reading.label(class="form-label") }}
+                                    {{ form.odometer_reading(class="form-control", id="modal-odometer-reading") }}
+                                    <div class="invalid-feedback"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="row mb-3">
+                                <div class="col-md-4">
+                                    {{ form.previous_owner_name.label(class="form-label") }}
+                                    {{ form.previous_owner_name(class="form-control", id="modal-previous-owner-name") }}
+                                    <div class="invalid-feedback"></div>
+                                </div>
+                                <div class="col-md-4">
+                                    {{ form.previous_owner_phone.label(class="form-label") }}
+                                    {{ form.previous_owner_phone(class="form-control", id="modal-previous-owner-phone") }}
+                                    <div class="invalid-feedback"></div>
+                                </div>
+                                <div class="col-md-4">
+                                    {{ form.previous_owner_email.label(class="form-label") }}
+                                    {{ form.previous_owner_email(class="form-control", id="modal-previous-owner-email") }}
+                                    <div class="invalid-feedback"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                {{ form.accident_history.label(class="form-label") }}
+                                {{ form.accident_history(class="form-control", rows="3", id="modal-accident-history") }}
+                                <div class="invalid-feedback"></div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                {{ form.service_records.label(class="form-label") }}
+                                {{ form.service_records(class="form-control", rows="3", id="modal-service-records") }}
+                                <div class="invalid-feedback"></div>
+                            </div>
+                        </div>
+                        
+                        <!-- Insurance & Documentation Tab -->
+                        <div class="tab-pane fade" id="insurance" role="tabpanel" aria-labelledby="insurance-tab">
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    {{ form.insurance_company.label(class="form-label") }}
+                                    {{ form.insurance_company(class="form-control", id="modal-insurance-company") }}
+                                    <div class="invalid-feedback"></div>
+                                </div>
+                                <div class="col-md-6">
+                                    {{ form.insurance_policy_number.label(class="form-label") }}
+                                    {{ form.insurance_policy_number(class="form-control", id="modal-insurance-policy-number") }}
+                                    <div class="invalid-feedback"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="row mb-3">
+                                <div class="col-md-4">
+                                    {{ form.insurance_expiry.label(class="form-label") }}
+                                    {{ form.insurance_expiry(class="form-control", id="modal-insurance-expiry") }}
+                                    <div class="invalid-feedback"></div>
+                                </div>
+                                <div class="col-md-4">
+                                    {{ form.registration_number.label(class="form-label") }}
+                                    {{ form.registration_number(class="form-control", id="modal-registration-number") }}
+                                    <div class="invalid-feedback"></div>
+                                </div>
+                                <div class="col-md-4">
+                                    {{ form.vin_number.label(class="form-label") }}
+                                    {{ form.vin_number(class="form-control", id="modal-vin-number") }}
+                                    <div class="invalid-feedback"></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Features & Condition Tab -->
+                        <div class="tab-pane fade" id="features" role="tabpanel" aria-labelledby="features-tab">
+                            <div class="row mb-3">
+                                <div class="col-md-4">
+                                    {{ form.exterior_color.label(class="form-label") }}
+                                    {{ form.exterior_color(class="form-control", id="modal-exterior-color") }}
+                                    <div class="invalid-feedback"></div>
+                                </div>
+                                <div class="col-md-4">
+                                    {{ form.interior_color.label(class="form-label") }}
+                                    {{ form.interior_color(class="form-control", id="modal-interior-color") }}
+                                    <div class="invalid-feedback"></div>
+                                </div>
+                                <div class="col-md-4">
+                                    {{ form.condition_rating.label(class="form-label") }}
+                                    {{ form.condition_rating(class="form-select", id="modal-condition-rating") }}
+                                    <div class="invalid-feedback"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                {{ form.features.label(class="form-label") }}
+                                {{ form.features(class="form-control", rows="3", id="modal-features") }}
+                                <div class="invalid-feedback"></div>
+                                <div class="form-text">List vehicle features separated by commas (e.g., Sunroof, Leather Seats, Navigation System)</div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                {{ form.warranty_info.label(class="form-label") }}
+                                {{ form.warranty_info(class="form-control", rows="2", id="modal-warranty-info") }}
+                                <div class="invalid-feedback"></div>
+                            </div>
+                        </div>
+                        
+                        <!-- Contact & Images Tab -->
+                        <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    {{ form.contact_name.label(class="form-label") }}
+                                    {{ form.contact_name(class="form-control", id="modal-contact-name") }}
+                                    <div class="invalid-feedback"></div>
+                                </div>
+                                <div class="col-md-6">
+                                    {{ form.contact_phone.label(class="form-label") }}
+                                    {{ form.contact_phone(class="form-control", id="modal-contact-phone") }}
+                                    <div class="invalid-feedback"></div>
+                                </div>
+                            </div>
+                            
+                            <h6 class="text-primary mb-3">Vehicle Images</h6>
+                            
+                            <div class="mb-3">
+                                {{ form.images.label(class="form-label") }}
+                                {{ form.images(class="form-control", multiple=True, accept="image/*", id="modal-images") }}
+                                <div class="invalid-feedback"></div>
+                                <div class="form-text">Select multiple images to showcase your vehicle.</div>
+                            </div>
+                            
+                            <div id="current-images" style="display: none;">
+                                <h6 class="text-muted mb-2">Current Images</h6>
+                                <div id="current-images-container" class="row g-2 mb-3"></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -319,6 +497,7 @@ function openEditModal(vehicleId) {
 }
 
 function populateForm(vehicle) {
+    // Basic Information
     document.getElementById('modal-title').value = vehicle.title;
     document.getElementById('modal-category').value = vehicle.category;
     document.getElementById('modal-make').value = vehicle.make;
@@ -327,9 +506,42 @@ function populateForm(vehicle) {
     document.getElementById('modal-price').value = vehicle.price;
     document.getElementById('modal-mileage').value = vehicle.mileage;
     document.getElementById('modal-description').value = vehicle.description || '';
+    document.getElementById('modal-status').value = vehicle.status;
+    
+    // Engine & Performance
+    document.getElementById('modal-fuel-type').value = vehicle.fuel_type || '';
+    document.getElementById('modal-transmission').value = vehicle.transmission || '';
+    document.getElementById('modal-engine-size').value = vehicle.engine_size || '';
+    document.getElementById('modal-horsepower').value = vehicle.horsepower || '';
+    document.getElementById('modal-fuel-economy').value = vehicle.fuel_economy || '';
+    document.getElementById('modal-drivetrain').value = vehicle.drivetrain || '';
+    
+    // Ownership & History
+    document.getElementById('modal-number-of-owners').value = vehicle.number_of_owners || '';
+    document.getElementById('modal-previous-owner-name').value = vehicle.previous_owner_name || '';
+    document.getElementById('modal-previous-owner-phone').value = vehicle.previous_owner_phone || '';
+    document.getElementById('modal-previous-owner-email').value = vehicle.previous_owner_email || '';
+    document.getElementById('modal-odometer-reading').value = vehicle.odometer_reading || '';
+    document.getElementById('modal-accident-history').value = vehicle.accident_history || '';
+    document.getElementById('modal-service-records').value = vehicle.service_records || '';
+    
+    // Insurance & Documentation
+    document.getElementById('modal-insurance-company').value = vehicle.insurance_company || '';
+    document.getElementById('modal-insurance-policy-number').value = vehicle.insurance_policy_number || '';
+    document.getElementById('modal-insurance-expiry').value = vehicle.insurance_expiry || '';
+    document.getElementById('modal-registration-number').value = vehicle.registration_number || '';
+    document.getElementById('modal-vin-number').value = vehicle.vin_number || '';
+    
+    // Features & Condition
+    document.getElementById('modal-exterior-color').value = vehicle.exterior_color || '';
+    document.getElementById('modal-interior-color').value = vehicle.interior_color || '';
+    document.getElementById('modal-features').value = vehicle.features || '';
+    document.getElementById('modal-condition-rating').value = vehicle.condition_rating || '';
+    document.getElementById('modal-warranty-info').value = vehicle.warranty_info || '';
+    
+    // Contact Information
     document.getElementById('modal-contact-name').value = vehicle.contact_name;
     document.getElementById('modal-contact-phone').value = vehicle.contact_phone;
-    document.getElementById('modal-status').value = vehicle.status;
     
     // Show current images
     if (vehicle.images && vehicle.images.length > 0) {

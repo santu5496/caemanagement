@@ -36,11 +36,44 @@ class Vehicle(db.Model):
     contact_phone: Mapped[str] = mapped_column(String(20), nullable=False)
     images: Mapped[str] = mapped_column(Text)  # JSON string of image filenames
     status: Mapped[str] = mapped_column(String(20), default='available')  # available, sold
+    
+    # Comprehensive Vehicle Details
+    # Engine & Performance
+    fuel_type: Mapped[str] = mapped_column(String(20))  # Gasoline, Diesel, Hybrid, Electric
+    transmission: Mapped[str] = mapped_column(String(20))  # Manual, Automatic, CVT
+    engine_size: Mapped[str] = mapped_column(String(20))  # e.g. 2.0L, 3.5L V6
+    horsepower: Mapped[int] = mapped_column(Integer)
+    fuel_economy: Mapped[str] = mapped_column(String(30))  # e.g. 25 city / 32 highway mpg
+    drivetrain: Mapped[str] = mapped_column(String(10))  # FWD, RWD, AWD, 4WD
+    
+    # Ownership & History
+    number_of_owners: Mapped[int] = mapped_column(Integer)
+    previous_owner_name: Mapped[str] = mapped_column(String(100))
+    previous_owner_phone: Mapped[str] = mapped_column(String(20))
+    previous_owner_email: Mapped[str] = mapped_column(String(100))
+    odometer_reading: Mapped[int] = mapped_column(Integer)  # Current odometer in miles/km
+    accident_history: Mapped[str] = mapped_column(Text)  # Description of any accidents
+    service_records: Mapped[str] = mapped_column(Text)  # Service history notes
+    
+    # Insurance & Documentation
+    insurance_company: Mapped[str] = mapped_column(String(100))
+    insurance_policy_number: Mapped[str] = mapped_column(String(50))
+    insurance_expiry: Mapped[str] = mapped_column(String(10))  # MM/DD/YYYY
+    registration_number: Mapped[str] = mapped_column(String(50))
+    vin_number: Mapped[str] = mapped_column(String(17))  # Vehicle Identification Number
+    
+    # Additional Features & Condition
+    exterior_color: Mapped[str] = mapped_column(String(30))
+    interior_color: Mapped[str] = mapped_column(String(30))
+    features: Mapped[str] = mapped_column(Text)  # Comma-separated features
+    condition_rating: Mapped[str] = mapped_column(String(20))  # Excellent, Good, Fair, Poor
+    warranty_info: Mapped[str] = mapped_column(Text)  # Warranty details
+    
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
     updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
     def __init__(self, title, category, make, model, year, price, mileage, 
-                 description, contact_name, contact_phone, images=None):
+                 description, contact_name, contact_phone, images=None, **kwargs):
         self.id = str(uuid.uuid4())
         self.title = title
         self.category = category
@@ -54,6 +87,11 @@ class Vehicle(db.Model):
         self.contact_phone = contact_phone
         self.images = ','.join(images) if images else ''
         self.status = 'available'
+        
+        # Set additional attributes from kwargs
+        for key, value in kwargs.items():
+            if hasattr(self, key):
+                setattr(self, key, value)
 
     @property
     def images_list(self):
@@ -80,6 +118,32 @@ class Vehicle(db.Model):
             'contact_phone': self.contact_phone,
             'images': self.images_list,
             'status': self.status,
+            
+            # Comprehensive details
+            'fuel_type': self.fuel_type,
+            'transmission': self.transmission,
+            'engine_size': self.engine_size,
+            'horsepower': self.horsepower,
+            'fuel_economy': self.fuel_economy,
+            'drivetrain': self.drivetrain,
+            'number_of_owners': self.number_of_owners,
+            'previous_owner_name': self.previous_owner_name,
+            'previous_owner_phone': self.previous_owner_phone,
+            'previous_owner_email': self.previous_owner_email,
+            'odometer_reading': self.odometer_reading,
+            'accident_history': self.accident_history,
+            'service_records': self.service_records,
+            'insurance_company': self.insurance_company,
+            'insurance_policy_number': self.insurance_policy_number,
+            'insurance_expiry': self.insurance_expiry,
+            'registration_number': self.registration_number,
+            'vin_number': self.vin_number,
+            'exterior_color': self.exterior_color,
+            'interior_color': self.interior_color,
+            'features': self.features,
+            'condition_rating': self.condition_rating,
+            'warranty_info': self.warranty_info,
+            
             'created_at': self.created_at.isoformat(),
             'updated_at': self.updated_at.isoformat()
         }
