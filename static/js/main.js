@@ -23,14 +23,14 @@ document.addEventListener('DOMContentLoaded', function() {
     if (searchForm) {
         const searchInput = searchForm.querySelector('input[name="search"]');
         const categorySelect = searchForm.querySelector('select[name="category"]');
-        
+
         // Auto-submit on category change
         if (categorySelect) {
             categorySelect.addEventListener('change', function() {
                 searchForm.submit();
             });
         }
-        
+
         // Search input debouncing
         if (searchInput) {
             let searchTimeout;
@@ -122,7 +122,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (form && form.checkValidity()) {
                 this.disabled = true;
                 this.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Processing...';
-                
+
                 // Re-enable after 5 seconds as fallback
                 setTimeout(() => {
                     this.disabled = false;
@@ -175,13 +175,13 @@ function previewImages(input) {
 // Function to format phone numbers
 function formatPhoneNumber(input) {
     let value = input.value.replace(/\D/g, '');
-    
+
     if (value.length >= 6) {
         value = value.replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3');
     } else if (value.length >= 3) {
         value = value.replace(/(\d{3})(\d{0,3})/, '($1) $2');
     }
-    
+
     input.value = value;
 }
 
@@ -189,7 +189,7 @@ function formatPhoneNumber(input) {
 function shareVehicle() {
     const title = document.querySelector('h4').textContent;
     const url = window.location.href;
-    
+
     if (navigator.share) {
         navigator.share({
             title: title,
@@ -224,7 +224,7 @@ function fallbackShare(url) {
 // Function to show toast notifications
 function showToast(message, type = 'info') {
     const toastContainer = document.querySelector('.toast-container') || createToastContainer();
-    
+
     const toast = document.createElement('div');
     toast.className = `toast align-items-center text-white bg-${type} border-0`;
     toast.setAttribute('role', 'alert');
@@ -234,12 +234,12 @@ function showToast(message, type = 'info') {
             <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
         </div>
     `;
-    
+
     toastContainer.appendChild(toast);
-    
+
     const bsToast = new bootstrap.Toast(toast);
     bsToast.show();
-    
+
     toast.addEventListener('hidden.bs.toast', function() {
         toast.remove();
     });
@@ -275,9 +275,9 @@ function addBackToTop() {
     backToTop.style.display = 'none';
     backToTop.style.zIndex = '1050';
     backToTop.setAttribute('title', 'Back to top');
-    
+
     document.body.appendChild(backToTop);
-    
+
     window.addEventListener('scroll', function() {
         if (window.pageYOffset > 300) {
             backToTop.style.display = 'block';
@@ -285,7 +285,7 @@ function addBackToTop() {
             backToTop.style.display = 'none';
         }
     });
-    
+
     backToTop.addEventListener('click', function() {
         window.scrollTo({
             top: 0,

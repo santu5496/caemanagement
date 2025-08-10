@@ -14,7 +14,7 @@ def save_uploaded_files(files):
     filenames = []
     # Limit to maximum 6 images
     limited_files = files[:6] if files else []
-    
+
     for file in limited_files:
         if file and file.filename and allowed_file(file.filename):
             # Generate unique filename
@@ -29,20 +29,20 @@ def index():
     """Customer-facing catalog page"""
     category = request.args.get('category', 'all')
     search = request.args.get('search', '')
-    
+
     # Get available vehicles
     if category == 'all':
         vehicles = get_available_vehicles()
     else:
         vehicles = [v for v in get_available_vehicles() if v.category == category]
-    
+
     # Simple search filter
     if search:
         vehicles = [v for v in vehicles if 
                    search.lower() in v.title.lower() or 
                    search.lower() in v.make.lower() or 
                    search.lower() in v.model.lower()]
-    
+
     categories = ['Cars', 'Trucks', 'Commercial Vehicles']
     return render_template('index.html', vehicles=vehicles, categories=categories, 
                          current_category=category, search=search)
@@ -60,30 +60,30 @@ def vehicle_detail(vehicle_id):
 def admin_login():
     """Admin login page"""
     if 'admin_logged_in' in session:
-        return redirect(url_for('admin_dashboard'))
-    
+        return redirect(url_for('index'))
+
     form = LoginForm()
     if request.method == 'POST':
         # Check for direct form submission without CSRF validation for demo purposes
         username = request.form.get('username')
         password = request.form.get('password')
-        
+
         if username and password and verify_admin(username, password):
             session['admin_logged_in'] = True
             session['admin_username'] = username
             flash('Logged in successfully', 'success')
-            return redirect(url_for('admin_dashboard'))
+            return redirect(url_for('index'))
         elif form.validate_on_submit():
             if verify_admin(form.username.data, form.password.data):
                 session['admin_logged_in'] = True
                 session['admin_username'] = form.username.data
                 flash('Logged in successfully', 'success')
-                return redirect(url_for('admin_dashboard'))
+                return redirect(url_for('index'))
             else:
                 flash('Invalid username or password', 'error')
         else:
             flash('Invalid username or password', 'error')
-    
+
     return render_template('admin_login.html', form=form)
 
 @app.route('/admin/logout')
@@ -99,7 +99,7 @@ def admin_dashboard():
     """Admin dashboard with single-page CRUD"""
     if 'admin_logged_in' not in session:
         return redirect(url_for('admin_login'))
-    
+
     vehicles = get_all_vehicles()
     form = VehicleForm()  # Form for modal dialogs
     return render_template('admin.html', vehicles=vehicles, form=form)
@@ -118,17 +118,17 @@ def add_vehicle_route():
     # Temporarily bypass authentication for testing
     # if 'admin_logged_in' not in session:
     #     return jsonify({'success': False, 'message': 'Not authenticated'}), 401
-    
+
     form = VehicleForm()
     print(f"DEBUG - Form submission received. Title: {form.title.data}")
     print(f"DEBUG - Form validation passed: {form.validate_on_submit()}")
     print(f"DEBUG - Form errors: {form.errors}")
-    
+
     if form.validate_on_submit():
         try:
             # Save uploaded images
             image_filenames = save_uploaded_files(form.images.data)
-            
+
             # Create vehicle with comprehensive data
             vehicle = Vehicle(
                 title=form.title.data,
@@ -170,14 +170,14 @@ def add_vehicle_route():
                 condition_rating=form.condition_rating.data or None,
                 warranty_info=form.warranty_info.data or None
             )
-            
+
             db.session.add(vehicle)
             db.session.commit()
             return jsonify({'success': True, 'message': 'Vehicle added successfully', 'vehicle': vehicle.to_dict()})
-            
+
         except Exception as e:
             return jsonify({'success': False, 'message': f'Error adding vehicle: {str(e)}'}), 500
-    
+
     # Return validation errors
     errors = {}
     for field, error_list in form.errors.items():
@@ -190,18 +190,18 @@ def edit_vehicle(vehicle_id):
     # Temporarily bypass authentication for testing
     # if 'admin_logged_in' not in session:
     #     return jsonify({'success': False, 'message': 'Not authenticated'}), 401
-    
+
     vehicle = get_vehicle(vehicle_id)
     if not vehicle:
         return jsonify({'success': False, 'message': 'Vehicle not found'}), 404
-    
+
     form = VehicleForm()
-    
+
     if form.validate_on_submit():
         try:
             # Handle new image uploads
             new_images = save_uploaded_files(form.images.data)
-            
+
             # Update vehicle with comprehensive data
             update_data = {
                 'title': form.title.data,
@@ -243,18 +243,18 @@ def edit_vehicle(vehicle_id):
                 'condition_rating': form.condition_rating.data or None,
                 'warranty_info': form.warranty_info.data or None
             }
-            
+
             # Add new images to existing ones
             if new_images:
                 update_data['images'] = vehicle.images_list + new_images
-            
+
             vehicle.update_from_dict(**update_data)
             db.session.commit()
             return jsonify({'success': True, 'message': 'Vehicle updated successfully', 'vehicle': vehicle.to_dict()})
-            
+
         except Exception as e:
             return jsonify({'success': False, 'message': f'Error updating vehicle: {str(e)}'}), 500
-    
+
     # Return validation errors
     errors = {}
     for field, error_list in form.errors.items():
@@ -266,11 +266,11 @@ def get_vehicle_data(vehicle_id):
     """Get vehicle data for editing"""
     if 'admin_logged_in' not in session:
         return jsonify({'success': False, 'message': 'Not authenticated'}), 401
-    
+
     vehicle = get_vehicle(vehicle_id)
     if not vehicle:
         return jsonify({'success': False, 'message': 'Vehicle not found'}), 404
-    
+
     return jsonify({'success': True, 'vehicle': vehicle.to_dict()})
 
 @app.route('/admin/delete_vehicle/<vehicle_id>', methods=['POST'])
@@ -278,7 +278,7 @@ def delete_vehicle_route(vehicle_id):
     """Delete vehicle via AJAX"""
     if 'admin_logged_in' not in session:
         return jsonify({'success': False, 'message': 'Not authenticated'}), 401
-    
+
     if delete_vehicle(vehicle_id):
         return jsonify({'success': True, 'message': 'Vehicle deleted successfully'})
     else:
@@ -289,7 +289,7 @@ def toggle_vehicle_status(vehicle_id):
     """Toggle vehicle status between available and sold via AJAX"""
     if 'admin_logged_in' not in session:
         return jsonify({'success': False, 'message': 'Not authenticated'}), 401
-    
+
     vehicle = get_vehicle(vehicle_id)
     if vehicle:
         new_status = 'sold' if vehicle.status == 'available' else 'available'
