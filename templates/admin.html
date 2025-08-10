@@ -348,7 +348,8 @@ function populateForm(vehicle) {
 }
 
 function clearFormErrors() {
-    document.getElementById('form-errors').style.display = 'none';
+    const formErrors = document.getElementById('form-errors');
+    if (formErrors) formErrors.style.display = 'none';
     document.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
     document.querySelectorAll('.invalid-feedback').forEach(el => el.textContent = '');
 }
@@ -369,8 +370,10 @@ function showFormErrors(errors) {
     
     if (errorMessages.length > 0) {
         const errorDiv = document.getElementById('form-errors');
-        errorDiv.innerHTML = errorMessages.join('<br>');
-        errorDiv.style.display = 'block';
+        if (errorDiv) {
+            errorDiv.innerHTML = errorMessages.join('<br>');
+            errorDiv.style.display = 'block';
+        }
     }
 }
 
