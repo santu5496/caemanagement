@@ -31,7 +31,7 @@
                 <ul class="navbar-nav">
                     {% if session.admin_logged_in %}
                         <li class="nav-item">
-                            <a class="nav-link fw-semibold text-success" href="{{ url_for('admin_dashboard') }}">
+                            <a class="btn btn-success me-2" href="{{ url_for('admin_dashboard') }}">
                                 <i class="fas fa-cog me-1"></i>Admin Panel
                             </a>
                         </li>
@@ -42,8 +42,8 @@
                         </li>
                     {% else %}
                         <li class="nav-item">
-                            <a class="nav-link fw-semibold text-muted" href="{{ url_for('admin_login') }}">
-                                <i class="fas fa-user-shield me-1"></i>Admin
+                            <a class="btn btn-primary" href="{{ url_for('admin_login') }}">
+                                <i class="fas fa-user-shield me-1"></i>Admin Login
                             </a>
                         </li>
                     {% endif %}
