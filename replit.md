@@ -79,3 +79,26 @@ Preferred communication style: Simple, everyday language.
 - **Logging**: Python logging module configured for debug level
 - **Debug Mode**: Flask debug mode enabled for development environment
 - **Hot Reload**: Development server with automatic reloading on code changes
+
+## Testing Infrastructure
+
+### Automated Testing Suite
+- **Comprehensive Test Coverage**: Complete automation testing for vehicle management workflow
+- **Multiple Testing Approaches**: Backend functional testing, UI automation with Selenium, and simple connectivity tests
+- **Test Scripts**: 
+  - `test_automation.py` - Full Selenium WebDriver UI testing
+  - `test_vehicle_creation.py` - Functional backend testing with form validation
+  - `run_tests.py` - Simple connectivity and route testing
+  - `test_runner.sh` - Automated test suite runner with environment setup
+- **Test Documentation**: 
+  - `manual_test_checklist.md` - Comprehensive manual testing procedures
+  - `README_TESTING.md` - Complete testing documentation and setup guide
+- **Test Reporting**: Automated JSON reports with timestamps, test results, and detailed logs
+- **Quality Assurance**: Form validation testing, data persistence verification, and UI element visibility testing
+
+### Testing Capabilities
+- **End-to-End Testing**: Complete vehicle creation workflow from form opening to data persistence
+- **Validation Testing**: Required field validation, data type checking, and business rule enforcement
+- **UI Testing**: Wizard navigation, form visibility, responsive design verification
+- **Authentication Testing**: Admin login, session management, and access control verification
+- **Performance Testing**: Response time measurement and load handling verification
