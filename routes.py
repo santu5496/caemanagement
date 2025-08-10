@@ -10,9 +10,12 @@ def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in {'png', 'jpg', 'jpeg', 'gif'}
 
 def save_uploaded_files(files):
-    """Save uploaded files and return list of filenames"""
+    """Save uploaded files and return list of filenames (max 6 images)"""
     filenames = []
-    for file in files:
+    # Limit to maximum 6 images
+    limited_files = files[:6] if files else []
+    
+    for file in limited_files:
         if file and file.filename and allowed_file(file.filename):
             # Generate unique filename
             filename = str(uuid.uuid4()) + '_' + secure_filename(file.filename)

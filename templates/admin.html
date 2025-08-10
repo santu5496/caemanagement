@@ -78,9 +78,16 @@
                                     <tr id="vehicle-{{ vehicle.id }}">
                                         <td>
                                             {% if vehicle.images %}
-                                                <img src="{{ url_for('static', filename='uploads/' + vehicle.images[0]) }}" 
-                                                     class="img-thumbnail" style="width: 60px; height: 45px; object-fit: cover;" 
-                                                     alt="{{ vehicle.title }}">
+                                                <div class="position-relative">
+                                                    <img src="{{ url_for('static', filename='uploads/' + vehicle.images[0]) }}" 
+                                                         class="img-thumbnail" style="width: 60px; height: 45px; object-fit: cover;" 
+                                                         alt="{{ vehicle.title }}">
+                                                    {% if vehicle.images|length > 1 %}
+                                                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-primary" style="font-size: 10px;">
+                                                            {{ vehicle.images|length }}
+                                                        </span>
+                                                    {% endif %}
+                                                </div>
                                             {% else %}
                                                 <div class="bg-secondary d-flex align-items-center justify-content-center" 
                                                      style="width: 60px; height: 45px;">
@@ -430,12 +437,22 @@
                                 {{ form.images.label(class="form-label") }}
                                 {{ form.images(class="form-control", multiple=True, accept="image/*", id="modal-images") }}
                                 <div class="invalid-feedback"></div>
-                                <div class="form-text">Select multiple images to showcase your vehicle.</div>
+                                <div class="form-text">Upload up to 6 high-quality images to showcase your vehicle from different angles.</div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label class="form-label">Image Preview</label>
+                                <div id="image-preview-container" class="row g-2">
+                                    <!-- Image previews will be displayed here -->
+                                </div>
                             </div>
                             
                             <div id="current-images" style="display: none;">
                                 <h6 class="text-muted mb-2">Current Images</h6>
                                 <div id="current-images-container" class="row g-2 mb-3"></div>
+                                <div class="form-text text-info">
+                                    <i class="fas fa-info-circle me-1"></i>You can add new images while keeping existing ones. Maximum 6 images total.
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -473,7 +490,19 @@ function openAddModal() {
     document.getElementById('current-images').style.display = 'none';
     document.getElementById('vehicleForm').reset();
     clearFormErrors();
+    clearImagePreviews();
 }
+
+function clearImagePreviews() {
+    document.getElementById('image-preview-container').innerHTML = '';
+    const fileInput = document.getElementById('modal-images');
+    if (fileInput) fileInput.value = '';
+}
+
+// Clear previews when modal is closed
+document.getElementById('vehicleModal').addEventListener('hidden.bs.modal', function() {
+    clearImagePreviews();
+});
 
 function openEditModal(vehicleId) {
     currentVehicleId = vehicleId;
@@ -554,15 +583,85 @@ function populateForm(vehicle) {
         document.getElementById('current-images').style.display = 'block';
         const container = document.getElementById('current-images-container');
         container.innerHTML = '';
-        vehicle.images.forEach(image => {
+        vehicle.images.forEach((image, index) => {
             const div = document.createElement('div');
-            div.className = 'col-md-3';
-            div.innerHTML = `<img src="/static/uploads/${image}" class="img-thumbnail w-100" style="height: 120px; object-fit: cover;">`;
+            div.className = 'col-md-2';
+            div.innerHTML = `
+                <div class="position-relative">
+                    <img src="/static/uploads/${image}" class="img-thumbnail w-100" style="height: 100px; object-fit: cover;">
+                    <small class="text-muted d-block text-center mt-1">Image ${index + 1}</small>
+                </div>
+            `;
             container.appendChild(div);
         });
     }
     
     clearFormErrors();
+}
+
+// Image preview functionality
+document.getElementById('modal-images').addEventListener('change', function(e) {
+    const files = Array.from(e.target.files);
+    const previewContainer = document.getElementById('image-preview-container');
+    
+    // Clear previous previews
+    previewContainer.innerHTML = '';
+    
+    // Limit to 6 images
+    if (files.length > 6) {
+        showToast('Maximum 6 images allowed. Only first 6 images will be used.', 'warning');
+        // Remove excess files
+        const dt = new DataTransfer();
+        files.slice(0, 6).forEach(file => dt.items.add(file));
+        e.target.files = dt.files;
+    }
+    
+    // Show preview for each image
+    files.slice(0, 6).forEach((file, index) => {
+        if (file.type.startsWith('image/')) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const div = document.createElement('div');
+                div.className = 'col-md-2';
+                div.innerHTML = `
+                    <div class="position-relative">
+                        <img src="${e.target.result}" class="img-thumbnail w-100" style="height: 100px; object-fit: cover;">
+                        <small class="text-muted d-block text-center mt-1">New ${index + 1}</small>
+                        <button type="button" class="btn btn-sm btn-danger position-absolute top-0 end-0" 
+                                onclick="removeImagePreview(this, ${index})" style="padding: 2px 6px;">
+                            <i class="fas fa-times" style="font-size: 10px;"></i>
+                        </button>
+                    </div>
+                `;
+                previewContainer.appendChild(div);
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+});
+
+function removeImagePreview(button, index) {
+    const fileInput = document.getElementById('modal-images');
+    const dt = new DataTransfer();
+    const files = Array.from(fileInput.files);
+    
+    // Remove the file at the specified index
+    files.splice(index, 1);
+    
+    // Rebuild the FileList
+    files.forEach(file => dt.items.add(file));
+    fileInput.files = dt.files;
+    
+    // Remove the preview element
+    button.closest('.col-md-2').remove();
+    
+    // Update remaining preview labels
+    document.querySelectorAll('#image-preview-container .col-md-2').forEach((div, newIndex) => {
+        const label = div.querySelector('small');
+        if (label) label.textContent = `New ${newIndex + 1}`;
+        const removeBtn = div.querySelector('button');
+        if (removeBtn) removeBtn.setAttribute('onclick', `removeImagePreview(this, ${newIndex})`);
+    });
 }
 
 function clearFormErrors() {
