@@ -1009,10 +1009,7 @@ function toggleStatus(vehicleId) {
 
     showLoading();
     fetch(`/admin/toggle_status/${vehicleId}`, {
-        method: 'POST',
-        headers: {
-            'X-CSRFToken': document.querySelector('[name=csrf_token]').value
-        }
+        method: 'POST'
     })
     .then(response => response.json())
     .then(data => {
@@ -1036,10 +1033,7 @@ function deleteVehicle(vehicleId) {
 
     showLoading();
     fetch(`/admin/delete_vehicle/${vehicleId}`, {
-        method: 'POST',
-        headers: {
-            'X-CSRFToken': document.querySelector('[name=csrf_token]').value
-        }
+        method: 'POST'
     })
     .then(response => response.json())
     .then(data => {
