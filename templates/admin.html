@@ -166,7 +166,7 @@
                 {{ form.hidden_tag() }}
                 <div class="modal-body">
                     <div id="form-errors" class="alert alert-danger" style="display: none;"></div>
-                    
+
                     <!-- Tabbed Interface for Better Organization -->
                     <ul class="nav nav-tabs" id="vehicleTab" role="tablist">
                         <li class="nav-item" role="presentation">
@@ -188,11 +188,11 @@
                             <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#contact" type="button" role="tab">Contact & Images</button>
                         </li>
                     </ul>
-                    
+
                     <div class="tab-content mt-3" id="vehicleTabContent">
                         <!-- Basic Information Tab -->
                         <div class="tab-pane fade show active" id="basic" role="tabpanel" aria-labelledby="basic-tab">
-                    
+
                     <div class="row mb-3">
                         <div class="col-md-8">
                             {{ form.title.label(class="form-label") }}
@@ -205,7 +205,7 @@
                             <div class="invalid-feedback"></div>
                         </div>
                     </div>
-                    
+
                     <div class="row mb-3">
                         <div class="col-md-4">
                             {{ form.make.label(class="form-label") }}
@@ -223,7 +223,7 @@
                             <div class="invalid-feedback"></div>
                         </div>
                     </div>
-                    
+
                     <div class="row mb-3">
                         <div class="col-md-6">
                             {{ form.price.label(class="form-label") }}
@@ -242,20 +242,20 @@
                             <div class="invalid-feedback"></div>
                         </div>
                     </div>
-                    
+
                     <div class="mb-3">
                         {{ form.description.label(class="form-label") }}
                         {{ form.description(class="form-control", rows="3", id="modal-description") }}
                         <div class="invalid-feedback"></div>
                     </div>
-                    
+
                             <div class="mb-3" id="status-field" style="display: none;">
                                 {{ form.status.label(class="form-label") }}
                                 {{ form.status(class="form-select", id="modal-status") }}
                                 <div class="invalid-feedback"></div>
                             </div>
                         </div>
-                        
+
                         <!-- Engine & Performance Tab -->
                         <div class="tab-pane fade" id="engine" role="tabpanel" aria-labelledby="engine-tab">
                             <div class="alert alert-info">
@@ -273,7 +273,7 @@
                                     <div class="invalid-feedback"></div>
                                 </div>
                             </div>
-                            
+
                             <div class="row mb-3">
                                 <div class="col-md-4">
                                     {{ form.engine_size.label(class="form-label") }}
@@ -291,14 +291,14 @@
                                     <div class="invalid-feedback"></div>
                                 </div>
                             </div>
-                            
+
                             <div class="mb-3">
                                 {{ form.fuel_economy.label(class="form-label") }}
                                 {{ form.fuel_economy(class="form-control", id="modal-fuel-economy") }}
                                 <div class="invalid-feedback"></div>
                             </div>
                         </div>
-                        
+
                         <!-- Ownership & History Tab -->
                         <div class="tab-pane fade" id="ownership" role="tabpanel" aria-labelledby="ownership-tab">
                             <div class="row mb-3">
@@ -313,7 +313,7 @@
                                     <div class="invalid-feedback"></div>
                                 </div>
                             </div>
-                            
+
                             <div class="row mb-3">
                                 <div class="col-md-4">
                                     {{ form.previous_owner_name.label(class="form-label") }}
@@ -331,20 +331,20 @@
                                     <div class="invalid-feedback"></div>
                                 </div>
                             </div>
-                            
+
                             <div class="mb-3">
                                 {{ form.accident_history.label(class="form-label") }}
                                 {{ form.accident_history(class="form-control", rows="3", id="modal-accident-history") }}
                                 <div class="invalid-feedback"></div>
                             </div>
-                            
+
                             <div class="mb-3">
                                 {{ form.service_records.label(class="form-label") }}
                                 {{ form.service_records(class="form-control", rows="3", id="modal-service-records") }}
                                 <div class="invalid-feedback"></div>
                             </div>
                         </div>
-                        
+
                         <!-- Insurance & Documentation Tab -->
                         <div class="tab-pane fade" id="insurance" role="tabpanel" aria-labelledby="insurance-tab">
                             <div class="row mb-3">
@@ -359,7 +359,7 @@
                                     <div class="invalid-feedback"></div>
                                 </div>
                             </div>
-                            
+
                             <div class="row mb-3">
                                 <div class="col-md-4">
                                     {{ form.insurance_expiry.label(class="form-label") }}
@@ -378,7 +378,7 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <!-- Features & Condition Tab (Optional) -->
                         <div class="tab-pane fade" id="features" role="tabpanel" aria-labelledby="features-tab">
                             <div class="alert alert-info">
@@ -401,21 +401,21 @@
                                     <div class="invalid-feedback"></div>
                                 </div>
                             </div>
-                            
+
                             <div class="mb-3">
                                 {{ form.features.label(class="form-label") }}
                                 {{ form.features(class="form-control", rows="3", id="modal-features") }}
                                 <div class="invalid-feedback"></div>
                                 <div class="form-text">Optional: List vehicle features separated by commas (e.g., Sunroof, Leather Seats, Navigation System)</div>
                             </div>
-                            
+
                             <div class="mb-3">
                                 {{ form.warranty_info.label(class="form-label") }}
                                 {{ form.warranty_info(class="form-control", rows="2", id="modal-warranty-info") }}
                                 <div class="invalid-feedback"></div>
                             </div>
                         </div>
-                        
+
                         <!-- Contact & Images Tab -->
                         <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
                             <div class="row mb-3">
@@ -430,11 +430,11 @@
                                     <div class="invalid-feedback"></div>
                                 </div>
                             </div>
-                            
+
                             <div class="mb-4">
                                 <label class="form-label fw-bold fs-5 text-primary"><i class="fas fa-images me-2"></i>Vehicle Images</label>
                                 <p class="text-muted mb-3">Upload up to 6 high-quality images to showcase your vehicle. Click on any slot below to select an image file.</p>
-                                
+
                                 <!-- 6 Image Upload Slots -->
                                 <div class="row g-4">
                                     <div class="col-md-4" id="image-slot-1">
@@ -444,15 +444,8 @@
                                                     transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(0,123,255,0.1);" 
                                              onclick="triggerImageUpload(1)"
                                              onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 15px rgba(0,123,255,0.2)';"
-                                             onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(0,123,255,0.1)';"
-                                            <div class="slot-content d-flex flex-column align-items-center justify-content-center h-100">
-                                                <div class="upload-icon mb-3">
-                                                    <i class="fas fa-cloud-upload-alt fa-3x text-primary"></i>
-                                                </div>
-                                                <h6 class="text-dark mb-2 fw-bold">Image 1</h6>
-                                                <p class="text-muted mb-0 small">Click to upload</p>
-                                                <small class="text-muted">JPG, PNG, GIF (Max 5MB)</small>
-                                            </div>
+                                             onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(0,123,255,0.1)';">
+                                            <div class="slot-content d-flex flex-column align-items-center justify-content-center h-100"></div>
                                             <input type="file" id="image-input-1" accept="image/*" style="display: none;" onchange="handleImageUpload(1, this)">
                                             <img id="image-preview-1" class="img-fluid rounded-3 w-100 h-100" style="display: none; object-fit: cover; position: absolute; top: 0; left: 0;">
                                         </div>
@@ -464,15 +457,8 @@
                                                     transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(0,123,255,0.1);" 
                                              onclick="triggerImageUpload(2)"
                                              onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 15px rgba(0,123,255,0.2)';"
-                                             onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(0,123,255,0.1)';"
-                                            <div class="slot-content d-flex flex-column align-items-center justify-content-center h-100">
-                                                <div class="upload-icon mb-3">
-                                                    <i class="fas fa-cloud-upload-alt fa-3x text-primary"></i>
-                                                </div>
-                                                <h6 class="text-dark mb-2 fw-bold">Image 2</h6>
-                                                <p class="text-muted mb-0 small">Click to upload</p>
-                                                <small class="text-muted">JPG, PNG, GIF (Max 5MB)</small>
-                                            </div>
+                                             onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(0,123,255,0.1)';">
+                                            <div class="slot-content d-flex flex-column align-items-center justify-content-center h-100"></div>
                                             <input type="file" id="image-input-2" accept="image/*" style="display: none;" onchange="handleImageUpload(2, this)">
                                             <img id="image-preview-2" class="img-fluid rounded-3 w-100 h-100" style="display: none; object-fit: cover; position: absolute; top: 0; left: 0;">
                                         </div>
@@ -484,15 +470,8 @@
                                                     transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(0,123,255,0.1);" 
                                              onclick="triggerImageUpload(3)"
                                              onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 15px rgba(0,123,255,0.2)';"
-                                             onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(0,123,255,0.1)';"
-                                            <div class="slot-content d-flex flex-column align-items-center justify-content-center h-100">
-                                                <div class="upload-icon mb-3">
-                                                    <i class="fas fa-cloud-upload-alt fa-3x text-primary"></i>
-                                                </div>
-                                                <h6 class="text-dark mb-2 fw-bold">Image 3</h6>
-                                                <p class="text-muted mb-0 small">Click to upload</p>
-                                                <small class="text-muted">JPG, PNG, GIF (Max 5MB)</small>
-                                            </div>
+                                             onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(0,123,255,0.1)';">
+                                            <div class="slot-content d-flex flex-column align-items-center justify-content-center h-100"></div>
                                             <input type="file" id="image-input-3" accept="image/*" style="display: none;" onchange="handleImageUpload(3, this)">
                                             <img id="image-preview-3" class="img-fluid rounded-3 w-100 h-100" style="display: none; object-fit: cover; position: absolute; top: 0; left: 0;">
                                         </div>
@@ -504,15 +483,8 @@
                                                     transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(0,123,255,0.1);" 
                                              onclick="triggerImageUpload(4)"
                                              onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 15px rgba(0,123,255,0.2)';"
-                                             onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(0,123,255,0.1)';"
-                                            <div class="slot-content d-flex flex-column align-items-center justify-content-center h-100">
-                                                <div class="upload-icon mb-3">
-                                                    <i class="fas fa-cloud-upload-alt fa-3x text-primary"></i>
-                                                </div>
-                                                <h6 class="text-dark mb-2 fw-bold">Image 4</h6>
-                                                <p class="text-muted mb-0 small">Click to upload</p>
-                                                <small class="text-muted">JPG, PNG, GIF (Max 5MB)</small>
-                                            </div>
+                                             onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(0,123,255,0.1)';">
+                                            <div class="slot-content d-flex flex-column align-items-center justify-content-center h-100"></div>
                                             <input type="file" id="image-input-4" accept="image/*" style="display: none;" onchange="handleImageUpload(4, this)">
                                             <img id="image-preview-4" class="img-fluid rounded-3 w-100 h-100" style="display: none; object-fit: cover; position: absolute; top: 0; left: 0;">
                                         </div>
@@ -524,15 +496,8 @@
                                                     transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(0,123,255,0.1);" 
                                              onclick="triggerImageUpload(5)"
                                              onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 15px rgba(0,123,255,0.2)';"
-                                             onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(0,123,255,0.1)';"
-                                            <div class="slot-content d-flex flex-column align-items-center justify-content-center h-100">
-                                                <div class="upload-icon mb-3">
-                                                    <i class="fas fa-cloud-upload-alt fa-3x text-primary"></i>
-                                                </div>
-                                                <h6 class="text-dark mb-2 fw-bold">Image 5</h6>
-                                                <p class="text-muted mb-0 small">Click to upload</p>
-                                                <small class="text-muted">JPG, PNG, GIF (Max 5MB)</small>
-                                            </div>
+                                             onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(0,123,255,0.1)';">
+                                            <div class="slot-content d-flex flex-column align-items-center justify-content-center h-100"></div>
                                             <input type="file" id="image-input-5" accept="image/*" style="display: none;" onchange="handleImageUpload(5, this)">
                                             <img id="image-preview-5" class="img-fluid rounded-3 w-100 h-100" style="display: none; object-fit: cover; position: absolute; top: 0; left: 0;">
                                         </div>
@@ -544,25 +509,18 @@
                                                     transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(0,123,255,0.1);" 
                                              onclick="triggerImageUpload(6)"
                                              onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 15px rgba(0,123,255,0.2)';"
-                                             onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(0,123,255,0.1)';"
-                                            <div class="slot-content d-flex flex-column align-items-center justify-content-center h-100">
-                                                <div class="upload-icon mb-3">
-                                                    <i class="fas fa-cloud-upload-alt fa-3x text-primary"></i>
-                                                </div>
-                                                <h6 class="text-dark mb-2 fw-bold">Image 6</h6>
-                                                <p class="text-muted mb-0 small">Click to upload</p>
-                                                <small class="text-muted">JPG, PNG, GIF (Max 5MB)</small>
-                                            </div>
+                                             onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(0,123,255,0.1)';">
+                                            <div class="slot-content d-flex flex-column align-items-center justify-content-center h-100"></div>
                                             <input type="file" id="image-input-6" accept="image/*" style="display: none;" onchange="handleImageUpload(6, this)">
                                             <img id="image-preview-6" class="img-fluid rounded-3 w-100 h-100" style="display: none; object-fit: cover; position: absolute; top: 0; left: 0;">
                                         </div>
                                     </div>
                                 </div>
-                                
+
                                 <!-- Hidden input for form submission -->
                                 {{ form.images(style="display: none;", id="modal-images", multiple=True) }}
                             </div>
-                            
+
                             <div id="current-images" style="display: none;">
                                 <h6 class="text-muted mb-2">Current Images</h6>
                                 <div id="current-images-container" class="row g-2 mb-3"></div>
@@ -624,7 +582,7 @@ function openEditModal(vehicleId) {
     document.getElementById('vehicleModalTitle').textContent = 'Edit Vehicle';
     document.getElementById('submit-btn').innerHTML = '<i class="fas fa-save me-1"></i>Update Vehicle';
     document.getElementById('status-field').style.display = 'block';
-    
+
     // Fetch vehicle data
     showLoading();
     fetch(`/admin/get_vehicle/${vehicleId}`)
@@ -656,7 +614,7 @@ function populateForm(vehicle) {
     document.getElementById('modal-mileage').value = vehicle.mileage;
     document.getElementById('modal-description').value = vehicle.description || '';
     document.getElementById('modal-status').value = vehicle.status;
-    
+
     // Engine & Performance
     document.getElementById('modal-fuel-type').value = vehicle.fuel_type || '';
     document.getElementById('modal-transmission').value = vehicle.transmission || '';
@@ -664,7 +622,7 @@ function populateForm(vehicle) {
     document.getElementById('modal-horsepower').value = vehicle.horsepower || '';
     document.getElementById('modal-fuel-economy').value = vehicle.fuel_economy || '';
     document.getElementById('modal-drivetrain').value = vehicle.drivetrain || '';
-    
+
     // Ownership & History
     document.getElementById('modal-number-of-owners').value = vehicle.number_of_owners || '';
     document.getElementById('modal-previous-owner-name').value = vehicle.previous_owner_name || '';
@@ -673,25 +631,25 @@ function populateForm(vehicle) {
     document.getElementById('modal-odometer-reading').value = vehicle.odometer_reading || '';
     document.getElementById('modal-accident-history').value = vehicle.accident_history || '';
     document.getElementById('modal-service-records').value = vehicle.service_records || '';
-    
+
     // Insurance & Documentation
     document.getElementById('modal-insurance-company').value = vehicle.insurance_company || '';
     document.getElementById('modal-insurance-policy-number').value = vehicle.insurance_policy_number || '';
     document.getElementById('modal-insurance-expiry').value = vehicle.insurance_expiry || '';
     document.getElementById('modal-registration-number').value = vehicle.registration_number || '';
     document.getElementById('modal-vin-number').value = vehicle.vin_number || '';
-    
+
     // Features & Condition
     document.getElementById('modal-exterior-color').value = vehicle.exterior_color || '';
     document.getElementById('modal-interior-color').value = vehicle.interior_color || '';
     document.getElementById('modal-features').value = vehicle.features || '';
     document.getElementById('modal-condition-rating').value = vehicle.condition_rating || '';
     document.getElementById('modal-warranty-info').value = vehicle.warranty_info || '';
-    
+
     // Contact Information
     document.getElementById('modal-contact-name').value = vehicle.contact_name;
     document.getElementById('modal-contact-phone').value = vehicle.contact_phone;
-    
+
     // Load existing images into slots
     if (vehicle.images && vehicle.images.length > 0) {
         vehicle.images.forEach((imageName, index) => {
@@ -700,12 +658,12 @@ function populateForm(vehicle) {
                 const slot = document.getElementById(`image-slot-${slotNumber}`);
                 const preview = document.getElementById(`image-preview-${slotNumber}`);
                 const slotContent = slot.querySelector('.slot-content');
-                
+
                 // Display existing image
                 preview.src = `/static/uploads/${imageName}`;
                 preview.style.display = 'block';
                 slotContent.style.display = 'none';
-                
+
                 // Add remove button for existing images
                 if (!slot.querySelector('.remove-image-btn')) {
                     const removeBtn = document.createElement('button');
@@ -717,7 +675,7 @@ function populateForm(vehicle) {
                     slot.style.position = 'relative';
                     slot.appendChild(removeBtn);
                 }
-                
+
                 // Update slot styling
                 const uploadSlot = slot.querySelector('.image-upload-slot');
                 if (uploadSlot) {
@@ -727,7 +685,7 @@ function populateForm(vehicle) {
             }
         });
     }
-    
+
     clearFormErrors();
 }
 
@@ -741,30 +699,30 @@ function triggerImageUpload(slotNumber) {
 function handleImageUpload(slotNumber, input) {
     const file = input.files[0];
     if (!file) return;
-    
+
     // Validate file type
     if (!file.type.startsWith('image/')) {
         showToast('Please select a valid image file.', 'error');
         return;
     }
-    
+
     // Validate file size (max 5MB)
     if (file.size > 5 * 1024 * 1024) {
         showToast('Image size should be less than 5MB.', 'error');
         return;
     }
-    
+
     const slot = document.getElementById(`image-slot-${slotNumber}`);
     const preview = document.getElementById(`image-preview-${slotNumber}`);
     const slotContent = slot.querySelector('.slot-content');
-    
+
     // Read and display the image
     const reader = new FileReader();
     reader.onload = function(e) {
         preview.src = e.target.result;
         preview.style.display = 'block';
         slotContent.style.display = 'none';
-        
+
         // Add remove button
         if (!slot.querySelector('.remove-image-btn')) {
             const removeBtn = document.createElement('button');
@@ -776,11 +734,11 @@ function handleImageUpload(slotNumber, input) {
             slot.style.position = 'relative';
             slot.appendChild(removeBtn);
         }
-        
+
         // Update the uploaded images array
         uploadedImages[slotNumber - 1] = file;
         updateFormFileInput();
-        
+
         // Update slot styling
         const uploadSlot = slot.querySelector('.image-upload-slot');
         if (uploadSlot) {
@@ -797,23 +755,23 @@ function removeImage(slotNumber) {
     const slotContent = slot.querySelector('.slot-content');
     const removeBtn = slot.querySelector('.remove-image-btn');
     const input = document.getElementById(`image-input-${slotNumber}`);
-    
+
     // Reset the slot
     preview.style.display = 'none';
     preview.src = '';
     slotContent.style.display = 'block';
     input.value = '';
-    
+
     // Remove the remove button
     if (removeBtn) removeBtn.remove();
-    
+
     // Reset slot styling
     const uploadSlot = slot.querySelector('.image-upload-slot');
     if (uploadSlot) {
         uploadSlot.style.border = '2px dashed #007bff';
         uploadSlot.style.background = 'linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)';
     }
-    
+
     // Update uploaded images array
     uploadedImages[slotNumber - 1] = null;
     updateFormFileInput();
@@ -822,14 +780,14 @@ function removeImage(slotNumber) {
 function updateFormFileInput() {
     const formInput = document.getElementById('modal-images');
     const dataTransfer = new DataTransfer();
-    
+
     // Add all uploaded files to the form input
     uploadedImages.forEach(file => {
         if (file) {
             dataTransfer.items.add(file);
         }
     });
-    
+
     formInput.files = dataTransfer.files;
 }
 
@@ -842,7 +800,7 @@ function clearAllImageSlots() {
             const removeBtn = slot?.querySelector('.remove-image-btn');
             const input = document.getElementById(`image-input-${i}`);
             const uploadSlot = slot?.querySelector('.image-upload-slot');
-            
+
             if (preview) {
                 preview.style.display = 'none';
                 preview.src = '';
@@ -874,7 +832,7 @@ function clearFormErrors() {
 
 function showFormErrors(errors) {
     clearFormErrors();
-    
+
     let errorMessages = [];
     for (const [field, message] of Object.entries(errors)) {
         const input = document.getElementById(`modal-${field.replace('_', '-')}`);
@@ -885,7 +843,7 @@ function showFormErrors(errors) {
         }
         errorMessages.push(`${field}: ${message}`);
     }
-    
+
     if (errorMessages.length > 0) {
         const errorDiv = document.getElementById('form-errors');
         if (errorDiv) {
@@ -897,7 +855,7 @@ function showFormErrors(errors) {
 
 function toggleStatus(vehicleId) {
     if (!confirm('Are you sure you want to change the vehicle status?')) return;
-    
+
     showLoading();
     fetch(`/admin/toggle_status/${vehicleId}`, {
         method: 'POST',
@@ -924,7 +882,7 @@ function toggleStatus(vehicleId) {
 
 function deleteVehicle(vehicleId) {
     if (!confirm('Are you sure you want to delete this vehicle? This action cannot be undone.')) return;
-    
+
     showLoading();
     fetch(`/admin/delete_vehicle/${vehicleId}`, {
         method: 'POST',
@@ -959,7 +917,7 @@ function updateVehicleStatus(vehicleId, newStatus) {
 function removeVehicleRow(vehicleId) {
     const row = document.getElementById(`vehicle-${vehicleId}`);
     row.remove();
-    
+
     // Check if table is empty
     const tbody = document.getElementById('vehicles-tbody');
     if (tbody.children.length === 0) {
@@ -985,13 +943,13 @@ function updateStatistics() {
     const total = rows.length;
     let available = 0;
     let sold = 0;
-    
+
     rows.forEach(row => {
         const badge = row.querySelector('.status-badge');
         if (badge.textContent === 'Available') available++;
         else sold++;
     });
-    
+
     document.getElementById('total-count').textContent = total;
     document.getElementById('available-count').textContent = available;
     document.getElementById('sold-count').textContent = sold;
@@ -1007,7 +965,7 @@ function hideLoading() {
 
 function showToast(message, type = 'info') {
     const toastContainer = document.querySelector('.toast-container') || createToastContainer();
-    
+
     const toast = document.createElement('div');
     toast.className = `toast align-items-center text-white bg-${type} border-0`;
     toast.setAttribute('role', 'alert');
@@ -1017,12 +975,12 @@ function showToast(message, type = 'info') {
             <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
         </div>
     `;
-    
+
     toastContainer.appendChild(toast);
-    
+
     const bsToast = new bootstrap.Toast(toast);
     bsToast.show();
-    
+
     toast.addEventListener('hidden.bs.toast', function() {
         toast.remove();
     });
@@ -1038,9 +996,9 @@ function createToastContainer() {
 // Form submission handler
 document.getElementById('vehicleForm').addEventListener('submit', function(e) {
     e.preventDefault();
-    
+
     console.log('Form submission started');
-    
+
     // Basic validation
     const title = document.getElementById('modal-title').value.trim();
     const make = document.getElementById('modal-make').value.trim();
@@ -1049,20 +1007,20 @@ document.getElementById('vehicleForm').addEventListener('submit', function(e) {
     const price = document.getElementById('modal-price').value;
     const contactName = document.getElementById('modal-contact-name').value.trim();
     const contactPhone = document.getElementById('modal-contact-phone').value.trim();
-    
+
     if (!title || !make || !model || !year || !price || !contactName || !contactPhone) {
         showToast('Please fill in all required fields', 'danger');
         return;
     }
-    
+
     const formData = new FormData(this);
     const url = isEditMode ? `/admin/edit_vehicle/${currentVehicleId}` : '/admin/add_vehicle';
-    
+
     console.log('Submitting to:', url);
     console.log('Is edit mode:', isEditMode);
-    
+
     showLoading();
-    
+
     fetch(url, {
         method: 'POST',
         body: formData
@@ -1078,7 +1036,7 @@ document.getElementById('vehicleForm').addEventListener('submit', function(e) {
             showToast(data.message, 'success');
             const modal = bootstrap.Modal.getInstance(document.getElementById('vehicleModal'));
             modal.hide();
-            
+
             // Reload page to refresh data
             setTimeout(() => {
                 window.location.reload();
