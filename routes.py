@@ -166,7 +166,8 @@ def add_vehicle_route():
                 warranty_info=form.warranty_info.data or None
             )
             
-            add_vehicle(vehicle)
+            db.session.add(vehicle)
+            db.session.commit()
             return jsonify({'success': True, 'message': 'Vehicle added successfully', 'vehicle': vehicle.to_dict()})
             
         except Exception as e:
