@@ -1,15 +1,19 @@
 {% extends "base.html" %}
 
-{% block title %}{{ vehicle.title }} - Auto Dealership{% endblock %}
+{% block title %}{{ vehicle.title }} - AutoMarket{% endblock %}
 
 {% block content %}
 <div class="container py-4">
     <!-- Back Navigation -->
-    <div class="row mb-3">
+    <div class="row mb-4">
         <div class="col-12">
-            <a href="{{ url_for('index') }}" class="btn btn-outline-secondary">
-                <i class="fas fa-arrow-left me-1"></i>Back to Catalog
-            </a>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ url_for('index') }}" class="text-decoration-none">AutoMarket</a></li>
+                    <li class="breadcrumb-item"><a href="?category={{ vehicle.category }}" class="text-decoration-none">{{ vehicle.category }}</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">{{ vehicle.title }}</li>
+                </ol>
+            </nav>
         </div>
     </div>
 

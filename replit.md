@@ -1,8 +1,8 @@
-# Auto Dealership Management System
+# AutoMarket - OLX-Style Vehicle Marketplace
 
 ## Overview
 
-A Flask-based web application for managing and displaying vehicle inventory. The system provides a customer-facing catalog for browsing vehicles and an admin interface for managing listings. Built as an MVP with in-memory storage, the application handles vehicle listings with image uploads, search/filter functionality, and basic admin authentication.
+A Flask-based automotive marketplace web application similar to OLX, designed for buying and selling vehicles. The platform features a modern, mobile-first design with an intuitive customer catalog for browsing vehicles and a seller dashboard for managing listings. Built as an MVP with in-memory storage, the application provides comprehensive vehicle listings with image uploads, search/filter functionality, and streamlined seller authentication.
 
 ## User Preferences
 
@@ -11,11 +11,12 @@ Preferred communication style: Simple, everyday language.
 ## System Architecture
 
 ### Frontend Architecture
-- **Template Engine**: Jinja2 templating with Bootstrap 5 dark theme for responsive UI
-- **Static Assets**: Custom CSS for vehicle image handling and hover effects, JavaScript for form enhancements and image galleries
-- **User Interface**: Dual interface design - customer catalog view and single-page admin dashboard with modal-based CRUD
-- **Responsive Design**: Mobile-optimized layout with adaptive image sizing and touch-friendly controls
-- **Interactive Features**: AJAX-powered single-page CRUD operations with real-time updates and loading states
+- **Template Engine**: Jinja2 templating with Bootstrap 5 light theme for modern marketplace UI
+- **Design System**: OLX-inspired design with gradient hero sections, card-based listings, and floating action buttons
+- **Static Assets**: Custom CSS for marketplace styling, listing cards, favorite buttons, and mobile enhancements
+- **User Interface**: Dual interface - modern customer marketplace and single-page seller dashboard with modal-based CRUD
+- **Responsive Design**: Mobile-first design with touch-optimized controls, floating filter button, and adaptive layouts
+- **Interactive Features**: AJAX-powered CRUD operations, favorite toggles, breadcrumb navigation, and smooth animations
 
 ### Backend Architecture
 - **Framework**: Flask web framework with modular route organization
