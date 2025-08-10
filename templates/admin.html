@@ -462,7 +462,9 @@
                                              style="min-height: 200px; cursor: pointer; border: 2px dashed #007bff !important; 
                                                     background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
                                                     transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(0,123,255,0.1);" 
-                                             onclick="triggerImageUpload(2)">
+                                             onclick="triggerImageUpload(2)"
+                                             onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 15px rgba(0,123,255,0.2)';"
+                                             onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(0,123,255,0.1)';"
                                             <div class="slot-content d-flex flex-column align-items-center justify-content-center h-100">
                                                 <div class="upload-icon mb-3">
                                                     <i class="fas fa-cloud-upload-alt fa-3x text-primary"></i>
@@ -480,7 +482,9 @@
                                              style="min-height: 200px; cursor: pointer; border: 2px dashed #007bff !important; 
                                                     background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
                                                     transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(0,123,255,0.1);" 
-                                             onclick="triggerImageUpload(3)">
+                                             onclick="triggerImageUpload(3)"
+                                             onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 15px rgba(0,123,255,0.2)';"
+                                             onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(0,123,255,0.1)';"
                                             <div class="slot-content d-flex flex-column align-items-center justify-content-center h-100">
                                                 <div class="upload-icon mb-3">
                                                     <i class="fas fa-cloud-upload-alt fa-3x text-primary"></i>
@@ -498,7 +502,9 @@
                                              style="min-height: 200px; cursor: pointer; border: 2px dashed #007bff !important; 
                                                     background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
                                                     transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(0,123,255,0.1);" 
-                                             onclick="triggerImageUpload(4)">
+                                             onclick="triggerImageUpload(4)"
+                                             onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 15px rgba(0,123,255,0.2)';"
+                                             onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(0,123,255,0.1)';"
                                             <div class="slot-content d-flex flex-column align-items-center justify-content-center h-100">
                                                 <div class="upload-icon mb-3">
                                                     <i class="fas fa-cloud-upload-alt fa-3x text-primary"></i>
@@ -516,7 +522,9 @@
                                              style="min-height: 200px; cursor: pointer; border: 2px dashed #007bff !important; 
                                                     background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
                                                     transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(0,123,255,0.1);" 
-                                             onclick="triggerImageUpload(5)">
+                                             onclick="triggerImageUpload(5)"
+                                             onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 15px rgba(0,123,255,0.2)';"
+                                             onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(0,123,255,0.1)';"
                                             <div class="slot-content d-flex flex-column align-items-center justify-content-center h-100">
                                                 <div class="upload-icon mb-3">
                                                     <i class="fas fa-cloud-upload-alt fa-3x text-primary"></i>
@@ -534,7 +542,9 @@
                                              style="min-height: 200px; cursor: pointer; border: 2px dashed #007bff !important; 
                                                     background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
                                                     transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(0,123,255,0.1);" 
-                                             onclick="triggerImageUpload(6)">
+                                             onclick="triggerImageUpload(6)"
+                                             onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 15px rgba(0,123,255,0.2)';"
+                                             onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(0,123,255,0.1)';"
                                             <div class="slot-content d-flex flex-column align-items-center justify-content-center h-100">
                                                 <div class="upload-icon mb-3">
                                                     <i class="fas fa-cloud-upload-alt fa-3x text-primary"></i>
@@ -825,23 +835,27 @@ function updateFormFileInput() {
 
 function clearAllImageSlots() {
     for (let i = 1; i <= 6; i++) {
-        const slot = document.getElementById(`image-slot-${i}`);
-        const preview = document.getElementById(`image-preview-${i}`);
-        const slotContent = slot?.querySelector('.slot-content');
-        const removeBtn = slot?.querySelector('.remove-image-btn');
-        const input = document.getElementById(`image-input-${i}`);
-        const uploadSlot = slot?.querySelector('.image-upload-slot');
-        
-        if (preview) {
-            preview.style.display = 'none';
-            preview.src = '';
-        }
-        if (slotContent) slotContent.style.display = 'block';
-        if (input) input.value = '';
-        if (removeBtn) removeBtn.remove();
-        if (uploadSlot) {
-            uploadSlot.style.border = '2px dashed #007bff';
-            uploadSlot.style.background = 'linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)';
+        try {
+            const slot = document.getElementById(`image-slot-${i}`);
+            const preview = document.getElementById(`image-preview-${i}`);
+            const slotContent = slot?.querySelector('.slot-content');
+            const removeBtn = slot?.querySelector('.remove-image-btn');
+            const input = document.getElementById(`image-input-${i}`);
+            const uploadSlot = slot?.querySelector('.image-upload-slot');
+            
+            if (preview) {
+                preview.style.display = 'none';
+                preview.src = '';
+            }
+            if (slotContent) slotContent.style.display = 'block';
+            if (input) input.value = '';
+            if (removeBtn) removeBtn.remove();
+            if (uploadSlot) {
+                uploadSlot.style.border = '2px dashed #007bff';
+                uploadSlot.style.background = 'linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)';
+            }
+        } catch (error) {
+            console.warn(`Error clearing image slot ${i}:`, error);
         }
     }
     uploadedImages = [];
@@ -850,8 +864,12 @@ function clearAllImageSlots() {
 function clearFormErrors() {
     const formErrors = document.getElementById('form-errors');
     if (formErrors) formErrors.style.display = 'none';
-    document.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
-    document.querySelectorAll('.invalid-feedback').forEach(el => el.textContent = '');
+    document.querySelectorAll('.is-invalid').forEach(el => {
+        if (el) el.classList.remove('is-invalid');
+    });
+    document.querySelectorAll('.invalid-feedback').forEach(el => {
+        if (el) el.textContent = '';
+    });
 }
 
 function showFormErrors(errors) {
@@ -1021,8 +1039,27 @@ function createToastContainer() {
 document.getElementById('vehicleForm').addEventListener('submit', function(e) {
     e.preventDefault();
     
+    console.log('Form submission started');
+    
+    // Basic validation
+    const title = document.getElementById('modal-title').value.trim();
+    const make = document.getElementById('modal-make').value.trim();
+    const model = document.getElementById('modal-model').value.trim();
+    const year = document.getElementById('modal-year').value;
+    const price = document.getElementById('modal-price').value;
+    const contactName = document.getElementById('modal-contact-name').value.trim();
+    const contactPhone = document.getElementById('modal-contact-phone').value.trim();
+    
+    if (!title || !make || !model || !year || !price || !contactName || !contactPhone) {
+        showToast('Please fill in all required fields', 'danger');
+        return;
+    }
+    
     const formData = new FormData(this);
     const url = isEditMode ? `/admin/edit_vehicle/${currentVehicleId}` : '/admin/add_vehicle';
+    
+    console.log('Submitting to:', url);
+    console.log('Is edit mode:', isEditMode);
     
     showLoading();
     
@@ -1030,8 +1067,12 @@ document.getElementById('vehicleForm').addEventListener('submit', function(e) {
         method: 'POST',
         body: formData
     })
-    .then(response => response.json())
+    .then(response => {
+        console.log('Response status:', response.status);
+        return response.json();
+    })
     .then(data => {
+        console.log('Response data:', data);
         hideLoading();
         if (data.success) {
             showToast(data.message, 'success');
@@ -1044,6 +1085,7 @@ document.getElementById('vehicleForm').addEventListener('submit', function(e) {
             }, 1000);
         } else {
             if (data.errors) {
+                console.log('Form validation errors:', data.errors);
                 showFormErrors(data.errors);
             } else {
                 showToast(data.message, 'danger');
@@ -1051,8 +1093,9 @@ document.getElementById('vehicleForm').addEventListener('submit', function(e) {
         }
     })
     .catch(error => {
+        console.error('Form submission error:', error);
         hideLoading();
-        showToast('Error submitting form', 'danger');
+        showToast('Error submitting form: ' + error.message, 'danger');
     });
 });
 
