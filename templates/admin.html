@@ -3,6 +3,52 @@
 {% block title %}Admin Dashboard - AutoMarket{% endblock %}
 
 {% block content %}
+<style>
+/* Enhanced form styling for better text visibility */
+.modal-content .form-control,
+.modal-content .form-select {
+    color: #212529 !important;
+    font-weight: 500 !important;
+    border: 2px solid #dee2e6 !important;
+    background-color: white !important;
+}
+
+.modal-content .form-control:focus,
+.modal-content .form-select:focus {
+    color: #212529 !important;
+    background-color: white !important;
+    border-color: #007bff !important;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25) !important;
+}
+
+.modal-content .form-control::placeholder {
+    color: #6c757d !important;
+    opacity: 0.8 !important;
+    font-weight: 400 !important;
+}
+
+.modal-content .form-select option {
+    color: #212529 !important;
+    background-color: white !important;
+    font-weight: 500;
+}
+
+/* Ensure dropdown options are visible */
+.modal-content select option {
+    color: #212529 !important;
+    background-color: white !important;
+    font-weight: 500;
+}
+
+.modal-content .form-control,
+.modal-content .form-select,
+.modal-content input,
+.modal-content textarea,
+.modal-content select {
+    color: #212529 !important;
+    background-color: white !important;
+}
+</style>
 <div class="container py-4">
     <div class="row mb-4">
         <div class="col-12">
@@ -271,13 +317,13 @@
                                 <div class="row mb-3">
                                     <div class="col-md-8">
                                         <label class="form-label fw-bold text-dark">{{ form.title.label.text }} <span class="text-danger">*</span></label>
-                                        {{ form.title(class="form-control form-control-lg shadow-sm", id="modal-title", placeholder="e.g., 2020 Honda Civic LX - Excellent Condition", style="border: 2px solid #dee2e6; background-color: white;") }}
+                                        {{ form.title(class="form-control form-control-lg shadow-sm", id="modal-title", placeholder="e.g., 2020 Honda Civic LX - Excellent Condition", style="border: 2px solid #dee2e6; background-color: white; color: #212529; font-weight: 500;") }}
                                         <div class="invalid-feedback"></div>
                                         <div class="form-text text-dark">Create an attractive title that highlights key features</div>
                                     </div>
                                     <div class="col-md-4">
                                         <label class="form-label fw-bold text-dark">{{ form.category.label.text }} <span class="text-danger">*</span></label>
-                                        {{ form.category(class="form-select form-select-lg shadow-sm", id="modal-category", style="border: 2px solid #dee2e6; background-color: white;") }}
+                                        {{ form.category(class="form-select form-select-lg shadow-sm", id="modal-category", style="border: 2px solid #dee2e6; background-color: white; color: #212529; font-weight: 500;") }}
                                         <div class="invalid-feedback"></div>
                                     </div>
                                 </div>
@@ -285,17 +331,17 @@
                                 <div class="row mb-3">
                                     <div class="col-md-4">
                                         <label class="form-label fw-bold text-dark">{{ form.make.label.text }} <span class="text-danger">*</span></label>
-                                        {{ form.make(class="form-control shadow-sm", id="modal-make", placeholder="e.g., Honda, Toyota, Ford", style="border: 2px solid #dee2e6; background-color: white;") }}
+                                        {{ form.make(class="form-control shadow-sm", id="modal-make", placeholder="e.g., Honda, Toyota, Ford", style="border: 2px solid #dee2e6; background-color: white; color: #212529; font-weight: 500;") }}
                                         <div class="invalid-feedback"></div>
                                     </div>
                                     <div class="col-md-4">
                                         <label class="form-label fw-bold text-dark">{{ form.model.label.text }} <span class="text-danger">*</span></label>
-                                        {{ form.model(class="form-control shadow-sm", id="modal-model", placeholder="e.g., Civic, Camry, F-150", style="border: 2px solid #dee2e6; background-color: white;") }}
+                                        {{ form.model(class="form-control shadow-sm", id="modal-model", placeholder="e.g., Civic, Camry, F-150", style="border: 2px solid #dee2e6; background-color: white; color: #212529; font-weight: 500;") }}
                                         <div class="invalid-feedback"></div>
                                     </div>
                                     <div class="col-md-4">
                                         <label class="form-label fw-bold text-dark">{{ form.year.label.text }} <span class="text-danger">*</span></label>
-                                        {{ form.year(class="form-control shadow-sm", id="modal-year", placeholder="e.g., 2020", style="border: 2px solid #dee2e6; background-color: white;") }}
+                                        {{ form.year(class="form-control shadow-sm", id="modal-year", placeholder="e.g., 2020", style="border: 2px solid #dee2e6; background-color: white; color: #212529; font-weight: 500;") }}
                                         <div class="invalid-feedback"></div>
                                     </div>
                                 </div>
@@ -305,7 +351,7 @@
                                         <label class="form-label fw-bold text-dark">{{ form.price.label.text }} <span class="text-danger">*</span></label>
                                         <div class="input-group input-group-lg shadow-sm">
                                             <span class="input-group-text bg-success text-white"><i class="fas fa-dollar-sign"></i></span>
-                                            {{ form.price(class="form-control", id="modal-price", placeholder="e.g., 25000", style="border: 2px solid #dee2e6; background-color: white;") }}
+                                            {{ form.price(class="form-control", id="modal-price", placeholder="e.g., 25000", style="border: 2px solid #dee2e6; background-color: white; color: #212529; font-weight: 500;") }}
                                         </div>
                                         <div class="invalid-feedback"></div>
                                         <div class="form-text text-dark">Enter the asking price in USD</div>
@@ -313,7 +359,7 @@
                                     <div class="col-md-6">
                                         <label class="form-label fw-bold text-dark">{{ form.mileage.label.text }} <span class="text-danger">*</span></label>
                                         <div class="input-group input-group-lg shadow-sm">
-                                            {{ form.mileage(class="form-control", id="modal-mileage", placeholder="e.g., 45000", style="border: 2px solid #dee2e6; background-color: white;") }}
+                                            {{ form.mileage(class="form-control", id="modal-mileage", placeholder="e.g., 45000", style="border: 2px solid #dee2e6; background-color: white; color: #212529; font-weight: 500;") }}
                                             <span class="input-group-text bg-info text-white"><i class="fas fa-road"></i> miles</span>
                                         </div>
                                         <div class="invalid-feedback"></div>
@@ -323,7 +369,7 @@
 
                                 <div class="mb-3">
                                     <label class="form-label fw-bold text-dark">{{ form.description.label.text }}</label>
-                                    {{ form.description(class="form-control shadow-sm", rows="4", id="modal-description", placeholder="Describe the vehicle's condition, features, and any special details. Be detailed and honest to attract genuine buyers.", style="border: 2px solid #dee2e6; background-color: white;") }}
+                                    {{ form.description(class="form-control shadow-sm", rows="4", id="modal-description", placeholder="Describe the vehicle's condition, features, and any special details. Be detailed and honest to attract genuine buyers.", style="border: 2px solid #dee2e6; background-color: white; color: #212529; font-weight: 500;") }}
                                     <div class="invalid-feedback"></div>
                                     <div class="form-text text-dark">A good description increases buyer interest</div>
                                 </div>
@@ -503,12 +549,12 @@
                                 <div class="row mb-3">
                                     <div class="col-md-6">
                                         <label class="form-label fw-bold text-dark">{{ form.contact_name.label.text }} <span class="text-danger">*</span></label>
-                                        {{ form.contact_name(class="form-control shadow-sm", id="modal-contact-name", placeholder="Your full name", style="border: 2px solid #dee2e6; background-color: white;") }}
+                                        {{ form.contact_name(class="form-control shadow-sm", id="modal-contact-name", placeholder="Your full name", style="border: 2px solid #dee2e6; background-color: white; color: #212529; font-weight: 500;") }}
                                         <div class="invalid-feedback"></div>
                                     </div>
                                     <div class="col-md-6">
                                         <label class="form-label fw-bold text-dark">{{ form.contact_phone.label.text }} <span class="text-danger">*</span></label>
-                                        {{ form.contact_phone(class="form-control shadow-sm", id="modal-contact-phone", placeholder="(555) 123-4567", style="border: 2px solid #dee2e6; background-color: white;") }}
+                                        {{ form.contact_phone(class="form-control shadow-sm", id="modal-contact-phone", placeholder="(555) 123-4567", style="border: 2px solid #dee2e6; background-color: white; color: #212529; font-weight: 500;") }}
                                         <div class="invalid-feedback"></div>
                                     </div>
                                 </div>
