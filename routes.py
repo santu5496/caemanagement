@@ -216,8 +216,8 @@ def toggle_vehicle_status(vehicle_id):
 # Error handlers
 @app.errorhandler(404)
 def not_found_error(error):
-    return render_template('404.html'), 404
+    return redirect(url_for('index'))
 
 @app.errorhandler(500)
 def internal_error(error):
-    return render_template('500.html'), 500
+    return redirect(url_for('index'))
