@@ -72,13 +72,13 @@ def admin_login():
             session['admin_logged_in'] = True
             session['admin_username'] = username
             flash('Logged in successfully', 'success')
-            return redirect(url_for('index'))
+            return redirect(url_for('admin_dashboard'))
         elif form.validate_on_submit():
             if verify_admin(form.username.data, form.password.data):
                 session['admin_logged_in'] = True
                 session['admin_username'] = form.username.data
                 flash('Logged in successfully', 'success')
-                return redirect(url_for('index'))
+                return redirect(url_for('admin_dashboard'))
             else:
                 flash('Invalid username or password', 'error')
         else:
