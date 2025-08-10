@@ -156,98 +156,178 @@
 
 <!-- Vehicle Modal -->
 <div class="modal fade" id="vehicleModal" tabindex="-1" data-bs-backdrop="static">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="vehicleModalTitle">Add New Vehicle</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content shadow-lg border-0">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title d-flex align-items-center" id="vehicleModalTitle">
+                    <i class="fas fa-car me-2"></i>Add New Vehicle
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <form id="vehicleForm" enctype="multipart/form-data">
                 {{ form.hidden_tag() }}
                 <div class="modal-body">
                     <div id="form-errors" class="alert alert-danger" style="display: none;"></div>
 
-                    <!-- Tabbed Interface for Better Organization -->
-                    <ul class="nav nav-tabs" id="vehicleTab" role="tablist">
+                    <!-- Wizard Progress Indicator -->
+                    <div class="mb-4">
+                        <div class="d-flex justify-content-between align-items-center position-relative">
+                            <!-- Progress Line -->
+                            <div class="position-absolute w-100" style="top: 20px; height: 2px; background-color: #e9ecef; z-index: 0;"></div>
+                            <div class="position-absolute" id="progress-line" style="top: 20px; height: 2px; background-color: #007bff; z-index: 1; width: 0%; transition: width 0.3s ease;"></div>
+                            
+                            <!-- Step 1: Basic Info -->
+                            <div class="text-center position-relative" style="z-index: 2;">
+                                <div class="step-indicator bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center" 
+                                     style="width: 40px; height: 40px; border: 3px solid white; box-shadow: 0 2px 8px rgba(0,123,255,0.3);">
+                                    <i class="fas fa-info-circle"></i>
+                                </div>
+                                <div class="mt-2 small fw-bold text-primary">Step 1</div>
+                                <div class="small text-muted">Basic Info</div>
+                            </div>
+                            
+                            <!-- Step 2: Engine -->
+                            <div class="text-center position-relative" style="z-index: 2;">
+                                <div class="step-indicator bg-light text-muted rounded-circle d-inline-flex align-items-center justify-content-center" 
+                                     style="width: 40px; height: 40px; border: 3px solid white;">
+                                    <i class="fas fa-cog"></i>
+                                </div>
+                                <div class="mt-2 small text-muted">Step 2</div>
+                                <div class="small text-muted">Engine</div>
+                            </div>
+                            
+                            <!-- Step 3: History -->
+                            <div class="text-center position-relative" style="z-index: 2;">
+                                <div class="step-indicator bg-light text-muted rounded-circle d-inline-flex align-items-center justify-content-center" 
+                                     style="width: 40px; height: 40px; border: 3px solid white;">
+                                    <i class="fas fa-history"></i>
+                                </div>
+                                <div class="mt-2 small text-muted">Step 3</div>
+                                <div class="small text-muted">History</div>
+                            </div>
+                            
+                            <!-- Step 4: Insurance -->
+                            <div class="text-center position-relative" style="z-index: 2;">
+                                <div class="step-indicator bg-light text-muted rounded-circle d-inline-flex align-items-center justify-content-center" 
+                                     style="width: 40px; height: 40px; border: 3px solid white;">
+                                    <i class="fas fa-shield-alt"></i>
+                                </div>
+                                <div class="mt-2 small text-muted">Step 4</div>
+                                <div class="small text-muted">Insurance</div>
+                            </div>
+                            
+                            <!-- Step 5: Features -->
+                            <div class="text-center position-relative" style="z-index: 2;">
+                                <div class="step-indicator bg-light text-muted rounded-circle d-inline-flex align-items-center justify-content-center" 
+                                     style="width: 40px; height: 40px; border: 3px solid white;">
+                                    <i class="fas fa-star"></i>
+                                </div>
+                                <div class="mt-2 small text-muted">Step 5</div>
+                                <div class="small text-muted">Features</div>
+                            </div>
+                            
+                            <!-- Step 6: Images & Save -->
+                            <div class="text-center position-relative" style="z-index: 2;">
+                                <div class="step-indicator bg-light text-muted rounded-circle d-inline-flex align-items-center justify-content-center" 
+                                     style="width: 40px; height: 40px; border: 3px solid white;">
+                                    <i class="fas fa-check"></i>
+                                </div>
+                                <div class="mt-2 small text-muted">Step 6</div>
+                                <div class="small text-muted">Finish</div>
+                            </div>
+                        </div>
+                        <hr class="my-4">
+                    </div>
+
+                    <!-- Hidden Tab Navigation (wizard-style) -->
+                    <ul class="nav nav-tabs d-none" id="vehicleTab" role="tablist">
                         <li class="nav-item" role="presentation">
-                            <button class="nav-link active" id="basic-tab" data-bs-toggle="tab" data-bs-target="#basic" type="button" role="tab">Basic Info</button>
+                            <button class="nav-link active" id="basic-tab" data-bs-toggle="tab" data-bs-target="#basic" type="button" role="tab"></button>
                         </li>
                         <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="engine-tab" data-bs-toggle="tab" data-bs-target="#engine" type="button" role="tab">Engine & Performance</button>
+                            <button class="nav-link" id="engine-tab" data-bs-toggle="tab" data-bs-target="#engine" type="button" role="tab"></button>
                         </li>
                         <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="ownership-tab" data-bs-toggle="tab" data-bs-target="#ownership" type="button" role="tab">Ownership & History</button>
+                            <button class="nav-link" id="ownership-tab" data-bs-toggle="tab" data-bs-target="#ownership" type="button" role="tab"></button>
                         </li>
                         <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="insurance-tab" data-bs-toggle="tab" data-bs-target="#insurance" type="button" role="tab">Insurance & Docs</button>
+                            <button class="nav-link" id="insurance-tab" data-bs-toggle="tab" data-bs-target="#insurance" type="button" role="tab"></button>
                         </li>
                         <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="features-tab" data-bs-toggle="tab" data-bs-target="#features" type="button" role="tab">Features & Condition <small class="text-muted">(Optional)</small></button>
+                            <button class="nav-link" id="features-tab" data-bs-toggle="tab" data-bs-target="#features" type="button" role="tab"></button>
                         </li>
                         <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#contact" type="button" role="tab">Contact & Images</button>
+                            <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#contact" type="button" role="tab"></button>
                         </li>
                     </ul>
 
                     <div class="tab-content mt-3" id="vehicleTabContent">
                         <!-- Basic Information Tab -->
                         <div class="tab-pane fade show active" id="basic" role="tabpanel" aria-labelledby="basic-tab">
+                            <div class="card border-0 bg-light rounded-3 p-4 mb-4">
+                                <h6 class="text-primary mb-3"><i class="fas fa-info-circle me-2"></i>Essential Vehicle Information</h6>
+                                <p class="text-muted mb-3">Please provide the basic details about the vehicle. All fields marked with <span class="text-danger">*</span> are required.</p>
+                                
+                                <div class="row mb-3">
+                                    <div class="col-md-8">
+                                        <label class="form-label fw-bold">{{ form.title.label.text }} <span class="text-danger">*</span></label>
+                                        {{ form.title(class="form-control form-control-lg", id="modal-title", placeholder="e.g., 2020 Honda Civic LX - Excellent Condition") }}
+                                        <div class="invalid-feedback"></div>
+                                        <div class="form-text">Create an attractive title that highlights key features</div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label fw-bold">{{ form.category.label.text }} <span class="text-danger">*</span></label>
+                                        {{ form.category(class="form-select form-select-lg", id="modal-category") }}
+                                        <div class="invalid-feedback"></div>
+                                    </div>
+                                </div>
 
-                    <div class="row mb-3">
-                        <div class="col-md-8">
-                            {{ form.title.label(class="form-label") }}
-                            {{ form.title(class="form-control", id="modal-title") }}
-                            <div class="invalid-feedback"></div>
-                        </div>
-                        <div class="col-md-4">
-                            {{ form.category.label(class="form-label") }}
-                            {{ form.category(class="form-select", id="modal-category") }}
-                            <div class="invalid-feedback"></div>
-                        </div>
-                    </div>
+                                <div class="row mb-3">
+                                    <div class="col-md-4">
+                                        <label class="form-label fw-bold">{{ form.make.label.text }} <span class="text-danger">*</span></label>
+                                        {{ form.make(class="form-control", id="modal-make", placeholder="e.g., Honda, Toyota, Ford") }}
+                                        <div class="invalid-feedback"></div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label fw-bold">{{ form.model.label.text }} <span class="text-danger">*</span></label>
+                                        {{ form.model(class="form-control", id="modal-model", placeholder="e.g., Civic, Camry, F-150") }}
+                                        <div class="invalid-feedback"></div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label fw-bold">{{ form.year.label.text }} <span class="text-danger">*</span></label>
+                                        {{ form.year(class="form-control", id="modal-year", placeholder="e.g., 2020") }}
+                                        <div class="invalid-feedback"></div>
+                                    </div>
+                                </div>
 
-                    <div class="row mb-3">
-                        <div class="col-md-4">
-                            {{ form.make.label(class="form-label") }}
-                            {{ form.make(class="form-control", id="modal-make") }}
-                            <div class="invalid-feedback"></div>
-                        </div>
-                        <div class="col-md-4">
-                            {{ form.model.label(class="form-label") }}
-                            {{ form.model(class="form-control", id="modal-model") }}
-                            <div class="invalid-feedback"></div>
-                        </div>
-                        <div class="col-md-4">
-                            {{ form.year.label(class="form-label") }}
-                            {{ form.year(class="form-control", id="modal-year") }}
-                            <div class="invalid-feedback"></div>
-                        </div>
-                    </div>
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-bold">{{ form.price.label.text }} <span class="text-danger">*</span></label>
+                                        <div class="input-group input-group-lg">
+                                            <span class="input-group-text bg-success text-white"><i class="fas fa-dollar-sign"></i></span>
+                                            {{ form.price(class="form-control", id="modal-price", placeholder="e.g., 25000") }}
+                                        </div>
+                                        <div class="invalid-feedback"></div>
+                                        <div class="form-text">Enter the asking price in USD</div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-bold">{{ form.mileage.label.text }} <span class="text-danger">*</span></label>
+                                        <div class="input-group input-group-lg">
+                                            {{ form.mileage(class="form-control", id="modal-mileage", placeholder="e.g., 45000") }}
+                                            <span class="input-group-text bg-info text-white"><i class="fas fa-road"></i> miles</span>
+                                        </div>
+                                        <div class="invalid-feedback"></div>
+                                        <div class="form-text">Current odometer reading</div>
+                                    </div>
+                                </div>
 
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            {{ form.price.label(class="form-label") }}
-                            <div class="input-group">
-                                <span class="input-group-text">$</span>
-                                {{ form.price(class="form-control", id="modal-price") }}
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">{{ form.description.label.text }}</label>
+                                    {{ form.description(class="form-control", rows="4", id="modal-description", placeholder="Describe the vehicle's condition, features, and any special details. Be detailed and honest to attract genuine buyers.") }}
+                                    <div class="invalid-feedback"></div>
+                                    <div class="form-text">A good description increases buyer interest</div>
+                                </div>
                             </div>
-                            <div class="invalid-feedback"></div>
-                        </div>
-                        <div class="col-md-6">
-                            {{ form.mileage.label(class="form-label") }}
-                            <div class="input-group">
-                                {{ form.mileage(class="form-control", id="modal-mileage") }}
-                                <span class="input-group-text">miles</span>
-                            </div>
-                            <div class="invalid-feedback"></div>
-                        </div>
-                    </div>
-
-                    <div class="mb-3">
-                        {{ form.description.label(class="form-label") }}
-                        {{ form.description(class="form-control", rows="3", id="modal-description") }}
-                        <div class="invalid-feedback"></div>
-                    </div>
 
                             <div class="mb-3" id="status-field" style="display: none;">
                                 {{ form.status.label(class="form-label") }}
@@ -531,11 +611,28 @@
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary" id="submit-btn">
-                        <i class="fas fa-save me-1"></i>Add Vehicle
-                    </button>
+                <div class="modal-footer bg-light d-flex justify-content-between align-items-center">
+                    <div>
+                        <button type="button" class="btn btn-outline-secondary" id="prev-tab-btn" style="display: none;">
+                            <i class="fas fa-arrow-left me-1"></i>Previous Step
+                        </button>
+                    </div>
+                    
+                    <div class="text-center">
+                        <span class="badge bg-primary px-3 py-2" id="step-counter">Step 1 of 6</span>
+                    </div>
+                    
+                    <div>
+                        <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">
+                            <i class="fas fa-times me-1"></i>Cancel
+                        </button>
+                        <button type="button" class="btn btn-primary" id="next-tab-btn">
+                            Next Step <i class="fas fa-arrow-right ms-1"></i>
+                        </button>
+                        <button type="submit" class="btn btn-success" id="submit-btn" style="display: none;">
+                            <i class="fas fa-save me-1"></i>Save Vehicle
+                        </button>
+                    </div>
                 </div>
             </form>
         </div>
@@ -558,13 +655,18 @@ let isEditMode = false;
 function openAddModal() {
     currentVehicleId = null;
     isEditMode = false;
-    document.getElementById('vehicleModalTitle').textContent = 'Add New Vehicle';
-    document.getElementById('submit-btn').innerHTML = '<i class="fas fa-save me-1"></i>Add Vehicle';
+    document.getElementById('vehicleModalTitle').innerHTML = '<i class="fas fa-car me-2"></i>Add New Vehicle';
+    document.getElementById('submit-btn').innerHTML = '<i class="fas fa-check me-1"></i>Save Vehicle';
     document.getElementById('status-field').style.display = 'none';
     document.getElementById('current-images').style.display = 'none';
     document.getElementById('vehicleForm').reset();
     clearFormErrors();
     clearImagePreviews();
+    
+    // Reset to first tab
+    resetToFirstTab();
+    updateProgressIndicator(0);
+    updateNavigationButtons();
 }
 
 function clearImagePreviews() {
@@ -579,8 +681,8 @@ document.getElementById('vehicleModal').addEventListener('hidden.bs.modal', func
 function openEditModal(vehicleId) {
     currentVehicleId = vehicleId;
     isEditMode = true;
-    document.getElementById('vehicleModalTitle').textContent = 'Edit Vehicle';
-    document.getElementById('submit-btn').innerHTML = '<i class="fas fa-save me-1"></i>Update Vehicle';
+    document.getElementById('vehicleModalTitle').innerHTML = '<i class="fas fa-edit me-2"></i>Edit Vehicle';
+    document.getElementById('submit-btn').innerHTML = '<i class="fas fa-check me-1"></i>Update Vehicle';
     document.getElementById('status-field').style.display = 'block';
 
     // Fetch vehicle data
@@ -1057,10 +1159,257 @@ document.getElementById('vehicleForm').addEventListener('submit', function(e) {
     });
 });
 
+// Enhanced Tab Navigation
+let currentTabIndex = 0;
+const tabs = ['basic', 'engine', 'ownership', 'insurance', 'features', 'contact'];
+const tabButtons = ['basic-tab', 'engine-tab', 'ownership-tab', 'insurance-tab', 'features-tab', 'contact-tab'];
+
+function resetToFirstTab() {
+    currentTabIndex = 0;
+    document.getElementById('basic-tab').click();
+}
+
+function updateProgressIndicator(activeIndex) {
+    const indicators = document.querySelectorAll('.step-indicator');
+    const stepTexts = document.querySelectorAll('.step-indicator').map((indicator, i) => indicator.parentNode);
+    
+    indicators.forEach((indicator, index) => {
+        const stepContainer = indicator.parentNode;
+        const stepNumber = stepContainer.querySelector('.small.fw-bold, .small.text-muted:first-of-type');
+        const stepLabel = stepContainer.querySelector('.small.text-muted:last-child');
+        
+        if (index <= activeIndex) {
+            // Completed or current step
+            indicator.className = 'step-indicator bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center';
+            indicator.style.cssText = 'width: 40px; height: 40px; border: 3px solid white; box-shadow: 0 2px 8px rgba(0,123,255,0.3);';
+            
+            if (stepNumber) {
+                stepNumber.className = 'mt-2 small fw-bold text-primary';
+            }
+            if (stepLabel) {
+                stepLabel.className = 'small text-primary';
+            }
+            
+            // Add checkmark for completed steps
+            if (index < activeIndex) {
+                indicator.innerHTML = '<i class="fas fa-check"></i>';
+            } else {
+                // Current step - show original icon
+                const icons = ['fas fa-info-circle', 'fas fa-cog', 'fas fa-history', 'fas fa-shield-alt', 'fas fa-star', 'fas fa-check'];
+                indicator.innerHTML = `<i class="${icons[index]}"></i>`;
+            }
+        } else {
+            // Future steps
+            indicator.className = 'step-indicator bg-light text-muted rounded-circle d-inline-flex align-items-center justify-content-center';
+            indicator.style.cssText = 'width: 40px; height: 40px; border: 3px solid white;';
+            
+            if (stepNumber) {
+                stepNumber.className = 'mt-2 small text-muted';
+            }
+            if (stepLabel) {
+                stepLabel.className = 'small text-muted';
+            }
+            
+            // Show original icon for future steps
+            const icons = ['fas fa-info-circle', 'fas fa-cog', 'fas fa-history', 'fas fa-shield-alt', 'fas fa-star', 'fas fa-check'];
+            indicator.innerHTML = `<i class="${icons[index]}"></i>`;
+        }
+    });
+    
+    // Update progress line
+    const progressLine = document.getElementById('progress-line');
+    const progressPercentage = (activeIndex / (tabs.length - 1)) * 100;
+    progressLine.style.width = `${progressPercentage}%`;
+}
+
+function updateNavigationButtons() {
+    const prevBtn = document.getElementById('prev-tab-btn');
+    const nextBtn = document.getElementById('next-tab-btn');
+    const submitBtn = document.getElementById('submit-btn');
+    const stepCounter = document.getElementById('step-counter');
+    
+    // Update step counter
+    stepCounter.textContent = `Step ${currentTabIndex + 1} of ${tabs.length}`;
+    
+    // Show/hide previous button
+    prevBtn.style.display = currentTabIndex > 0 ? 'inline-block' : 'none';
+    
+    // Update button text based on current step
+    const stepNames = ['Basic Info', 'Engine Details', 'Vehicle History', 'Insurance Info', 'Features', 'Images & Finish'];
+    
+    if (currentTabIndex === tabs.length - 1) {
+        // Last step - show save button
+        nextBtn.style.display = 'none';
+        submitBtn.style.display = 'inline-block';
+        submitBtn.innerHTML = '<i class="fas fa-save me-1"></i>Save Vehicle';
+        stepCounter.className = 'badge bg-success px-3 py-2';
+        stepCounter.textContent = 'Ready to Save!';
+    } else {
+        // Show next button with step name
+        nextBtn.style.display = 'inline-block';
+        submitBtn.style.display = 'none';
+        nextBtn.innerHTML = `Continue to ${stepNames[currentTabIndex + 1]} <i class="fas fa-arrow-right ms-1"></i>`;
+        stepCounter.className = 'badge bg-primary px-3 py-2';
+    }
+}
+
+// Enhanced Navigation with validation
+document.getElementById('next-tab-btn').addEventListener('click', function() {
+    // Validate current step before proceeding
+    if (validateCurrentStep()) {
+        if (currentTabIndex < tabs.length - 1) {
+            currentTabIndex++;
+            document.getElementById(tabButtons[currentTabIndex]).click();
+            updateProgressIndicator(currentTabIndex);
+            updateNavigationButtons();
+            
+            // Smooth scroll to top of modal content
+            document.querySelector('.modal-body').scrollTop = 0;
+            
+            // Add a subtle animation
+            const activeTab = document.querySelector('.tab-pane.active');
+            if (activeTab) {
+                activeTab.style.opacity = '0';
+                setTimeout(() => {
+                    activeTab.style.opacity = '1';
+                    activeTab.style.transition = 'opacity 0.3s ease';
+                }, 50);
+            }
+        }
+    }
+});
+
+document.getElementById('prev-tab-btn').addEventListener('click', function() {
+    if (currentTabIndex > 0) {
+        currentTabIndex--;
+        document.getElementById(tabButtons[currentTabIndex]).click();
+        updateProgressIndicator(currentTabIndex);
+        updateNavigationButtons();
+        
+        // Smooth scroll to top of modal content
+        document.querySelector('.modal-body').scrollTop = 0;
+    }
+});
+
+// Validation function for current step
+function validateCurrentStep() {
+    clearFormErrors();
+    
+    if (currentTabIndex === 0) {
+        // Basic Info validation
+        const title = document.getElementById('modal-title').value.trim();
+        const make = document.getElementById('modal-make').value.trim();
+        const model = document.getElementById('modal-model').value.trim();
+        const year = document.getElementById('modal-year').value;
+        const price = document.getElementById('modal-price').value;
+        const mileage = document.getElementById('modal-mileage').value;
+        const contactName = document.getElementById('modal-contact-name').value.trim();
+        const contactPhone = document.getElementById('modal-contact-phone').value.trim();
+        
+        if (!title || !make || !model || !year || !price || !mileage || !contactName || !contactPhone) {
+            showToast('Please fill in all required fields in Basic Info before continuing', 'warning');
+            
+            // Highlight missing fields
+            const requiredFields = ['modal-title', 'modal-make', 'modal-model', 'modal-year', 'modal-price', 'modal-mileage', 'modal-contact-name', 'modal-contact-phone'];
+            requiredFields.forEach(fieldId => {
+                const field = document.getElementById(fieldId);
+                if (!field.value.trim()) {
+                    field.classList.add('is-invalid');
+                }
+            });
+            
+            return false;
+        }
+    }
+    
+    if (currentTabIndex === 1) {
+        // Engine validation - ensure required fields are filled
+        const fuelType = document.getElementById('modal-fuel-type').value;
+        const transmission = document.getElementById('modal-transmission').value;
+        
+        if (!fuelType || !transmission) {
+            showToast('Please select fuel type and transmission before continuing', 'warning');
+            return false;
+        }
+    }
+    
+    return true;
+}
+
+// Tab click event listeners
+tabButtons.forEach((tabId, index) => {
+    document.getElementById(tabId).addEventListener('click', function() {
+        currentTabIndex = index;
+        updateProgressIndicator(currentTabIndex);
+        updateNavigationButtons();
+    });
+});
+
+// Enhanced image upload UI
+function initializeImageSlots() {
+    for (let i = 1; i <= 6; i++) {
+        const slot = document.getElementById(`image-slot-${i}`);
+        const slotContent = slot.querySelector('.slot-content');
+        
+        slotContent.innerHTML = `
+            <i class="fas fa-cloud-upload-alt fa-3x text-primary mb-2"></i>
+            <p class="mb-1 fw-bold">Click to upload</p>
+            <small class="text-muted">or drag and drop image here</small>
+            <small class="d-block text-muted mt-1">Max 5MB • JPG, PNG, GIF</small>
+        `;
+        
+        // Add drag and drop functionality
+        slot.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            this.style.background = 'linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%)';
+        });
+        
+        slot.addEventListener('dragleave', function(e) {
+            e.preventDefault();
+            this.style.background = 'linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)';
+        });
+        
+        slot.addEventListener('drop', function(e) {
+            e.preventDefault();
+            this.style.background = 'linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)';
+            
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                const input = document.getElementById(`image-input-${i}`);
+                input.files = files;
+                handleImageUpload(i, input);
+            }
+        });
+    }
+}
+
 // Reset form when modal is hidden
 document.getElementById('vehicleModal').addEventListener('hidden.bs.modal', function() {
     document.getElementById('vehicleForm').reset();
     clearFormErrors();
+    resetToFirstTab();
+    updateProgressIndicator(0);
+    updateNavigationButtons();
+});
+
+// Initialize enhanced UI when modal is shown
+document.getElementById('vehicleModal').addEventListener('shown.bs.modal', function() {
+    initializeImageSlots();
+});
+
+// Auto-format price input
+document.getElementById('modal-price').addEventListener('input', function() {
+    let value = this.value.replace(/[^\d.]/g, '');
+    if (value.includes('.')) {
+        const parts = value.split('.');
+        value = parts[0] + '.' + parts[1].substring(0, 2);
+    }
+    this.value = value;
+});
+
+// Auto-format mileage input
+document.getElementById('modal-mileage').addEventListener('input', function() {
+    this.value = this.value.replace(/[^\d]/g, '');
 });
 </script>
 {% endblock %}
