@@ -33,7 +33,7 @@ Preferred communication style: Simple, everyday language.
 - **Security**: CSRF protection on all forms, secure filename handling for uploads
 
 ### Data Storage Solution
-- **Current Implementation**: PostgreSQL database with Flask-SQLAlchemy ORM for production-ready persistence
+- **Current Implementation**: SQLite database with Flask-SQLAlchemy ORM for lightweight persistence
 - **Data Persistence**: Full database persistence with proper schema and relationships
 - **Data Structure**: SQLAlchemy models with comprehensive vehicle details including:
   - Basic info (pricing, specifications, contact info, images)
