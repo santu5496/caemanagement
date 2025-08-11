@@ -76,5 +76,6 @@ class VehicleForm(FlaskForm):
     # Contact & Images
     contact_name = StringField('Contact Name', validators=[DataRequired(), Length(max=100)])
     contact_phone = StringField('Contact Phone', validators=[DataRequired(), Length(max=50)])
-    images = MultipleFileField('Vehicle Images', 
+    contact_email = EmailField('Contact Email (Optional)', validators=[Optional(), Email(), Length(max=100)])
+    images = MultipleFileField('Vehicle Images (Max 6)', 
                               validators=[FileAllowed(['jpg', 'jpeg', 'png', 'gif'], 'Images only!')])

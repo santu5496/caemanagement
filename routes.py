@@ -63,14 +63,19 @@ def admin_login():
         return redirect(url_for('admin_dashboard'))
 
     form = LoginForm()
-    if form.validate_on_submit():
-        if verify_admin(form.username.data, form.password.data):
-            session['admin_logged_in'] = True
-            session['admin_username'] = form.username.data
-            flash('Logged in successfully', 'success')
-            return redirect(url_for('admin_dashboard'))
+    
+    if request.method == 'POST':
+        if form.validate_on_submit():
+            if verify_admin(form.username.data, form.password.data):
+                session['admin_logged_in'] = True
+                session['admin_username'] = form.username.data
+                session.permanent = True
+                flash('Welcome back! Successfully logged in.', 'success')
+                return redirect(url_for('admin_dashboard'))
+            else:
+                flash('Invalid username or password. Please try again.', 'error')
         else:
-            flash('Invalid username or password', 'error')
+            flash('Please fill in all required fields.', 'error')
 
     return render_template('admin_login.html', form=form)
 
@@ -84,13 +89,13 @@ def admin_logout():
 
 @app.route('/admin')
 def admin_dashboard():
-    """Admin dashboard with single-page CRUD"""
+    """Professional admin dashboard with enhanced features"""
     if 'admin_logged_in' not in session:
         return redirect(url_for('admin_login'))
 
     vehicles = get_all_vehicles()
-    form = VehicleForm()  # Form for modal dialogs
-    return render_template('admin.html', vehicles=vehicles, form=form)
+    form = VehicleForm()
+    return render_template('enhanced_admin.html', vehicles=vehicles, form=form)
 
 @app.route('/admin/dashboard')
 def admin_dashboard_direct():

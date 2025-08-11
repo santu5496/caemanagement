@@ -34,6 +34,7 @@ class Vehicle(db.Model):
     description: Mapped[str] = mapped_column(Text)
     contact_name: Mapped[str] = mapped_column(String(100), nullable=False)
     contact_phone: Mapped[str] = mapped_column(String(20), nullable=False)
+    contact_email: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
     images: Mapped[str] = mapped_column(Text)  # JSON string of image filenames
     status: Mapped[str] = mapped_column(String(20), default='available')  # available, sold
     
@@ -73,7 +74,7 @@ class Vehicle(db.Model):
     updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
     def __init__(self, title, category, make, model, year, price, mileage, 
-                 description, contact_name, contact_phone, images=None, **kwargs):
+                 description, contact_name, contact_phone, images=None, contact_email=None, **kwargs):
         self.id = str(uuid.uuid4())
         self.title = title
         self.category = category
@@ -85,6 +86,7 @@ class Vehicle(db.Model):
         self.description = description
         self.contact_name = contact_name
         self.contact_phone = contact_phone
+        self.contact_email = contact_email
         self.images = ','.join(images) if images else ''
         self.status = 'available'
         
@@ -116,6 +118,7 @@ class Vehicle(db.Model):
             'description': self.description,
             'contact_name': self.contact_name,
             'contact_phone': self.contact_phone,
+            'contact_email': self.contact_email,
             'images': self.images_list,
             'status': self.status,
             

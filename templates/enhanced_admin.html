@@ -1,0 +1,796 @@
+{% extends "base.html" %}
+
+{% block title %}Professional Admin Dashboard - AutoMarket{% endblock %}
+
+{% block content %}
+<style>
+/* Professional styling for enhanced admin dashboard */
+.dashboard-header {
+    background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+    color: white;
+    border-radius: 12px;
+    margin-bottom: 2rem;
+}
+
+.stats-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    border: none;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.stats-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.stats-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+}
+
+.vehicle-table {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.table th {
+    background: #f8f9fa;
+    border: none;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+    padding: 1rem 0.75rem;
+}
+
+.table td {
+    border-color: #f1f3f4;
+    padding: 1rem 0.75rem;
+    vertical-align: middle;
+}
+
+.modal-header {
+    background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+    color: white;
+    border-bottom: none;
+}
+
+.modal-header .btn-close {
+    filter: invert(1);
+}
+
+.form-section {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    border-left: 4px solid #007bff;
+}
+
+.form-section h6 {
+    color: #007bff;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    letter-spacing: 0.5px;
+}
+
+.form-control, .form-select {
+    border-radius: 8px;
+    border: 2px solid #e9ecef;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.15);
+}
+
+.btn-action {
+    border-radius: 6px;
+    padding: 0.375rem 0.75rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.btn-action:hover {
+    transform: translateY(-1px);
+}
+
+.status-badge {
+    font-weight: 500;
+    padding: 0.375rem 0.75rem;
+    border-radius: 6px;
+}
+
+.image-preview {
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+.loading-spinner {
+    background: white;
+    border-radius: 12px;
+    padding: 2rem;
+    text-align: center;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+</style>
+
+<div class="container-fluid py-4">
+    <!-- Dashboard Header -->
+    <div class="dashboard-header p-4 mb-4">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <h1 class="mb-2">
+                    <i class="fas fa-tachometer-alt me-2"></i>Professional Admin Dashboard
+                </h1>
+                <p class="mb-0 opacity-75">Manage your vehicle inventory with professional tools</p>
+            </div>
+            <div class="col-md-4 text-md-end">
+                <button type="button" class="btn btn-light btn-lg" data-bs-toggle="modal" data-bs-target="#vehicleModal" onclick="openAddModal()">
+                    <i class="fas fa-plus me-2"></i>Add New Vehicle
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="row mb-4">
+        <div class="col-xl-3 col-md-6 mb-3">
+            <div class="card stats-card h-100">
+                <div class="card-body text-center">
+                    <div class="stats-icon bg-primary text-white">
+                        <i class="fas fa-car fa-lg"></i>
+                    </div>
+                    <h3 class="text-primary mb-1">{{ vehicles|length }}</h3>
+                    <h6 class="text-muted mb-0">Total Vehicles</h6>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6 mb-3">
+            <div class="card stats-card h-100">
+                <div class="card-body text-center">
+                    <div class="stats-icon bg-success text-white">
+                        <i class="fas fa-check-circle fa-lg"></i>
+                    </div>
+                    <h3 class="text-success mb-1">{{ vehicles|selectattr("status", "equalto", "available")|list|length }}</h3>
+                    <h6 class="text-muted mb-0">Available</h6>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6 mb-3">
+            <div class="card stats-card h-100">
+                <div class="card-body text-center">
+                    <div class="stats-icon bg-warning text-white">
+                        <i class="fas fa-handshake fa-lg"></i>
+                    </div>
+                    <h3 class="text-warning mb-1">{{ vehicles|selectattr("status", "equalto", "sold")|list|length }}</h3>
+                    <h6 class="text-muted mb-0">Sold</h6>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6 mb-3">
+            <div class="card stats-card h-100">
+                <div class="card-body text-center">
+                    <div class="stats-icon bg-info text-white">
+                        <i class="fas fa-dollar-sign fa-lg"></i>
+                    </div>
+                    <h3 class="text-info mb-1">${{ "{:,.0f}".format((vehicles|selectattr("status", "equalto", "available")|map(attribute="price")|sum)/1000) }}K</h3>
+                    <h6 class="text-muted mb-0">Total Inventory Value</h6>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title mb-3">
+                        <i class="fas fa-bolt me-2 text-primary"></i>Quick Actions
+                    </h5>
+                    <div class="btn-group flex-wrap" role="group">
+                        <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#vehicleModal" onclick="openAddModal()">
+                            <i class="fas fa-plus me-1"></i>Add Vehicle
+                        </button>
+                        <button type="button" class="btn btn-outline-success" onclick="exportData()">
+                            <i class="fas fa-download me-1"></i>Export Data
+                        </button>
+                        <button type="button" class="btn btn-outline-info" onclick="generateReport()">
+                            <i class="fas fa-chart-bar me-1"></i>Generate Report
+                        </button>
+                        <button type="button" class="btn btn-outline-warning" onclick="bulkActions()">
+                            <i class="fas fa-edit me-1"></i>Bulk Actions
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Vehicles Table -->
+    <div class="vehicle-table">
+        <div class="card-header bg-white border-bottom">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <h5 class="mb-0">
+                        <i class="fas fa-list me-2 text-primary"></i>Vehicle Inventory
+                    </h5>
+                </div>
+                <div class="col-md-6">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Search vehicles..." id="searchInput">
+                        <button class="btn btn-outline-secondary" type="button">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="table-responsive">
+            <table class="table table-hover mb-0" id="vehiclesTable">
+                <thead>
+                    <tr>
+                        <th><input type="checkbox" id="selectAll"></th>
+                        <th>Image</th>
+                        <th>Vehicle Details</th>
+                        <th>Price</th>
+                        <th>Mileage</th>
+                        <th>Status</th>
+                        <th>Contact</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for vehicle in vehicles %}
+                    <tr data-vehicle-id="{{ vehicle.id }}">
+                        <td>
+                            <input type="checkbox" class="vehicle-checkbox" value="{{ vehicle.id }}">
+                        </td>
+                        <td>
+                            {% if vehicle.images_list %}
+                                <img src="{{ url_for('static', filename='uploads/' + vehicle.images_list[0]) }}" 
+                                     class="rounded" style="width: 60px; height: 45px; object-fit: cover;" 
+                                     alt="{{ vehicle.title }}">
+                            {% else %}
+                                <div class="bg-light rounded d-flex align-items-center justify-content-center text-muted" 
+                                     style="width: 60px; height: 45px;">
+                                    <i class="fas fa-car"></i>
+                                </div>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <div>
+                                <h6 class="mb-1">{{ vehicle.title }}</h6>
+                                <small class="text-muted">{{ vehicle.year }} • {{ vehicle.make }} {{ vehicle.model }}</small>
+                                <br><span class="badge bg-light text-dark">{{ vehicle.category }}</span>
+                            </div>
+                        </td>
+                        <td>
+                            <strong class="text-success">${{ "{:,.0f}".format(vehicle.price) }}</strong>
+                        </td>
+                        <td>
+                            {{ "{:,}".format(vehicle.mileage) }} mi
+                        </td>
+                        <td>
+                            {% if vehicle.status == 'available' %}
+                                <span class="badge bg-success status-badge">Available</span>
+                            {% else %}
+                                <span class="badge bg-secondary status-badge">Sold</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <div>
+                                <small class="d-block">{{ vehicle.contact_name }}</small>
+                                <small class="text-muted">{{ vehicle.contact_phone }}</small>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="btn-group btn-group-sm" role="group">
+                                <button type="button" class="btn btn-outline-primary btn-action" 
+                                        onclick="viewVehicle('{{ vehicle.id }}')" title="View Details">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button type="button" class="btn btn-outline-warning btn-action" 
+                                        onclick="editVehicle('{{ vehicle.id }}')" title="Edit">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button type="button" class="btn btn-outline-danger btn-action" 
+                                        onclick="confirmDelete('{{ vehicle.id }}')" title="Delete">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Enhanced Vehicle Modal with Professional Forms -->
+<div class="modal fade" id="vehicleModal" tabindex="-1">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-car me-2"></i>
+                    <span id="modalTitle">Add New Vehicle</span>
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="vehicleForm" method="POST" enctype="multipart/form-data">
+                {{ form.hidden_tag() }}
+                <div class="modal-body" style="max-height: 70vh; overflow-y: auto;">
+                    
+                    <!-- Basic Information Section -->
+                    <div class="form-section">
+                        <h6><i class="fas fa-info-circle me-2"></i>Basic Information</h6>
+                        <div class="row g-3">
+                            <div class="col-md-8">
+                                {{ form.title.label(class="form-label") }}
+                                {{ form.title(class="form-control", placeholder="e.g., 2020 Honda Civic LX") }}
+                                <div class="invalid-feedback"></div>
+                            </div>
+                            <div class="col-md-4">
+                                {{ form.category.label(class="form-label") }}
+                                {{ form.category(class="form-select") }}
+                                <div class="invalid-feedback"></div>
+                            </div>
+                            <div class="col-md-4">
+                                {{ form.make.label(class="form-label") }}
+                                {{ form.make(class="form-control", placeholder="e.g., Honda") }}
+                                <div class="invalid-feedback"></div>
+                            </div>
+                            <div class="col-md-4">
+                                {{ form.model.label(class="form-label") }}
+                                {{ form.model(class="form-control", placeholder="e.g., Civic") }}
+                                <div class="invalid-feedback"></div>
+                            </div>
+                            <div class="col-md-4">
+                                {{ form.year.label(class="form-label") }}
+                                {{ form.year(class="form-control", placeholder="e.g., 2020") }}
+                                <div class="invalid-feedback"></div>
+                            </div>
+                            <div class="col-md-6">
+                                {{ form.price.label(class="form-label") }}
+                                <div class="input-group">
+                                    <span class="input-group-text">$</span>
+                                    {{ form.price(class="form-control", placeholder="25000") }}
+                                </div>
+                                <div class="invalid-feedback"></div>
+                            </div>
+                            <div class="col-md-6">
+                                {{ form.mileage.label(class="form-label") }}
+                                <div class="input-group">
+                                    {{ form.mileage(class="form-control", placeholder="50000") }}
+                                    <span class="input-group-text">miles</span>
+                                </div>
+                                <div class="invalid-feedback"></div>
+                            </div>
+                            <div class="col-12">
+                                {{ form.description.label(class="form-label") }}
+                                {{ form.description(class="form-control", rows="3", placeholder="Describe the vehicle's condition, features, and any important details...") }}
+                                <div class="invalid-feedback"></div>
+                            </div>
+                            <div class="col-md-6">
+                                {{ form.status.label(class="form-label") }}
+                                {{ form.status(class="form-select") }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Engine & Performance Section -->
+                    <div class="form-section">
+                        <h6><i class="fas fa-cogs me-2"></i>Engine & Performance</h6>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                {{ form.fuel_type.label(class="form-label") }}
+                                {{ form.fuel_type(class="form-select") }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ form.transmission.label(class="form-label") }}
+                                {{ form.transmission(class="form-select") }}
+                            </div>
+                            <div class="col-md-4">
+                                {{ form.engine_size.label(class="form-label") }}
+                                {{ form.engine_size(class="form-control", placeholder="e.g., 2.0L") }}
+                            </div>
+                            <div class="col-md-4">
+                                {{ form.horsepower.label(class="form-label") }}
+                                {{ form.horsepower(class="form-control", placeholder="e.g., 180") }}
+                            </div>
+                            <div class="col-md-4">
+                                {{ form.drivetrain.label(class="form-label") }}
+                                {{ form.drivetrain(class="form-select") }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ form.fuel_economy.label(class="form-label") }}
+                                {{ form.fuel_economy(class="form-control", placeholder="e.g., 25 city / 32 highway mpg") }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Ownership & History Section -->
+                    <div class="form-section">
+                        <h6><i class="fas fa-history me-2"></i>Ownership & History</h6>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                {{ form.number_of_owners.label(class="form-label") }}
+                                {{ form.number_of_owners(class="form-control", placeholder="e.g., 1") }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ form.odometer_reading.label(class="form-label") }}
+                                {{ form.odometer_reading(class="form-control", placeholder="Current odometer reading") }}
+                            </div>
+                            <div class="col-md-4">
+                                {{ form.previous_owner_name.label(class="form-label") }}
+                                {{ form.previous_owner_name(class="form-control", placeholder="Previous owner name") }}
+                            </div>
+                            <div class="col-md-4">
+                                {{ form.previous_owner_phone.label(class="form-label") }}
+                                {{ form.previous_owner_phone(class="form-control", placeholder="(555) 123-4567") }}
+                            </div>
+                            <div class="col-md-4">
+                                {{ form.previous_owner_email.label(class="form-label") }}
+                                {{ form.previous_owner_email(class="form-control", placeholder="owner@email.com") }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ form.accident_history.label(class="form-label") }}
+                                {{ form.accident_history(class="form-control", rows="2", placeholder="Any accident history or damage reports...") }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ form.service_records.label(class="form-label") }}
+                                {{ form.service_records(class="form-control", rows="2", placeholder="Maintenance and service records...") }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Insurance & Documentation Section -->
+                    <div class="form-section">
+                        <h6><i class="fas fa-shield-alt me-2"></i>Insurance & Documentation</h6>
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                {{ form.insurance_company.label(class="form-label") }}
+                                {{ form.insurance_company(class="form-control", placeholder="e.g., State Farm") }}
+                            </div>
+                            <div class="col-md-4">
+                                {{ form.insurance_policy_number.label(class="form-label") }}
+                                {{ form.insurance_policy_number(class="form-control", placeholder="Policy number") }}
+                            </div>
+                            <div class="col-md-4">
+                                {{ form.insurance_expiry.label(class="form-label") }}
+                                {{ form.insurance_expiry(class="form-control", placeholder="MM/DD/YYYY") }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ form.registration_number.label(class="form-label") }}
+                                {{ form.registration_number(class="form-control", placeholder="Registration number") }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ form.vin_number.label(class="form-label") }}
+                                {{ form.vin_number(class="form-control", placeholder="17-character VIN", maxlength="17") }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Features & Condition Section -->
+                    <div class="form-section">
+                        <h6><i class="fas fa-star me-2"></i>Features & Condition</h6>
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                {{ form.exterior_color.label(class="form-label") }}
+                                {{ form.exterior_color(class="form-control", placeholder="e.g., Blue") }}
+                            </div>
+                            <div class="col-md-4">
+                                {{ form.interior_color.label(class="form-label") }}
+                                {{ form.interior_color(class="form-control", placeholder="e.g., Black") }}
+                            </div>
+                            <div class="col-md-4">
+                                {{ form.condition_rating.label(class="form-label") }}
+                                {{ form.condition_rating(class="form-select") }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ form.features.label(class="form-label") }}
+                                {{ form.features(class="form-control", rows="2", placeholder="List features separated by commas (e.g., Sunroof, Leather seats, Navigation...)") }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ form.warranty_info.label(class="form-label") }}
+                                {{ form.warranty_info(class="form-control", rows="2", placeholder="Warranty information and coverage details...") }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Contact Information Section -->
+                    <div class="form-section">
+                        <h6><i class="fas fa-address-book me-2"></i>Contact Information</h6>
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                {{ form.contact_name.label(class="form-label") }}
+                                {{ form.contact_name(class="form-control", placeholder="Contact person name") }}
+                                <div class="invalid-feedback"></div>
+                            </div>
+                            <div class="col-md-4">
+                                {{ form.contact_phone.label(class="form-label") }}
+                                {{ form.contact_phone(class="form-control", placeholder="(555) 123-4567") }}
+                                <div class="invalid-feedback"></div>
+                            </div>
+                            <div class="col-md-4">
+                                {{ form.contact_email.label(class="form-label") }}
+                                {{ form.contact_email(class="form-control", placeholder="contact@email.com") }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Images Section -->
+                    <div class="form-section">
+                        <h6><i class="fas fa-images me-2"></i>Vehicle Images</h6>
+                        <div class="row g-3">
+                            <div class="col-12">
+                                {{ form.images.label(class="form-label") }}
+                                {{ form.images(class="form-control") }}
+                                <div class="form-text">Select up to 6 high-quality images. Accepted formats: JPG, PNG, GIF (Max 16MB each)</div>
+                                <div class="invalid-feedback"></div>
+                            </div>
+                            <div class="col-12" id="current-images-container"></div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer bg-light">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-1"></i>Cancel
+                    </button>
+                    <button type="submit" class="btn btn-primary" id="submitBtn">
+                        <i class="fas fa-save me-1"></i>
+                        <span id="submitText">Save Vehicle</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Loading Overlay -->
+<div id="loading-overlay" class="loading-overlay" style="display: none;">
+    <div class="loading-spinner">
+        <div class="spinner-border text-primary mb-3" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+        <p class="mb-0">Processing...</p>
+    </div>
+</div>
+
+<script>
+// Enhanced admin dashboard functionality
+let currentVehicleId = null;
+
+function showLoading() {
+    document.getElementById('loading-overlay').style.display = 'flex';
+}
+
+function hideLoading() {
+    document.getElementById('loading-overlay').style.display = 'none';
+}
+
+function openAddModal() {
+    currentVehicleId = null;
+    document.getElementById('modalTitle').textContent = 'Add New Vehicle';
+    document.getElementById('submitText').textContent = 'Save Vehicle';
+    document.getElementById('vehicleForm').reset();
+    document.getElementById('vehicleForm').action = '/admin/add_vehicle';
+    
+    // Clear validation states
+    document.querySelectorAll('.is-valid, .is-invalid').forEach(el => {
+        el.classList.remove('is-valid', 'is-invalid');
+    });
+    
+    // Clear image preview
+    const container = document.getElementById('current-images-container');
+    if (container) container.innerHTML = '';
+}
+
+function editVehicle(vehicleId) {
+    currentVehicleId = vehicleId;
+    document.getElementById('modalTitle').textContent = 'Edit Vehicle';
+    document.getElementById('submitText').textContent = 'Update Vehicle';
+    document.getElementById('vehicleForm').action = `/admin/edit_vehicle/${vehicleId}`;
+    
+    showLoading();
+    
+    // Fetch vehicle data
+    fetch(`/admin/vehicle/${vehicleId}`)
+        .then(response => response.json())
+        .then(data => {
+            populateForm(data);
+            hideLoading();
+            new bootstrap.Modal(document.getElementById('vehicleModal')).show();
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            hideLoading();
+            alert('Error loading vehicle data');
+        });
+}
+
+function populateForm(vehicle) {
+    // Populate all form fields
+    Object.keys(vehicle).forEach(key => {
+        const field = document.getElementById(key) || document.querySelector(`[name="${key}"]`);
+        if (field && vehicle[key] !== null && vehicle[key] !== undefined) {
+            field.value = vehicle[key];
+        }
+    });
+    
+    // Handle images display
+    if (vehicle.images && vehicle.images.length > 0) {
+        displayCurrentImages(vehicle.images);
+    }
+}
+
+function displayCurrentImages(images) {
+    const container = document.getElementById('current-images-container');
+    if (!container) return;
+    
+    container.innerHTML = '<h6 class="text-muted mb-2">Current Images:</h6>';
+    const row = document.createElement('div');
+    row.className = 'row g-2';
+    
+    images.forEach((image, index) => {
+        const col = document.createElement('div');
+        col.className = 'col-6 col-md-4 col-lg-3';
+        col.innerHTML = `
+            <div class="image-preview position-relative">
+                <img src="/static/uploads/${image}" class="img-fluid rounded" style="height: 100px; object-fit: cover; width: 100%;">
+                <button type="button" class="btn btn-sm btn-danger position-absolute top-0 end-0 m-1" 
+                        onclick="removeImage('${image}')" style="padding: 2px 6px;">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        `;
+        row.appendChild(col);
+    });
+    
+    container.appendChild(row);
+}
+
+function removeImage(imageName) {
+    if (!confirm('Remove this image?')) return;
+    
+    // Logic to remove image would go here
+    console.log('Removing image:', imageName);
+}
+
+function confirmDelete(vehicleId) {
+    if (confirm('Are you sure you want to delete this vehicle? This action cannot be undone.')) {
+        deleteVehicle(vehicleId);
+    }
+}
+
+function deleteVehicle(vehicleId) {
+    showLoading();
+    
+    fetch(`/admin/delete_vehicle/${vehicleId}`, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': document.querySelector('[name=csrf_token]').value
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        hideLoading();
+        if (data.success) {
+            location.reload();
+        } else {
+            alert('Error deleting vehicle: ' + data.message);
+        }
+    })
+    .catch(error => {
+        hideLoading();
+        alert('Error deleting vehicle');
+        console.error('Error:', error);
+    });
+}
+
+function viewVehicle(vehicleId) {
+    window.open(`/vehicle/${vehicleId}`, '_blank');
+}
+
+// Search functionality
+document.getElementById('searchInput').addEventListener('input', function(e) {
+    const searchTerm = e.target.value.toLowerCase();
+    const rows = document.querySelectorAll('#vehiclesTable tbody tr');
+    
+    rows.forEach(row => {
+        const text = row.textContent.toLowerCase();
+        row.style.display = text.includes(searchTerm) ? '' : 'none';
+    });
+});
+
+// Select all checkbox
+document.getElementById('selectAll').addEventListener('change', function(e) {
+    const checkboxes = document.querySelectorAll('.vehicle-checkbox');
+    checkboxes.forEach(cb => cb.checked = e.target.checked);
+});
+
+// Quick actions
+function exportData() {
+    window.location.href = '/admin/export';
+}
+
+function generateReport() {
+    alert('Report generation feature coming soon!');
+}
+
+function bulkActions() {
+    const selected = document.querySelectorAll('.vehicle-checkbox:checked');
+    if (selected.length === 0) {
+        alert('Please select vehicles first');
+        return;
+    }
+    alert(`Bulk actions for ${selected.length} vehicles - feature coming soon!`);
+}
+
+// Enhanced form submission
+document.getElementById('vehicleForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(this);
+    const submitBtn = document.getElementById('submitBtn');
+    const originalText = submitBtn.innerHTML;
+    
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Saving...';
+    
+    fetch(this.action, {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            bootstrap.Modal.getInstance(document.getElementById('vehicleModal')).hide();
+            location.reload();
+        } else {
+            alert('Error: ' + data.message);
+        }
+    })
+    .catch(error => {
+        alert('Error saving vehicle');
+        console.error('Error:', error);
+    })
+    .finally(() => {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalText;
+    });
+});
+</script>
+{% endblock %}
