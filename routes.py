@@ -96,7 +96,7 @@ def admin_dashboard():
     try:
         vehicles = get_all_vehicles()
         form = VehicleForm()
-        return render_template('enhanced_admin.html', vehicles=vehicles, form=form)
+        return render_template('wizard_admin.html', vehicles=vehicles, form=form)
     except Exception as e:
         app.logger.error(f"Error loading admin dashboard: {e}")
         flash('Error loading dashboard. Please try again.', 'error')
