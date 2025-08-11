@@ -59,23 +59,21 @@ def vehicle_detail(vehicle_id):
 @app.route('/admin/login', methods=['GET', 'POST'])
 def admin_login():
     """Admin login page"""
-    if 'admin_logged_in' in session:
+    # Check if already logged in - redirect to dashboard
+    if session.get('admin_logged_in'):
         return redirect(url_for('admin_dashboard'))
 
     form = LoginForm()
     
-    if request.method == 'POST':
-        if form.validate_on_submit():
-            if verify_admin(form.username.data, form.password.data):
-                session['admin_logged_in'] = True
-                session['admin_username'] = form.username.data
-                session.permanent = True
-                flash('Welcome back! Successfully logged in.', 'success')
-                return redirect(url_for('admin_dashboard'))
-            else:
-                flash('Invalid username or password. Please try again.', 'error')
+    if request.method == 'POST' and form.validate_on_submit():
+        if verify_admin(form.username.data, form.password.data):
+            session['admin_logged_in'] = True
+            session['admin_username'] = form.username.data
+            session.permanent = True
+            flash('Welcome back! Successfully logged in.', 'success')
+            return redirect(url_for('admin_dashboard'))
         else:
-            flash('Please fill in all required fields.', 'error')
+            flash('Invalid username or password. Please try again.', 'error')
 
     return render_template('admin_login.html', form=form)
 
@@ -90,12 +88,19 @@ def admin_logout():
 @app.route('/admin')
 def admin_dashboard():
     """Professional admin dashboard with enhanced features"""
-    if 'admin_logged_in' not in session:
+    # Check authentication
+    if not session.get('admin_logged_in'):
+        flash('Please log in to access the admin dashboard.', 'error')
         return redirect(url_for('admin_login'))
 
-    vehicles = get_all_vehicles()
-    form = VehicleForm()
-    return render_template('enhanced_admin.html', vehicles=vehicles, form=form)
+    try:
+        vehicles = get_all_vehicles()
+        form = VehicleForm()
+        return render_template('enhanced_admin.html', vehicles=vehicles, form=form)
+    except Exception as e:
+        app.logger.error(f"Error loading admin dashboard: {e}")
+        flash('Error loading dashboard. Please try again.', 'error')
+        return redirect(url_for('admin_login'))
 
 @app.route('/admin/dashboard')
 def admin_dashboard_direct():
