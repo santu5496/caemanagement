@@ -115,9 +115,7 @@ def admin_dashboard_direct():
 @app.route('/admin/add_vehicle', methods=['POST'])
 def add_vehicle_route():
     """Add new vehicle via AJAX"""
-    # Temporarily bypass authentication for testing
-    # if 'admin_logged_in' not in session:
-    #     return jsonify({'success': False, 'message': 'Not authenticated'}), 401
+    # Authentication disabled for easy testing
 
     form = VehicleForm()
     print(f"DEBUG - Raw form data: {dict(request.form)}")
@@ -189,9 +187,7 @@ def add_vehicle_route():
 @app.route('/admin/edit_vehicle/<vehicle_id>', methods=['POST'])
 def edit_vehicle(vehicle_id):
     """Edit existing vehicle via AJAX"""
-    # Temporarily bypass authentication for testing
-    # if 'admin_logged_in' not in session:
-    #     return jsonify({'success': False, 'message': 'Not authenticated'}), 401
+    # Authentication disabled for easy testing
 
     vehicle = get_vehicle(vehicle_id)
     if not vehicle:
