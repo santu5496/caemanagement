@@ -430,9 +430,21 @@
 }
 
 /* Form styling improvements */
+.form-control, .form-select {
+    color: #212529 !important;
+    background-color: #ffffff !important;
+}
+
 .form-control:focus, .form-select:focus {
     border-color: var(--bs-primary);
     box-shadow: 0 0 0 0.2rem rgba(var(--bs-primary-rgb), 0.25);
+    color: #212529 !important;
+    background-color: #ffffff !important;
+}
+
+.form-label {
+    color: #212529 !important;
+    font-weight: 600 !important;
 }
 
 /* Card hover effects */

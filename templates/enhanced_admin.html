@@ -89,11 +89,15 @@
     border-radius: 8px;
     border: 2px solid #e9ecef;
     transition: all 0.3s ease;
+    color: #212529 !important;
+    background-color: #ffffff !important;
 }
 
 .form-control:focus, .form-select:focus {
     border-color: #007bff;
     box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.15);
+    color: #212529 !important;
+    background-color: #ffffff !important;
 }
 
 .btn-action {
@@ -138,6 +142,30 @@
     padding: 2rem;
     text-align: center;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+/* Global form field styling to ensure black text in all forms */
+.modal .form-control, 
+.modal .form-select, 
+.modal textarea,
+.modal input {
+    color: #212529 !important;
+    background-color: #ffffff !important;
+    border: 2px solid #e9ecef !important;
+}
+
+.modal .form-control:focus, 
+.modal .form-select:focus, 
+.modal textarea:focus,
+.modal input:focus {
+    color: #212529 !important;
+    background-color: #ffffff !important;
+    border-color: #007bff !important;
+}
+
+.modal .form-label {
+    color: #212529 !important;
+    font-weight: 600 !important;
 }
 </style>
 
@@ -356,28 +384,28 @@
                         <h6><i class="fas fa-info-circle me-2"></i>Basic Information</h6>
                         <div class="row g-3">
                             <div class="col-md-8">
-                                {{ form.title.label(class="form-label") }}
-                                {{ form.title(class="form-control", placeholder="e.g., 2020 Honda Civic LX") }}
+                                {{ form.title.label(class="form-label", style="color: #212529; font-weight: 600;") }}
+                                {{ form.title(class="form-control", placeholder="e.g., 2020 Honda Civic LX", style="color: #212529 !important; background-color: #ffffff !important;") }}
                                 <div class="invalid-feedback"></div>
                             </div>
                             <div class="col-md-4">
-                                {{ form.category.label(class="form-label") }}
-                                {{ form.category(class="form-select") }}
+                                {{ form.category.label(class="form-label", style="color: #212529; font-weight: 600;") }}
+                                {{ form.category(class="form-select", style="color: #212529 !important; background-color: #ffffff !important;") }}
                                 <div class="invalid-feedback"></div>
                             </div>
                             <div class="col-md-4">
-                                {{ form.make.label(class="form-label") }}
-                                {{ form.make(class="form-control", placeholder="e.g., Honda") }}
+                                {{ form.make.label(class="form-label", style="color: #212529; font-weight: 600;") }}
+                                {{ form.make(class="form-control", placeholder="e.g., Honda", style="color: #212529 !important; background-color: #ffffff !important;") }}
                                 <div class="invalid-feedback"></div>
                             </div>
                             <div class="col-md-4">
-                                {{ form.model.label(class="form-label") }}
-                                {{ form.model(class="form-control", placeholder="e.g., Civic") }}
+                                {{ form.model.label(class="form-label", style="color: #212529; font-weight: 600;") }}
+                                {{ form.model(class="form-control", placeholder="e.g., Civic", style="color: #212529 !important; background-color: #ffffff !important;") }}
                                 <div class="invalid-feedback"></div>
                             </div>
                             <div class="col-md-4">
-                                {{ form.year.label(class="form-label") }}
-                                {{ form.year(class="form-control", placeholder="e.g., 2020") }}
+                                {{ form.year.label(class="form-label", style="color: #212529; font-weight: 600;") }}
+                                {{ form.year(class="form-control", placeholder="e.g., 2020", style="color: #212529 !important; background-color: #ffffff !important;") }}
                                 <div class="invalid-feedback"></div>
                             </div>
                             <div class="col-md-6">
