@@ -1109,11 +1109,17 @@ function updateStatistics() {
 }
 
 function showLoading() {
-    document.getElementById('loading-overlay').style.display = 'block';
+    const overlay = document.getElementById('loading-overlay');
+    if (overlay) {
+        overlay.style.display = 'block';
+    }
 }
 
 function hideLoading() {
-    document.getElementById('loading-overlay').style.display = 'none';
+    const overlay = document.getElementById('loading-overlay');
+    if (overlay) {
+        overlay.style.display = 'none';
+    }
 }
 
 function showToast(message, type = 'info') {
@@ -1152,19 +1158,28 @@ document.getElementById('vehicleForm').addEventListener('submit', function(e) {
 
     console.log('Form submission started');
 
-    // Basic validation
+    // Basic validation - only check fields in basic info tab
     const title = document.getElementById('modal-title').value.trim();
     const make = document.getElementById('modal-make').value.trim();
     const model = document.getElementById('modal-model').value.trim();
     const year = document.getElementById('modal-year').value;
     const price = document.getElementById('modal-price').value;
     const mileage = document.getElementById('modal-mileage').value;
-    const contactName = document.getElementById('modal-contact-name').value.trim();
-    const contactPhone = document.getElementById('modal-contact-phone').value.trim();
 
-    if (!title || !make || !model || !year || !price || !mileage || !contactName || !contactPhone) {
+    if (!title || !make || !model || !year || !price || mileage === '') {
         showToast('Please fill in all required fields in Basic Info before continuing', 'danger');
         return;
+    }
+    
+    // Contact validation - only check when we have those fields available
+    const contactName = document.getElementById('modal-contact-name');
+    const contactPhone = document.getElementById('modal-contact-phone');
+    
+    if (contactName && contactPhone) {
+        if (!contactName.value.trim() || !contactPhone.value.trim()) {
+            showToast('Please fill in contact information before saving', 'danger');
+            return;
+        }
     }
 
     const formData = new FormData(this);
