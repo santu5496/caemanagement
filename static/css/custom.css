@@ -220,10 +220,69 @@
     
     .listing-card {
         margin-bottom: 1rem;
+        display: flex;
+        flex-direction: row;
+        align-items: stretch;
+        height: auto;
+        min-height: 140px;
     }
     
     .listing-image-wrapper {
-        height: 180px;
+        height: 140px;
+        width: 140px;
+        flex-shrink: 0;
+        margin-right: 0;
+    }
+    
+    .listing-content {
+        flex: 1;
+        padding: 0.75rem !important;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+    
+    .listing-price h4 {
+        font-size: 1.2rem;
+        margin-bottom: 0.25rem;
+    }
+    
+    .listing-title {
+        font-size: 0.95rem;
+        margin-bottom: 0.25rem;
+        line-height: 1.2;
+    }
+    
+    .listing-subtitle {
+        font-size: 0.8rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .listing-specs {
+        padding: 0.5rem 0;
+        margin-bottom: 0.5rem;
+        border-top: 1px solid #f8f9fa;
+        border-bottom: none;
+        font-size: 0.75rem;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+    
+    .spec-item {
+        font-size: 0.75rem;
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+    }
+    
+    .listing-actions {
+        margin-top: auto;
+        gap: 0.5rem;
+    }
+    
+    .listing-actions .btn {
+        font-size: 0.8rem;
+        padding: 0.375rem 0.5rem;
     }
     
     .category-card {
@@ -231,29 +290,125 @@
     }
     
     .container {
-        padding-left: 1rem;
-        padding-right: 1rem;
+        padding-left: 0.75rem;
+        padding-right: 0.75rem;
+    }
+    
+    /* Mobile grid improvements */
+    .row.g-3 {
+        --bs-gutter-x: 0.75rem;
+        --bs-gutter-y: 0.75rem;
+    }
+    
+    /* Favorite button mobile adjustments */
+    .favorite-btn {
+        width: 32px;
+        height: 32px;
+        top: 8px;
+        right: 8px;
+        font-size: 14px;
+    }
+    
+    /* Category badge mobile adjustments */
+    .listing-overlay {
+        top: 8px;
+        left: 8px;
+    }
+    
+    .category-badge {
+        font-size: 0.65rem;
+        padding: 0.25rem 0.5rem;
+    }
+    
+    .sold-badge {
+        font-size: 0.65rem;
+        padding: 0.25rem 0.5rem;
     }
 }
 
 @media (max-width: 576px) {
+    /* Compact mobile layout for 3-4 vehicles per screen */
+    .listing-card {
+        min-height: 120px;
+        margin-bottom: 0.75rem;
+    }
+    
+    .listing-image-wrapper {
+        height: 120px;
+        width: 120px;
+    }
+    
+    .listing-content {
+        padding: 0.5rem !important;
+    }
+    
+    .listing-price h4 {
+        font-size: 1.1rem;
+    }
+    
+    .listing-title {
+        font-size: 0.9rem;
+        margin-bottom: 0.2rem;
+    }
+    
+    .listing-subtitle {
+        font-size: 0.75rem;
+        margin-bottom: 0.4rem;
+    }
+    
     .listing-specs {
-        flex-direction: column;
-        gap: 8px;
+        padding: 0.3rem 0;
+        margin-bottom: 0.4rem;
+        gap: 0.3rem;
     }
     
     .spec-item {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
+        font-size: 0.7rem;
     }
     
     .listing-actions {
-        flex-direction: column;
+        gap: 0.3rem;
+    }
+    
+    .listing-actions .btn {
+        font-size: 0.75rem;
+        padding: 0.25rem 0.4rem;
     }
     
     .hero-section .lead {
         font-size: 1rem;
+    }
+    
+    .hero-section {
+        padding: 1.5rem 0;
+    }
+    
+    .category-card {
+        padding: 0.75rem;
+        margin-bottom: 0.75rem;
+    }
+    
+    .category-card h6 {
+        font-size: 0.9rem;
+        margin-bottom: 0.25rem;
+    }
+    
+    .category-card small {
+        font-size: 0.75rem;
+    }
+    
+    /* Reduce spacing between sections */
+    .container.mb-4 {
+        margin-bottom: 1.5rem !important;
+    }
+    
+    /* Make filter bar more compact */
+    .row.align-items-center h5 {
+        font-size: 1.1rem;
+    }
+    
+    .badge {
+        font-size: 0.7rem;
     }
 }
 
