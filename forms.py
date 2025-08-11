@@ -1,7 +1,14 @@
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileAllowed, MultipleFileField
 from wtforms import StringField, TextAreaField, SelectField, IntegerField, FloatField, PasswordField, EmailField
-from wtforms.validators import DataRequired, NumberRange, Length, Optional, Email
+from wtforms.validators import DataRequired, NumberRange, Length, Optional, Email, ValidationError
+
+def DataRequiredAllowZero(message=None):
+    """Custom validator that requires data but allows zero values"""
+    def _validator(form, field):
+        if field.data is None or (isinstance(field.data, str) and not field.data.strip()):
+            raise ValidationError(message or 'This field is required.')
+    return _validator
 
 class LoginForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
@@ -17,11 +24,12 @@ class VehicleForm(FlaskForm):
     model = StringField('Model', validators=[DataRequired(), Length(max=50)])
     year = IntegerField('Year', validators=[DataRequired(), NumberRange(min=1990, max=2025)])
     price = FloatField('Price ($)', validators=[DataRequired(), NumberRange(min=0)])
-    mileage = IntegerField('Mileage (miles)', validators=[DataRequired(), NumberRange(min=0)])
+    mileage = IntegerField('Mileage (miles)', validators=[DataRequiredAllowZero(), NumberRange(min=0, max=999999)])
     description = TextAreaField('Description', validators=[Length(max=1000)])
     status = SelectField('Status', 
                         choices=[('available', 'Available'), ('sold', 'Sold')],
-                        validators=[DataRequired()])
+                        default='available',
+                        validators=[Optional()])
     
     # Engine & Performance
     fuel_type = SelectField('Fuel Type', 
@@ -67,6 +75,6 @@ class VehicleForm(FlaskForm):
     
     # Contact & Images
     contact_name = StringField('Contact Name', validators=[DataRequired(), Length(max=100)])
-    contact_phone = StringField('Contact Phone', validators=[DataRequired(), Length(max=20)])
+    contact_phone = StringField('Contact Phone', validators=[DataRequired(), Length(max=50)])
     images = MultipleFileField('Vehicle Images', 
                               validators=[FileAllowed(['jpg', 'jpeg', 'png', 'gif'], 'Images only!')])

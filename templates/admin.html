@@ -375,11 +375,8 @@
                                 </div>
                             </div>
 
-                            <div class="mb-3" id="status-field" style="display: none;">
-                                {{ form.status.label(class="form-label") }}
-                                {{ form.status(class="form-select", id="modal-status") }}
-                                <div class="invalid-feedback"></div>
-                            </div>
+                            <!-- Hidden status field with default value -->
+                            {{ form.status(id="modal-status", value="available", style="display: none;") }}
                         </div>
 
                         <!-- Engine & Performance Tab -->
@@ -1161,11 +1158,12 @@ document.getElementById('vehicleForm').addEventListener('submit', function(e) {
     const model = document.getElementById('modal-model').value.trim();
     const year = document.getElementById('modal-year').value;
     const price = document.getElementById('modal-price').value;
+    const mileage = document.getElementById('modal-mileage').value;
     const contactName = document.getElementById('modal-contact-name').value.trim();
     const contactPhone = document.getElementById('modal-contact-phone').value.trim();
 
-    if (!title || !make || !model || !year || !price || !contactName || !contactPhone) {
-        showToast('Please fill in all required fields', 'danger');
+    if (!title || !make || !model || !year || !price || !mileage || !contactName || !contactPhone) {
+        showToast('Please fill in all required fields in Basic Info before continuing', 'danger');
         return;
     }
 

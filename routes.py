@@ -120,7 +120,9 @@ def add_vehicle_route():
     #     return jsonify({'success': False, 'message': 'Not authenticated'}), 401
 
     form = VehicleForm()
+    print(f"DEBUG - Raw form data: {dict(request.form)}")
     print(f"DEBUG - Form submission received. Title: {form.title.data}")
+    print(f"DEBUG - Mileage data: {form.mileage.data}")
     print(f"DEBUG - Form validation passed: {form.validate_on_submit()}")
     print(f"DEBUG - Form errors: {form.errors}")
 
