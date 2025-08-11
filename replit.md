@@ -2,7 +2,11 @@
 
 ## Overview
 
-A Flask-based automotive marketplace web application similar to OLX, designed for browsing vehicles. The platform features a modern, mobile-first design with an intuitive customer catalog for viewing vehicles and an admin-only dashboard for managing listings. Regular users can only browse and view vehicles, while administrators have exclusive access to add, edit, and manage vehicle listings with photos. Built as an MVP with in-memory storage, the application provides comprehensive vehicle browsing with search/filter functionality and admin authentication.
+A Flask-based automotive marketplace web application similar to OLX, designed for browsing vehicles. The platform features a modern, mobile-first design with an intuitive customer catalog for viewing vehicles and an admin-only dashboard for managing listings. Regular users can only browse and view vehicles, while administrators have exclusive access to add, edit, and manage vehicle listings with photos. Built with SQLite database persistence, the application provides comprehensive vehicle browsing with search/filter functionality and admin authentication.
+
+## Recent Changes
+
+**Migration Complete (August 11, 2025)**: Successfully migrated from Replit agent to standard Replit environment with full PostgreSQL compatibility support, enhanced security with CSRF protection enabled, and gunicorn web server deployment.
 
 ## User Preferences
 

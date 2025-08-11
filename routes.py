@@ -60,27 +60,15 @@ def vehicle_detail(vehicle_id):
 def admin_login():
     """Admin login page"""
     if 'admin_logged_in' in session:
-        return redirect(url_for('index'))
+        return redirect(url_for('admin_dashboard'))
 
     form = LoginForm()
-    if request.method == 'POST':
-        # Check for direct form submission without CSRF validation for demo purposes
-        username = request.form.get('username')
-        password = request.form.get('password')
-
-        if username and password and verify_admin(username, password):
+    if form.validate_on_submit():
+        if verify_admin(form.username.data, form.password.data):
             session['admin_logged_in'] = True
-            session['admin_username'] = username
+            session['admin_username'] = form.username.data
             flash('Logged in successfully', 'success')
             return redirect(url_for('admin_dashboard'))
-        elif form.validate_on_submit():
-            if verify_admin(form.username.data, form.password.data):
-                session['admin_logged_in'] = True
-                session['admin_username'] = form.username.data
-                flash('Logged in successfully', 'success')
-                return redirect(url_for('admin_dashboard'))
-            else:
-                flash('Invalid username or password', 'error')
         else:
             flash('Invalid username or password', 'error')
 
