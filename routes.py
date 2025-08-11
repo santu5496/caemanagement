@@ -113,14 +113,15 @@ def admin_dashboard_direct():
 @app.route('/admin/add_vehicle', methods=['POST'])
 def add_vehicle_route():
     """Add new vehicle via AJAX"""
-    # Authentication disabled for easy testing
+    # Check authentication
+    if not session.get('admin_logged_in'):
+        return jsonify({'success': False, 'message': 'Authentication required'}), 401
 
     form = VehicleForm()
-    print(f"DEBUG - Raw form data: {dict(request.form)}")
-    print(f"DEBUG - Form submission received. Title: {form.title.data}")
-    print(f"DEBUG - Mileage data: {form.mileage.data}")
-    print(f"DEBUG - Form validation passed: {form.validate_on_submit()}")
-    print(f"DEBUG - Form errors: {form.errors}")
+    app.logger.debug(f"Raw form data: {dict(request.form)}")
+    app.logger.debug(f"Form files: {list(request.files.keys())}")
+    app.logger.debug(f"Form validation passed: {form.validate_on_submit()}")
+    app.logger.debug(f"Form errors: {form.errors}")
 
     if form.validate_on_submit():
         try:
@@ -174,13 +175,20 @@ def add_vehicle_route():
             return jsonify({'success': True, 'message': 'Vehicle added successfully', 'vehicle': vehicle.to_dict()})
 
         except Exception as e:
+            app.logger.error(f"Error adding vehicle: {str(e)}")
+            db.session.rollback()
             return jsonify({'success': False, 'message': f'Error adding vehicle: {str(e)}'}), 500
 
     # Return validation errors
     errors = {}
     for field, error_list in form.errors.items():
-        errors[field] = error_list[0] if error_list else 'Validation error'
-    return jsonify({'success': False, 'message': 'Validation failed', 'errors': errors}), 400
+        if isinstance(error_list, list) and error_list:
+            errors[field] = error_list[0]
+        else:
+            errors[field] = 'Validation error'
+    
+    app.logger.debug(f"Validation errors: {errors}")
+    return jsonify({'success': False, 'message': 'Please check all required fields', 'errors': errors}), 400
 
 @app.route('/admin/edit_vehicle/<vehicle_id>', methods=['POST'])
 def edit_vehicle(vehicle_id):

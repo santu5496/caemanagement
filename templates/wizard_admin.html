@@ -797,6 +797,10 @@
                             <button type="submit" class="btn btn-success btn-wizard" id="submitBtn" style="display: none;">
                                 <i class="fas fa-save me-2"></i>Save Vehicle
                             </button>
+                            
+                            <button type="button" class="btn btn-info btn-wizard" onclick="testAlert()" style="display: none;" id="testBtn">
+                                <i class="fas fa-bell me-2"></i>Test Alert
+                            </button>
                         </div>
                     </form>
                 </div>
@@ -848,6 +852,7 @@ function updateWizardDisplay() {
     document.getElementById('prevBtn').style.display = currentStep === 1 ? 'none' : 'block';
     document.getElementById('nextBtn').style.display = currentStep === totalSteps ? 'none' : 'block';
     document.getElementById('submitBtn').style.display = currentStep === totalSteps ? 'block' : 'none';
+    document.getElementById('testBtn').style.display = currentStep === totalSteps ? 'block' : 'none';
     
     // Update step counter
     document.getElementById('currentStepNum').textContent = currentStep;
@@ -895,19 +900,34 @@ function validateCurrentStep() {
 }
 
 function showAlert(message, type = 'info') {
+    // Remove any existing alerts first
+    const existingAlerts = document.querySelectorAll('.alert');
+    existingAlerts.forEach(alert => alert.remove());
+    
     const alertDiv = document.createElement('div');
-    alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
+    alertDiv.className = `alert alert-${type} alert-dismissible fade show position-relative`;
+    alertDiv.style.cssText = 'z-index: 9999; margin-bottom: 1rem; font-size: 1.1rem; font-weight: 500;';
     alertDiv.innerHTML = `
-        ${message}
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        <div class="d-flex align-items-center">
+            <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'danger' ? 'exclamation-triangle' : 'info-circle'} me-2"></i>
+            ${message}
+        </div>
+        <button type="button" class="btn-close" onclick="this.parentElement.remove()"></button>
     `;
     
     const container = document.querySelector('.wizard-container');
     container.insertBefore(alertDiv, container.firstChild);
     
+    // Auto-remove after 8 seconds for success, 10 seconds for errors
+    const timeout = type === 'success' ? 8000 : 10000;
     setTimeout(() => {
-        alertDiv.remove();
-    }, 5000);
+        if (alertDiv.parentNode) {
+            alertDiv.remove();
+        }
+    }, timeout);
+    
+    // Scroll to top to ensure alert is visible
+    container.scrollTop = 0;
 }
 
 function updateVehicleSummary() {
@@ -1005,29 +1025,44 @@ document.getElementById('vehicleWizardForm').addEventListener('submit', function
     // Create FormData with all form fields
     const formData = new FormData(this);
     
-    // Add selected images to FormData
+    // Clear previous images and add selected images
+    formData.delete('images');
     selectedFiles.forEach(file => {
         formData.append('images', file);
     });
     
-    // Submit via fetch
+    console.log('Submitting form data...');
+    
+    // Submit via fetch with better error handling
     fetch('/admin/add_vehicle', {
         method: 'POST',
-        body: formData
+        body: formData,
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest'
+        }
     })
     .then(response => {
-        if (response.ok) {
-            showAlert('Vehicle added successfully!', 'success');
+        console.log('Response status:', response.status);
+        return response.json().then(data => ({
+            status: response.status,
+            data: data
+        }));
+    })
+    .then(({status, data}) => {
+        console.log('Response data:', data);
+        
+        if (status === 200 && data.success) {
+            showAlert('✅ Vehicle added successfully! The page will refresh shortly.', 'success');
             setTimeout(() => {
-                location.reload();
+                window.location.reload();
             }, 2000);
         } else {
-            throw new Error('Failed to save vehicle');
+            throw new Error(data.message || 'Failed to save vehicle');
         }
     })
     .catch(error => {
-        console.error('Error:', error);
-        showAlert('Error saving vehicle. Please try again.', 'danger');
+        console.error('Error details:', error);
+        showAlert('❌ Error saving vehicle: ' + error.message + '. Please check all required fields and try again.', 'danger');
         submitBtn.disabled = false;
         submitBtn.innerHTML = '<i class="fas fa-save me-2"></i>Save Vehicle';
     });
@@ -1077,6 +1112,11 @@ function deleteVehicle(id) {
         fetch(`/admin/delete_vehicle/${id}`, { method: 'DELETE' })
         .then(() => location.reload());
     }
+}
+
+// Test alert function
+function testAlert() {
+    showAlert('🔔 This is a test notification! The alert system is working properly.', 'info');
 }
 </script>
 {% endblock %}
