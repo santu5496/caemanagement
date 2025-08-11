@@ -526,42 +526,42 @@
                                 <div class="row g-4">
                                     <div class="col-12">
                                         <label class="form-label">Vehicle Title<span class="required-indicator">*</span></label>
-                                        {{ form.title(class="form-control form-control-lg", placeholder="e.g., 2020 Honda Civic LX - Excellent Condition") }}
+                                        {{ form.title(class="form-control form-control-lg", placeholder="e.g., 2020 Honda Civic LX - Excellent Condition", required=true) }}
                                         <div class="field-help">Create an attractive title that highlights key features</div>
                                     </div>
                                     
                                     <div class="col-md-6">
                                         <label class="form-label">Category<span class="required-indicator">*</span></label>
-                                        {{ form.category(class="form-select form-select-lg") }}
+                                        {{ form.category(class="form-select form-select-lg", required=true) }}
                                     </div>
                                     
                                     <div class="col-md-6">
                                         <label class="form-label">Year<span class="required-indicator">*</span></label>
-                                        {{ form.year(class="form-control", placeholder="e.g., 2020") }}
+                                        {{ form.year(class="form-control", placeholder="e.g., 2020", required=true) }}
                                     </div>
                                     
                                     <div class="col-md-6">
                                         <label class="form-label">Make<span class="required-indicator">*</span></label>
-                                        {{ form.make(class="form-control", placeholder="e.g., Honda") }}
+                                        {{ form.make(class="form-control", placeholder="e.g., Honda", required=true) }}
                                     </div>
                                     
                                     <div class="col-md-6">
                                         <label class="form-label">Model<span class="required-indicator">*</span></label>
-                                        {{ form.model(class="form-control", placeholder="e.g., Civic") }}
+                                        {{ form.model(class="form-control", placeholder="e.g., Civic", required=true) }}
                                     </div>
                                     
                                     <div class="col-md-6">
                                         <label class="form-label">Price<span class="required-indicator">*</span></label>
                                         <div class="input-group input-group-lg">
                                             <span class="input-group-text">$</span>
-                                            {{ form.price(class="form-control", placeholder="25000") }}
+                                            {{ form.price(class="form-control", placeholder="25000", required=true) }}
                                         </div>
                                     </div>
                                     
                                     <div class="col-md-6">
                                         <label class="form-label">Mileage<span class="required-indicator">*</span></label>
                                         <div class="input-group input-group-lg">
-                                            {{ form.mileage(class="form-control", placeholder="50000") }}
+                                            {{ form.mileage(class="form-control", placeholder="50000", required=true) }}
                                             <span class="input-group-text">miles</span>
                                         </div>
                                     </div>
@@ -729,12 +729,12 @@
                                     
                                     <div class="col-md-4">
                                         <label class="form-label">Contact Name<span class="required-indicator">*</span></label>
-                                        {{ form.contact_name(class="form-control", placeholder="Contact person") }}
+                                        {{ form.contact_name(class="form-control", placeholder="Contact person", required=true) }}
                                     </div>
                                     
                                     <div class="col-md-4">
                                         <label class="form-label">Contact Phone<span class="required-indicator">*</span></label>
-                                        {{ form.contact_phone(class="form-control", placeholder="(555) 123-4567") }}
+                                        {{ form.contact_phone(class="form-control", placeholder="(555) 123-4567", required=true) }}
                                     </div>
                                     
                                     <div class="col-md-4">
@@ -754,17 +754,18 @@
                                 <div class="row g-4">
                                     <div class="col-12">
                                         <label class="form-label">Vehicle Images (Max 6)</label>
-                                        <div class="image-upload-area">
+                                        <div class="image-upload-area" onclick="document.getElementById('imageInput').click()">
                                             <i class="fas fa-cloud-upload-alt fa-3x text-primary mb-3"></i>
-                                            <h5>Drag & Drop Images Here</h5>
-                                            <p class="text-muted">or click to browse</p>
-                                            {{ form.images(class="form-control", style="display: none;") }}
-                                            <button type="button" class="btn btn-primary" onclick="document.querySelector('[name=images]').click()">
+                                            <h5>Add Vehicle Photos</h5>
+                                            <p class="text-muted">Click here to select up to 6 images</p>
+                                            <input type="file" id="imageInput" name="images" multiple accept="image/*" style="display: none;" onchange="handleImageUpload(this)">
+                                            <button type="button" class="btn btn-primary">
                                                 <i class="fas fa-plus me-2"></i>Choose Images
                                             </button>
-                                            <div class="field-help">Accepted formats: JPG, PNG, GIF (Max 16MB each)</div>
+                                            <div class="field-help">Accepted formats: JPG, PNG, GIF (Max 6 images, 16MB each)</div>
                                         </div>
                                         <div class="image-preview-grid" id="imagePreviewGrid"></div>
+                                        <div id="imageCount" class="text-center mt-2 text-muted">0 / 6 images selected</div>
                                     </div>
                                     
                                     <div class="col-12">
@@ -859,23 +860,54 @@ function updateWizardDisplay() {
 
 function validateCurrentStep() {
     const currentPane = document.getElementById(`step${currentStep}`);
-    const requiredFields = currentPane.querySelectorAll('input[required], select[required]');
     let isValid = true;
     
-    requiredFields.forEach(field => {
-        if (!field.value.trim()) {
-            field.classList.add('is-invalid');
-            isValid = false;
-        } else {
-            field.classList.remove('is-invalid');
-        }
-    });
+    // Check required fields based on current step
+    if (currentStep === 1) {
+        const requiredFields = ['title', 'category', 'year', 'make', 'model', 'price', 'mileage'];
+        requiredFields.forEach(fieldName => {
+            const field = document.querySelector(`[name="${fieldName}"]`);
+            if (field && !field.value.trim()) {
+                field.classList.add('is-invalid');
+                isValid = false;
+            } else if (field) {
+                field.classList.remove('is-invalid');
+            }
+        });
+    } else if (currentStep === 5) {
+        const requiredFields = ['contact_name', 'contact_phone'];
+        requiredFields.forEach(fieldName => {
+            const field = document.querySelector(`[name="${fieldName}"]`);
+            if (field && !field.value.trim()) {
+                field.classList.add('is-invalid');
+                isValid = false;
+            } else if (field) {
+                field.classList.remove('is-invalid');
+            }
+        });
+    }
     
     if (!isValid) {
-        alert('Please fill in all required fields before proceeding.');
+        showAlert('Please fill in all required fields before proceeding to the next step.', 'warning');
     }
     
     return isValid;
+}
+
+function showAlert(message, type = 'info') {
+    const alertDiv = document.createElement('div');
+    alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
+    alertDiv.innerHTML = `
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+    
+    const container = document.querySelector('.wizard-container');
+    container.insertBefore(alertDiv, container.firstChild);
+    
+    setTimeout(() => {
+        alertDiv.remove();
+    }, 5000);
 }
 
 function updateVehicleSummary() {
@@ -884,11 +916,17 @@ function updateVehicleSummary() {
     const summary = document.getElementById('vehicleSummary');
     
     const summaryData = [
-        { label: 'Title', value: formData.get('title') || 'Not specified' },
-        { label: 'Year/Make/Model', value: `${formData.get('year')} ${formData.get('make')} ${formData.get('model')}` },
+        { label: 'Vehicle Title', value: formData.get('title') || 'Not specified' },
+        { label: 'Year', value: formData.get('year') || 'Not specified' },
+        { label: 'Make & Model', value: `${formData.get('make') || ''} ${formData.get('model') || ''}`.trim() || 'Not specified' },
+        { label: 'Category', value: formData.get('category') || 'Not specified' },
         { label: 'Price', value: formData.get('price') ? `$${parseInt(formData.get('price')).toLocaleString()}` : 'Not specified' },
         { label: 'Mileage', value: formData.get('mileage') ? `${parseInt(formData.get('mileage')).toLocaleString()} miles` : 'Not specified' },
-        { label: 'Contact', value: `${formData.get('contact_name')} - ${formData.get('contact_phone')}` }
+        { label: 'Fuel Type', value: formData.get('fuel_type') || 'Not specified' },
+        { label: 'Transmission', value: formData.get('transmission') || 'Not specified' },
+        { label: 'Contact Person', value: formData.get('contact_name') || 'Not specified' },
+        { label: 'Contact Phone', value: formData.get('contact_phone') || 'Not specified' },
+        { label: 'Images', value: `${selectedFiles.length} image(s) selected` }
     ];
     
     summary.innerHTML = summaryData.map(item => 
@@ -900,12 +938,26 @@ function updateVehicleSummary() {
 }
 
 // Image preview functionality
-document.querySelector('[name=images]').addEventListener('change', function(e) {
-    const files = Array.from(e.target.files);
+let selectedFiles = [];
+
+function handleImageUpload(input) {
+    const files = Array.from(input.files);
+    const maxFiles = 6;
+    
+    if (files.length > maxFiles) {
+        showAlert(`You can only select up to ${maxFiles} images. Only the first ${maxFiles} will be used.`, 'warning');
+    }
+    
+    selectedFiles = files.slice(0, maxFiles);
+    updateImagePreview();
+}
+
+function updateImagePreview() {
     const grid = document.getElementById('imagePreviewGrid');
+    const counter = document.getElementById('imageCount');
     grid.innerHTML = '';
     
-    files.slice(0, 6).forEach((file, index) => {
+    selectedFiles.forEach((file, index) => {
         if (file.type.startsWith('image/')) {
             const reader = new FileReader();
             reader.onload = function(e) {
@@ -913,7 +965,7 @@ document.querySelector('[name=images]').addEventListener('change', function(e) {
                 item.className = 'image-preview-item';
                 item.innerHTML = `
                     <img src="${e.target.result}" alt="Preview ${index + 1}">
-                    <button type="button" class="image-remove-btn" onclick="this.parentNode.remove()">
+                    <button type="button" class="image-remove-btn" onclick="removeImage(${index})">
                         <i class="fas fa-times"></i>
                     </button>
                 `;
@@ -922,18 +974,63 @@ document.querySelector('[name=images]').addEventListener('change', function(e) {
             reader.readAsDataURL(file);
         }
     });
-});
+    
+    counter.textContent = `${selectedFiles.length} / 6 images selected`;
+}
+
+function removeImage(index) {
+    selectedFiles.splice(index, 1);
+    updateImagePreview();
+    
+    // Update the input files
+    const input = document.getElementById('imageInput');
+    const dt = new DataTransfer();
+    selectedFiles.forEach(file => dt.items.add(file));
+    input.files = dt.files;
+}
 
 // Form submission
 document.getElementById('vehicleWizardForm').addEventListener('submit', function(e) {
     e.preventDefault();
     
+    // Validate all required fields
+    if (!validateCurrentStep()) {
+        return;
+    }
+    
     const submitBtn = document.getElementById('submitBtn');
     submitBtn.disabled = true;
-    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Saving...';
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Saving Vehicle...';
     
-    // Submit the form
-    this.submit();
+    // Create FormData with all form fields
+    const formData = new FormData(this);
+    
+    // Add selected images to FormData
+    selectedFiles.forEach(file => {
+        formData.append('images', file);
+    });
+    
+    // Submit via fetch
+    fetch('/admin/add_vehicle', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => {
+        if (response.ok) {
+            showAlert('Vehicle added successfully!', 'success');
+            setTimeout(() => {
+                location.reload();
+            }, 2000);
+        } else {
+            throw new Error('Failed to save vehicle');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showAlert('Error saving vehicle. Please try again.', 'danger');
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i class="fas fa-save me-2"></i>Save Vehicle';
+    });
 });
 
 // Auto-populate title
