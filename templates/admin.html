@@ -1178,7 +1178,9 @@ function createToastContainer() {
 document.getElementById('vehicleForm').addEventListener('submit', function(e) {
     e.preventDefault();
 
-    console.log('Form submission started');
+    console.log('Form submission started - event triggered!');
+    console.log('Form element:', this);
+    console.log('Event:', e);
 
     // Simplified validation - let backend handle validation
     console.log('Skipping frontend validation, letting backend handle it');
@@ -1499,9 +1501,25 @@ document.getElementById('vehicleModal').addEventListener('shown.bs.modal', funct
     initializeImageSlots();
 });
 
-// Initialize on page load
+// Add click handler for submit button specifically
 document.addEventListener('DOMContentLoaded', function() {
     console.log('Auto Dealership app loaded successfully');
+    
+    // Debug: Add explicit click handler for submit button
+    const submitBtn = document.getElementById('submit-btn');
+    if (submitBtn) {
+        submitBtn.addEventListener('click', function(e) {
+            console.log('Submit button clicked!');
+            console.log('Button type:', this.type);
+            console.log('Form:', document.getElementById('vehicleForm'));
+            
+            // Force form submission if needed
+            if (this.type === 'button') {
+                e.preventDefault();
+                document.getElementById('vehicleForm').dispatchEvent(new Event('submit', {bubbles: true, cancelable: true}));
+            }
+        });
+    }
     
     // Initialize image slots when page loads
     const modal = document.getElementById('vehicleModal');
