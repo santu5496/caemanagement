@@ -4,6 +4,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from app import db
 from sqlalchemy import String, Integer, Float, Text, DateTime
 from sqlalchemy.orm import Mapped, mapped_column
+from typing import Optional
 
 class AdminUser(db.Model):
     __tablename__ = 'admin_users'
@@ -38,35 +39,35 @@ class Vehicle(db.Model):
     
     # Comprehensive Vehicle Details
     # Engine & Performance
-    fuel_type: Mapped[str] = mapped_column(String(20), nullable=True)  # Gasoline, Diesel, Hybrid, Electric
-    transmission: Mapped[str] = mapped_column(String(20), nullable=True)  # Manual, Automatic, CVT
-    engine_size: Mapped[str] = mapped_column(String(20), nullable=True)  # e.g. 2.0L, 3.5L V6
-    horsepower: Mapped[int] = mapped_column(Integer, nullable=True)
-    fuel_economy: Mapped[str] = mapped_column(String(30), nullable=True)  # e.g. 25 city / 32 highway mpg
-    drivetrain: Mapped[str] = mapped_column(String(10), nullable=True)  # FWD, RWD, AWD, 4WD
+    fuel_type: Mapped[Optional[str]] = mapped_column(String(20), nullable=True)  # Gasoline, Diesel, Hybrid, Electric
+    transmission: Mapped[Optional[str]] = mapped_column(String(20), nullable=True)  # Manual, Automatic, CVT
+    engine_size: Mapped[Optional[str]] = mapped_column(String(20), nullable=True)  # e.g. 2.0L, 3.5L V6
+    horsepower: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
+    fuel_economy: Mapped[Optional[str]] = mapped_column(String(30), nullable=True)  # e.g. 25 city / 32 highway mpg
+    drivetrain: Mapped[Optional[str]] = mapped_column(String(10), nullable=True)  # FWD, RWD, AWD, 4WD
     
     # Ownership & History
-    number_of_owners: Mapped[int] = mapped_column(Integer, nullable=True)
-    previous_owner_name: Mapped[str] = mapped_column(String(100), nullable=True)
-    previous_owner_phone: Mapped[str] = mapped_column(String(20), nullable=True)
-    previous_owner_email: Mapped[str] = mapped_column(String(100), nullable=True)
-    odometer_reading: Mapped[int] = mapped_column(Integer, nullable=True)  # Current odometer in miles/km
-    accident_history: Mapped[str] = mapped_column(Text, nullable=True)  # Description of any accidents
-    service_records: Mapped[str] = mapped_column(Text, nullable=True)  # Service history notes
+    number_of_owners: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
+    previous_owner_name: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
+    previous_owner_phone: Mapped[Optional[str]] = mapped_column(String(20), nullable=True)
+    previous_owner_email: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
+    odometer_reading: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)  # Current odometer in miles/km
+    accident_history: Mapped[Optional[str]] = mapped_column(Text, nullable=True)  # Description of any accidents
+    service_records: Mapped[Optional[str]] = mapped_column(Text, nullable=True)  # Service history notes
     
     # Insurance & Documentation
-    insurance_company: Mapped[str] = mapped_column(String(100), nullable=True)
-    insurance_policy_number: Mapped[str] = mapped_column(String(50), nullable=True)
-    insurance_expiry: Mapped[str] = mapped_column(String(10), nullable=True)  # MM/DD/YYYY
-    registration_number: Mapped[str] = mapped_column(String(50), nullable=True)
-    vin_number: Mapped[str] = mapped_column(String(17), nullable=True)  # Vehicle Identification Number
+    insurance_company: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
+    insurance_policy_number: Mapped[Optional[str]] = mapped_column(String(50), nullable=True)
+    insurance_expiry: Mapped[Optional[str]] = mapped_column(String(10), nullable=True)  # MM/DD/YYYY
+    registration_number: Mapped[Optional[str]] = mapped_column(String(50), nullable=True)
+    vin_number: Mapped[Optional[str]] = mapped_column(String(17), nullable=True)  # Vehicle Identification Number
     
     # Additional Features & Condition
-    exterior_color: Mapped[str] = mapped_column(String(30), nullable=True)
-    interior_color: Mapped[str] = mapped_column(String(30), nullable=True)
-    features: Mapped[str] = mapped_column(Text, nullable=True)  # Comma-separated features
-    condition_rating: Mapped[str] = mapped_column(String(20), nullable=True)  # Excellent, Good, Fair, Poor
-    warranty_info: Mapped[str] = mapped_column(Text, nullable=True)  # Warranty details
+    exterior_color: Mapped[Optional[str]] = mapped_column(String(30), nullable=True)
+    interior_color: Mapped[Optional[str]] = mapped_column(String(30), nullable=True)
+    features: Mapped[Optional[str]] = mapped_column(Text, nullable=True)  # Comma-separated features
+    condition_rating: Mapped[Optional[str]] = mapped_column(String(20), nullable=True)  # Excellent, Good, Fair, Poor
+    warranty_info: Mapped[Optional[str]] = mapped_column(Text, nullable=True)  # Warranty details
     
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
     updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
