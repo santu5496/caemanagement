@@ -794,7 +794,7 @@
                                 Next<i class="fas fa-arrow-right ms-2"></i>
                             </button>
                             
-                            <button type="submit" class="btn btn-success btn-wizard" id="submitBtn" style="display: none;">
+                            <button type="button" class="btn btn-success btn-wizard btn-lg" id="submitBtn" style="display: none;" onclick="console.log('Button clicked!'); submitVehicleForm();">
                                 <i class="fas fa-save me-2"></i>Save Vehicle
                             </button>
                             
@@ -1009,12 +1009,14 @@ function removeImage(index) {
     input.files = dt.files;
 }
 
-// Form submission
-document.getElementById('vehicleWizardForm').addEventListener('submit', function(e) {
-    e.preventDefault();
+// Submit vehicle form function
+function submitVehicleForm() {
+    console.log('Save Vehicle button clicked!');
+    showAlert('Processing your request...', 'info');
     
     // Validate all required fields
     if (!validateCurrentStep()) {
+        showAlert('Please fill in all required fields before saving.', 'warning');
         return;
     }
     
@@ -1022,18 +1024,20 @@ document.getElementById('vehicleWizardForm').addEventListener('submit', function
     submitBtn.disabled = true;
     submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Saving Vehicle...';
     
-    // Create FormData with all form fields
-    const formData = new FormData(this);
+    // Get form data
+    const form = document.getElementById('vehicleWizardForm');
+    const formData = new FormData(form);
     
-    // Clear previous images and add selected images
+    // Add selected images
     formData.delete('images');
     selectedFiles.forEach(file => {
         formData.append('images', file);
     });
     
-    console.log('Submitting form data...');
+    console.log('Form data prepared, submitting...');
+    console.log('Selected files:', selectedFiles.length);
     
-    // Submit via fetch with better error handling
+    // Submit via fetch
     fetch('/admin/add_vehicle', {
         method: 'POST',
         body: formData,
@@ -1042,17 +1046,17 @@ document.getElementById('vehicleWizardForm').addEventListener('submit', function
         }
     })
     .then(response => {
-        console.log('Response status:', response.status);
-        return response.json().then(data => ({
-            status: response.status,
-            data: data
-        }));
+        console.log('Got response, status:', response.status);
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+        }
+        return response.json();
     })
-    .then(({status, data}) => {
+    .then(data => {
         console.log('Response data:', data);
         
-        if (status === 200 && data.success) {
-            showAlert('✅ Vehicle added successfully! The page will refresh shortly.', 'success');
+        if (data.success) {
+            showAlert('Vehicle saved successfully! Page will refresh in 2 seconds.', 'success');
             setTimeout(() => {
                 window.location.reload();
             }, 2000);
@@ -1061,12 +1065,12 @@ document.getElementById('vehicleWizardForm').addEventListener('submit', function
         }
     })
     .catch(error => {
-        console.error('Error details:', error);
-        showAlert('❌ Error saving vehicle: ' + error.message + '. Please check all required fields and try again.', 'danger');
+        console.error('Save error:', error);
+        showAlert('Error saving vehicle: ' + error.message, 'danger');
         submitBtn.disabled = false;
         submitBtn.innerHTML = '<i class="fas fa-save me-2"></i>Save Vehicle';
     });
-});
+}
 
 // Auto-populate title
 function autoPopulateTitle() {
@@ -1118,5 +1122,23 @@ function deleteVehicle(id) {
 function testAlert() {
     showAlert('🔔 This is a test notification! The alert system is working properly.', 'info');
 }
+
+// Add click handler when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('Page loaded, setting up save button...');
+    
+    const submitBtn = document.getElementById('submitBtn');
+    if (submitBtn) {
+        console.log('Submit button found, adding click handler');
+        submitBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log('Submit button clicked via event listener!');
+            submitVehicleForm();
+        });
+    } else {
+        console.log('Submit button not found');
+    }
+});
 </script>
 {% endblock %}
