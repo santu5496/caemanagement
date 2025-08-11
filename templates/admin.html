@@ -989,20 +989,42 @@ function showFormErrors(errors) {
     clearFormErrors();
 
     let errorMessages = [];
-    for (const [field, message] of Object.entries(errors)) {
+    let missingFields = [];
+    
+    for (const [field, messages] of Object.entries(errors)) {
         const input = document.getElementById(`modal-${field.replace('_', '-')}`);
         if (input) {
             input.classList.add('is-invalid');
             const feedback = input.parentNode.querySelector('.invalid-feedback');
-            if (feedback) feedback.textContent = message;
+            if (feedback && Array.isArray(messages)) {
+                feedback.textContent = messages[0];
+            }
         }
-        errorMessages.push(`${field}: ${message}`);
+        
+        // Collect field names for user-friendly message
+        const fieldNames = {
+            'title': 'Vehicle Title',
+            'make': 'Make',
+            'model': 'Model',
+            'year': 'Year',
+            'price': 'Price',
+            'mileage': 'Mileage',
+            'contact_name': 'Contact Name',
+            'contact_phone': 'Contact Phone'
+        };
+        
+        if (fieldNames[field]) {
+            missingFields.push(fieldNames[field]);
+        }
     }
 
-    if (errorMessages.length > 0) {
+    if (missingFields.length > 0) {
+        const fieldsText = missingFields.join(', ');
+        showToast(`Please fill in the following required fields: ${fieldsText}`, 'danger');
+        
         const errorDiv = document.getElementById('form-errors');
         if (errorDiv) {
-            errorDiv.innerHTML = errorMessages.join('<br>');
+            errorDiv.innerHTML = `<strong>Missing required fields:</strong> ${fieldsText}`;
             errorDiv.style.display = 'block';
         }
     }
@@ -1158,28 +1180,37 @@ document.getElementById('vehicleForm').addEventListener('submit', function(e) {
 
     console.log('Form submission started');
 
-    // Basic validation - only check fields in basic info tab
-    const title = document.getElementById('modal-title').value.trim();
-    const make = document.getElementById('modal-make').value.trim();
-    const model = document.getElementById('modal-model').value.trim();
-    const year = document.getElementById('modal-year').value;
-    const price = document.getElementById('modal-price').value;
-    const mileage = document.getElementById('modal-mileage').value;
+    // Enhanced validation with specific field checking
+    const requiredFields = [
+        { id: 'modal-title', name: 'Vehicle Title', value: '' },
+        { id: 'modal-make', name: 'Make', value: '' },
+        { id: 'modal-model', name: 'Model', value: '' },
+        { id: 'modal-year', name: 'Year', value: '' },
+        { id: 'modal-price', name: 'Price', value: '' },
+        { id: 'modal-mileage', name: 'Mileage', value: '' },
+        { id: 'modal-contact-name', name: 'Contact Name', value: '' },
+        { id: 'modal-contact-phone', name: 'Contact Phone', value: '' }
+    ];
 
-    if (!title || !make || !model || !year || !price || mileage === '') {
-        showToast('Please fill in all required fields in Basic Info before continuing', 'danger');
-        return;
-    }
+    const missingFields = [];
     
-    // Contact validation - only check when we have those fields available
-    const contactName = document.getElementById('modal-contact-name');
-    const contactPhone = document.getElementById('modal-contact-phone');
-    
-    if (contactName && contactPhone) {
-        if (!contactName.value.trim() || !contactPhone.value.trim()) {
-            showToast('Please fill in contact information before saving', 'danger');
-            return;
+    requiredFields.forEach(field => {
+        const element = document.getElementById(field.id);
+        if (element) {
+            const value = element.value.trim();
+            if (!value || value === '') {
+                missingFields.push(field.name);
+                element.classList.add('is-invalid');
+            } else {
+                element.classList.remove('is-invalid');
+            }
         }
+    });
+
+    if (missingFields.length > 0) {
+        const fieldsList = missingFields.join(', ');
+        showToast(`Please fill in the following required fields: ${fieldsList}`, 'danger');
+        return;
     }
 
     const formData = new FormData(this);
@@ -1372,18 +1403,31 @@ function validateCurrentStep() {
         const contactName = document.getElementById('modal-contact-name').value.trim();
         const contactPhone = document.getElementById('modal-contact-phone').value.trim();
         
-        if (!title || !make || !model || !year || !price || !mileage || !contactName || !contactPhone) {
-            showToast('Please fill in all required fields in Basic Info before continuing', 'warning');
-            
-            // Highlight missing fields
-            const requiredFields = ['modal-title', 'modal-make', 'modal-model', 'modal-year', 'modal-price', 'modal-mileage', 'modal-contact-name', 'modal-contact-phone'];
-            requiredFields.forEach(fieldId => {
-                const field = document.getElementById(fieldId);
-                if (!field.value.trim()) {
-                    field.classList.add('is-invalid');
+        const basicRequiredFields = [
+            { id: 'modal-title', name: 'Vehicle Title' },
+            { id: 'modal-make', name: 'Make' },
+            { id: 'modal-model', name: 'Model' },
+            { id: 'modal-year', name: 'Year' },
+            { id: 'modal-price', name: 'Price' },
+            { id: 'modal-mileage', name: 'Mileage' }
+        ];
+
+        const missingBasicFields = [];
+        
+        basicRequiredFields.forEach(field => {
+            const element = document.getElementById(field.id);
+            if (element) {
+                const value = element.value.trim();
+                if (!value || value === '') {
+                    missingBasicFields.push(field.name);
+                    element.classList.add('is-invalid');
                 }
-            });
-            
+            }
+        });
+
+        if (missingBasicFields.length > 0) {
+            const fieldsList = missingBasicFields.join(', ');
+            showToast(`Missing required fields: ${fieldsList}`, 'warning');
             return false;
         }
     }
