@@ -1180,38 +1180,8 @@ document.getElementById('vehicleForm').addEventListener('submit', function(e) {
 
     console.log('Form submission started');
 
-    // Enhanced validation with specific field checking
-    const requiredFields = [
-        { id: 'modal-title', name: 'Vehicle Title', value: '' },
-        { id: 'modal-make', name: 'Make', value: '' },
-        { id: 'modal-model', name: 'Model', value: '' },
-        { id: 'modal-year', name: 'Year', value: '' },
-        { id: 'modal-price', name: 'Price', value: '' },
-        { id: 'modal-mileage', name: 'Mileage', value: '' },
-        { id: 'modal-contact-name', name: 'Contact Name', value: '' },
-        { id: 'modal-contact-phone', name: 'Contact Phone', value: '' }
-    ];
-
-    const missingFields = [];
-    
-    requiredFields.forEach(field => {
-        const element = document.getElementById(field.id);
-        if (element) {
-            const value = element.value.trim();
-            if (!value || value === '') {
-                missingFields.push(field.name);
-                element.classList.add('is-invalid');
-            } else {
-                element.classList.remove('is-invalid');
-            }
-        }
-    });
-
-    if (missingFields.length > 0) {
-        const fieldsList = missingFields.join(', ');
-        showToast(`Please fill in the following required fields: ${fieldsList}`, 'danger');
-        return;
-    }
+    // Simplified validation - let backend handle validation
+    console.log('Skipping frontend validation, letting backend handle it');
 
     const formData = new FormData(this);
     const url = isEditMode ? `/admin/edit_vehicle/${currentVehicleId}` : '/admin/add_vehicle';
