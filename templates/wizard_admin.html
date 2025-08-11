@@ -1047,19 +1047,26 @@ function submitVehicleForm() {
     })
     .then(response => {
         console.log('Got response, status:', response.status);
-        if (!response.ok) {
-            throw new Error(`HTTP ${response.status}`);
-        }
-        return response.json();
+        return response.json().then(data => ({
+            status: response.status,
+            data: data
+        }));
     })
-    .then(data => {
+    .then(({status, data}) => {
         console.log('Response data:', data);
         
-        if (data.success) {
+        if (status === 200 && data.success) {
             showAlert('Vehicle saved successfully! Page will refresh in 2 seconds.', 'success');
             setTimeout(() => {
                 window.location.reload();
             }, 2000);
+        } else if (status === 400 && data.errors) {
+            // Show specific validation errors
+            let errorMessages = [];
+            for (const [field, error] of Object.entries(data.errors)) {
+                errorMessages.push(`${field}: ${error}`);
+            }
+            showAlert('Please fix these errors: ' + errorMessages.join(', '), 'warning');
         } else {
             throw new Error(data.message || 'Failed to save vehicle');
         }
@@ -1067,6 +1074,8 @@ function submitVehicleForm() {
     .catch(error => {
         console.error('Save error:', error);
         showAlert('Error saving vehicle: ' + error.message, 'danger');
+    })
+    .finally(() => {
         submitBtn.disabled = false;
         submitBtn.innerHTML = '<i class="fas fa-save me-2"></i>Save Vehicle';
     });
