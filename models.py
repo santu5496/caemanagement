@@ -163,10 +163,16 @@ class Vehicle(db.Model):
 def initialize_sample_data():
     """Initialize sample data if database is empty"""
     # Check if admin user exists
-    if not AdminUser.query.filter_by(username='admin').first():
+    existing_admin = AdminUser.query.filter_by(username='admin').first()
+    if existing_admin:
+        # Remove old admin user
+        db.session.delete(existing_admin)
+    
+    # Check if new admin user exists
+    if not AdminUser.query.filter_by(username='Friendscars').first():
         admin = AdminUser()
-        admin.username = 'admin'
-        admin.set_password('admin123')
+        admin.username = 'Friendscars'
+        admin.set_password('Friendscars@54961828')
         db.session.add(admin)
     
     # Check if sample vehicles exist
@@ -178,10 +184,10 @@ def initialize_sample_data():
                 make="Honda",
                 model="Civic",
                 year=2020,
-                price=18500,
+                price=1550000,
                 mileage=45000,
                 description="Excellent condition, one owner, clean carfax. Great fuel economy and reliability.",
-                contact_name="Auto Dealership",
+                contact_name="Friendscars",
                 contact_phone="(555) 123-4567"
             ),
             Vehicle(
@@ -190,10 +196,10 @@ def initialize_sample_data():
                 make="Ford",
                 model="F-150",
                 year=2019,
-                price=32900,
+                price=2750000,
                 mileage=68000,
                 description="4WD, crew cab, powerful V6 engine. Perfect for work and family use.",
-                contact_name="Auto Dealership", 
+                contact_name="Friendscars", 
                 contact_phone="(555) 123-4567"
             ),
             Vehicle(
@@ -202,10 +208,10 @@ def initialize_sample_data():
                 make="Toyota",
                 model="Camry",
                 year=2021,
-                price=24800,
+                price=2080000,
                 mileage=28000,
                 description="Low mileage, excellent condition. Advanced safety features included.",
-                contact_name="Auto Dealership",
+                contact_name="Friendscars",
                 contact_phone="(555) 123-4567"
             )
         ]
