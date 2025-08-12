@@ -31,7 +31,7 @@
     border: 2px solid transparent;
     transition: all 0.3s ease;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    min-height: 80px;
+    min-height: 50px;
 }
 
 .category-card:hover {
@@ -289,16 +289,13 @@
     
     .category-card {
         margin-bottom: 0.5rem;
-        min-height: 60px;
-        padding: 0.5rem !important;
+        min-height: 40px;
+        padding: 0.25rem !important;
     }
     
     .category-card h6 {
-        font-size: 0.8rem;
-    }
-    
-    .category-card i {
-        font-size: 1rem !important;
+        font-size: 0.75rem;
+        margin-bottom: 0.125rem !important;
     }
     
     .container {

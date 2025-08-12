@@ -51,9 +51,8 @@
             <a href="?category={{ cat }}" class="text-decoration-none">
                 <div class="category-card p-2 text-center rounded-3 h-100 d-flex align-items-center justify-content-center">
                     <div>
-                        <i class="fas {% if cat == 'Cars' %}fa-car{% elif cat == 'Trucks' %}fa-truck{% else %}fa-bus{% endif %} fa-lg mb-1 text-primary"></i>
                         <h6 class="mb-0 small fw-semibold">{{ cat }}</h6>
-                        <small class="text-muted" style="font-size: 0.7rem;">{{ vehicles|selectattr("category", "equalto", cat)|list|length }} available</small>
+                        <small class="text-muted" style="font-size: 0.65rem;">{{ vehicles|selectattr("category", "equalto", cat)|list|length }} available</small>
                     </div>
                 </div>
             </a>
