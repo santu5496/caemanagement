@@ -334,20 +334,7 @@
                 </button>
             </form>
             
-            <div class="credentials-info">
-                <h6>
-                    <i class="fas fa-info-circle"></i>
-                    Demo Credentials
-                </h6>
-                <div class="credential-item">
-                    <span class="credential-label">Username:</span>
-                    <span class="credential-value">Friendscars</span>
-                </div>
-                <div class="credential-item">
-                    <span class="credential-label">Password:</span>
-                    <span class="credential-value">Friendscars@54961828</span>
-                </div>
-            </div>
+            
             
             <div class="back-to-site">
                 <a href="/">
@@ -367,31 +354,7 @@
             submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Authenticating...';
         });
         
-        // Auto-fill credentials on demo button click (for demo purposes)
-        document.addEventListener('DOMContentLoaded', function() {
-            const credentialItems = document.querySelectorAll('.credential-item');
-            credentialItems.forEach(item => {
-                item.style.cursor = 'pointer';
-                item.addEventListener('click', function() {
-                    const label = this.querySelector('.credential-label').textContent;
-                    const value = this.querySelector('.credential-value').textContent;
-                    
-                    if (label.includes('Username')) {
-                        document.getElementById('username').value = value;
-                        document.getElementById('username').focus();
-                    } else if (label.includes('Password')) {
-                        document.getElementById('password').value = value;
-                        document.getElementById('password').focus();
-                    }
-                    
-                    // Visual feedback
-                    this.style.transform = 'scale(0.98)';
-                    setTimeout(() => {
-                        this.style.transform = 'scale(1)';
-                    }, 150);
-                });
-            });
-        });
+        
         
         // Enhanced input animations
         document.querySelectorAll('.form-floating input').forEach(input => {
