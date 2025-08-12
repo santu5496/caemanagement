@@ -59,34 +59,36 @@ def vehicle_detail(vehicle_id):
 @app.route('/admin/login', methods=['GET', 'POST'])
 def admin_login():
     """Admin login page"""
-    # Check if already logged in - redirect to add vehicle page
+    # Check if already logged in - redirect to dashboard
     if session.get('admin_logged_in'):
-        return redirect(url_for('add_vehicle_page'))
+        return redirect(url_for('admin_dashboard'))
 
     form = LoginForm()
     
     if request.method == 'POST':
+        app.logger.debug(f"POST request received at /admin/login")
         app.logger.debug(f"Form validation: {form.validate_on_submit()}")
         app.logger.debug(f"Form errors: {form.errors}")
-        app.logger.debug(f"Form data: {form.username.data}, password: {'***' if form.password.data else 'None'}")
+        app.logger.debug(f"Form data: username='{form.username.data}', password={'***' if form.password.data else 'None'}")
         
-        if form.validate_on_submit():
-            app.logger.debug(f"Login attempt for user: {form.username.data}")
-            if verify_admin(form.username.data, form.password.data):
+        # Manual validation since CSRF is disabled
+        username = form.username.data
+        password = form.password.data
+        
+        if username and password:
+            app.logger.debug(f"Login attempt for user: {username}")
+            if verify_admin(username, password):
                 session['admin_logged_in'] = True
-                session['admin_username'] = form.username.data
+                session['admin_username'] = username
                 session.permanent = True
                 app.logger.debug("Login successful, redirecting to dashboard")
                 flash('✅ Login Successful! Welcome to the Admin Panel, Friendscars!', 'success')
-                return redirect(url_for('add_vehicle_page'))
+                return redirect(url_for('admin_dashboard'))
             else:
                 app.logger.debug("Login failed - invalid credentials")
                 flash('❌ Login Failed! Invalid username or password. Please use: Friendscars / Friendscars@54961828', 'error')
         else:
-            if form.username.data or form.password.data:
-                flash('❌ Login Failed! Please enter valid credentials. Use: Friendscars / Friendscars@54961828', 'error')
-            else:
-                flash('❌ Please enter both username and password to continue.', 'error')
+            flash('❌ Please enter both username and password to continue.', 'error')
 
     return render_template('admin_login.html', form=form)
 

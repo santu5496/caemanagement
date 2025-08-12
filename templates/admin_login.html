@@ -265,7 +265,8 @@
                             {% endif %}
                         {% endwith %}
                         
-                        <form method="POST" id="loginForm" novalidate>
+                        <form method="POST" action="{{ url_for('admin_login') }}" id="loginForm" novalidate>
+                            {{ form.hidden_tag() }}
                             
                             <div class="form-floating mb-3">
                                 {{ form.username(class="form-control", id="floatingUsername", placeholder="Username", autocomplete="username") }}
