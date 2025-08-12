@@ -78,7 +78,7 @@ def admin_login():
                 session.permanent = True
                 app.logger.debug("Login successful, redirecting to dashboard")
                 flash('Welcome back! Successfully logged in.', 'success')
-                return redirect(url_for('admin_dashboard'))
+                return redirect(url_for('add_vehicle_page'))
             else:
                 app.logger.debug("Login failed - invalid credentials")
                 flash('❌ Invalid username or password. Please check your credentials and try again.', 'error')
@@ -157,6 +157,16 @@ def admin_auth():
     else:
         flash('❌ Invalid username or password. Please use: Friendscars / Friendscars@54961828', 'error')
         return redirect(url_for('admin_login'))
+
+@app.route('/admin/add_vehicle_page')
+def add_vehicle_page():
+    """Display add vehicle form page"""
+    if not session.get('admin_logged_in'):
+        flash('Please log in to access the admin area.', 'error')
+        return redirect(url_for('admin_login'))
+    
+    form = VehicleForm()
+    return render_template('add_vehicle.html', form=form)
 
 @app.route('/admin/add_vehicle', methods=['POST'])
 def add_vehicle_route():
