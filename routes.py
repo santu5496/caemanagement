@@ -66,16 +66,28 @@ def admin_login():
     form = LoginForm()
     
     if request.method == 'POST' and form.validate_on_submit():
+        app.logger.debug(f"Login attempt for user: {form.username.data}")
         if verify_admin(form.username.data, form.password.data):
             session['admin_logged_in'] = True
             session['admin_username'] = form.username.data
             session.permanent = True
+            app.logger.debug("Login successful, redirecting to dashboard")
             flash('Welcome back! Successfully logged in.', 'success')
             return redirect(url_for('admin_dashboard'))
         else:
+            app.logger.debug("Login failed - invalid credentials")
             flash('Invalid username or password. Please try again.', 'error')
+    elif request.method == 'POST':
+        app.logger.debug(f"Form validation failed: {form.errors}")
 
     return render_template('admin_login.html', form=form)
+
+@app.route('/quick-login')
+def quick_login():
+    """Quick login test page"""
+    from flask import render_template_string
+    with open('direct_login_test.html', 'r') as f:
+        return render_template_string(f.read())
 
 @app.route('/admin/logout')
 def admin_logout():

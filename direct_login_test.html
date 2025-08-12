@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Direct Login Test</title>
+    <link href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h4>Quick Admin Login</h4>
+                    </div>
+                    <div class="card-body">
+                        <form id="quickLoginForm" action="/admin/login" method="POST">
+                            <input type="hidden" name="csrf_token" id="csrf_token" value="">
+                            <div class="mb-3">
+                                <label class="form-label">Username</label>
+                                <input type="text" class="form-control" name="username" value="Friendscars" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Password</label>
+                                <input type="password" class="form-control" name="password" value="Friendscars@54961828" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100" id="loginBtn">Login to Admin Dashboard</button>
+                        </form>
+                        <hr>
+                        <a href="/admin/login" class="btn btn-secondary w-100">Go to Regular Login Page</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Get CSRF token on page load
+        fetch('/admin/login')
+            .then(response => response.text())
+            .then(html => {
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+                const csrfInput = doc.querySelector('input[name="csrf_token"]');
+                if (csrfInput) {
+                    document.getElementById('csrf_token').value = csrfInput.value;
+                }
+            })
+            .catch(error => console.error('Error getting CSRF token:', error));
+    </script>
+</body>
+</html>
