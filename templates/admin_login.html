@@ -338,10 +338,10 @@
                             </div>
                             <div class="row g-2 text-sm">
                                 <div class="col-6">
-                                    <strong>Username:</strong> admin
+                                    <strong>Username:</strong> Friendscars
                                 </div>
                                 <div class="col-6">
-                                    <strong>Password:</strong> admin123
+                                    <strong>Password:</strong> Friendscars@54961828
                                 </div>
                             </div>
                             <small class="text-muted d-block mt-2">
@@ -390,10 +390,14 @@ document.getElementById('loginForm').addEventListener('submit', function(e) {
     buttonText.textContent = 'Signing in...';
     spinner.classList.remove('d-none');
     
-    // Add some delay to show the loading effect even on fast connections
+    // Reset button state after 3 seconds if still on page (error case)
     setTimeout(() => {
-        // The form will submit naturally
-    }, 500);
+        if (button.disabled) {
+            button.disabled = false;
+            buttonText.textContent = 'Access Admin Panel';
+            spinner.classList.add('d-none');
+        }
+    }, 3000);
 });
 
 // Auto-focus on username field
