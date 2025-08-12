@@ -421,7 +421,7 @@
                             </div>
                         </td>
                         <td>
-                            <strong class="text-success">${{ "{:,.0f}".format(vehicle.price) }}</strong>
+                            <strong class="text-success">₹{{ "{:,.0f}".format(vehicle.price) }}</strong>
                         </td>
                         <td>
                             {{ "{:,}".format(vehicle.mileage) }} mi
@@ -1036,6 +1036,10 @@ function submitVehicleForm() {
     
     console.log('Form data prepared, submitting...');
     console.log('Selected files:', selectedFiles.length);
+    
+    // Get CSRF token
+    const csrfToken = document.querySelector('input[name="csrf_token"]').value;
+    formData.append('csrf_token', csrfToken);
     
     // Submit via fetch
     fetch('/admin/add_vehicle', {

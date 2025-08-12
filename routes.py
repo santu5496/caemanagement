@@ -262,7 +262,10 @@ def edit_vehicle(vehicle_id):
     # Return validation errors
     errors = {}
     for field, error_list in form.errors.items():
-        errors[field] = error_list[0] if error_list else 'Validation error'
+        if isinstance(error_list, list) and error_list:
+            errors[field] = str(error_list[0])
+        else:
+            errors[field] = 'Validation error'
     return jsonify({'success': False, 'message': 'Validation failed', 'errors': errors}), 400
 
 @app.route('/admin/get_vehicle/<vehicle_id>')
