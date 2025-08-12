@@ -44,15 +44,15 @@
 </div>
 
 <!-- Category Quick Links -->
-<div class="container mb-3">
-    <div class="row g-2">
+<div class="container mb-2">
+    <div class="row g-1">
         {% for cat in categories %}
-        <div class="col-md-4 col-6">
+        <div class="col-md-4 col-4">
             <a href="?category={{ cat }}" class="text-decoration-none">
-                <div class="category-card p-2 text-center rounded-3 h-100 d-flex align-items-center justify-content-center">
+                <div class="category-card p-1 text-center rounded-3 h-100 d-flex align-items-center justify-content-center">
                     <div>
                         <h6 class="mb-0 small fw-semibold">{{ cat }}</h6>
-                        <small class="text-muted" style="font-size: 0.65rem;">{{ vehicles|selectattr("category", "equalto", cat)|list|length }} available</small>
+                        <small class="text-muted d-none d-md-block" style="font-size: 0.65rem;">{{ vehicles|selectattr("category", "equalto", cat)|list|length }} available</small>
                     </div>
                 </div>
             </a>
@@ -62,10 +62,10 @@
 </div>
 
 <!-- Filter and Sort Bar -->
-<div class="container mb-4">
+<div class="container mb-2">
     <div class="row align-items-center">
-        <div class="col-md-6">
-            <h5 class="mb-0">
+        <div class="col-8">
+            <h6 class="mb-0">
                 {% if search %}
                     Results for "{{ search }}"
                 {% elif current_category != 'all' %}
@@ -74,12 +74,12 @@
                     All Vehicles
                 {% endif %}
                 <span class="badge bg-light text-dark">{{ vehicles|length }}</span>
-            </h5>
+            </h6>
         </div>
-        <div class="col-md-6 text-md-end">
+        <div class="col-4 text-end">
             {% if search or current_category != 'all' %}
                 <a href="{{ url_for('index') }}" class="btn btn-outline-secondary btn-sm">
-                    <i class="fas fa-times me-1"></i>Clear Filters
+                    <i class="fas fa-times"></i>
                 </a>
             {% endif %}
         </div>
