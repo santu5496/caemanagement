@@ -94,8 +94,8 @@
                 <div class="col-lg-4 col-md-6 col-12">
                     <div class="listing-card h-100">
                         <div class="listing-image-wrapper position-relative">
-                            {% if vehicle.images %}
-                                <img src="{{ url_for('static', filename='uploads/' + vehicle.images[0]) }}" 
+                            {% if vehicle.images_list %}
+                                <img src="{{ url_for('static', filename='uploads/' + vehicle.images_list[0]) }}" 
                                      class="listing-image" alt="{{ vehicle.title }}">
                             {% else %}
                                 <div class="listing-image listing-placeholder d-flex align-items-center justify-content-center">
