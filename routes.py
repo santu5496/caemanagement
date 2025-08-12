@@ -77,16 +77,16 @@ def admin_login():
                 session['admin_username'] = form.username.data
                 session.permanent = True
                 app.logger.debug("Login successful, redirecting to dashboard")
-                flash('Welcome back! Successfully logged in.', 'success')
+                flash('✅ Login Successful! Welcome to the Admin Panel, Friendscars!', 'success')
                 return redirect(url_for('add_vehicle_page'))
             else:
                 app.logger.debug("Login failed - invalid credentials")
-                flash('❌ Invalid username or password. Please check your credentials and try again.', 'error')
+                flash('❌ Login Failed! Invalid username or password. Please use: Friendscars / Friendscars@54961828', 'error')
         else:
             if form.username.data or form.password.data:
-                flash('❌ Login failed. Please check your credentials and try again.', 'error')
+                flash('❌ Login Failed! Please enter valid credentials. Use: Friendscars / Friendscars@54961828', 'error')
             else:
-                flash('❌ Please enter both username and password.', 'error')
+                flash('❌ Please enter both username and password to continue.', 'error')
 
     return render_template('admin_login.html', form=form)
 
