@@ -59,9 +59,9 @@ def vehicle_detail(vehicle_id):
 @app.route('/admin/login', methods=['GET', 'POST'])
 def admin_login():
     """Admin login page"""
-    # Check if already logged in - redirect to dashboard
+    # Check if already logged in - redirect to add vehicle page
     if session.get('admin_logged_in'):
-        return redirect(url_for('admin_dashboard'))
+        return redirect(url_for('add_vehicle_page'))
 
     form = LoginForm()
     
