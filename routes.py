@@ -58,10 +58,14 @@ def vehicle_detail(vehicle_id):
 
 @app.route('/admin/login', methods=['GET', 'POST'])
 def admin_login():
-    """Professional admin login page"""
+    """Professional admin login page with hardcoded credentials"""
     # Check if already logged in
     if session.get('admin_logged_in'):
         return redirect(url_for('admin_dashboard'))
+    
+    # Hardcoded credentials
+    ADMIN_USERNAME = "Friendscars"
+    ADMIN_PASSWORD = "Friendscars@54961828"
     
     if request.method == 'POST':
         username = request.form.get('username', '').strip()
@@ -70,7 +74,8 @@ def admin_login():
         app.logger.debug(f"Login attempt for user: {username}")
         
         if username and password:
-            if verify_admin(username, password):
+            # Direct credential check without database
+            if username == ADMIN_USERNAME and password == ADMIN_PASSWORD:
                 session['admin_logged_in'] = True
                 session['admin_username'] = username
                 session.permanent = True
