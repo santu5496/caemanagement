@@ -58,39 +58,23 @@ def vehicle_detail(vehicle_id):
 
 @app.route('/admin/login', methods=['GET', 'POST'])
 def admin_login():
-    """Professional admin login page with hardcoded credentials"""
-    # Check if already logged in
+    """Simple admin login"""
     if session.get('admin_logged_in'):
         return redirect(url_for('admin_dashboard'))
     
-    # Hardcoded credentials
-    ADMIN_USERNAME = "Friendscars"
-    ADMIN_PASSWORD = "Friendscars@54961828"
-    
     if request.method == 'POST':
-        username = request.form.get('username', '').strip()
+        username = request.form.get('username', '')
         password = request.form.get('password', '')
         
-        app.logger.debug(f"Login attempt for user: {username}")
-        
-        if username and password:
-            # Direct credential check without database
-            if username == ADMIN_USERNAME and password == ADMIN_PASSWORD:
-                session['admin_logged_in'] = True
-                session['admin_username'] = username
-                session.permanent = True
-                app.logger.debug("Login successful, redirecting to dashboard")
-                flash('✅ Login Successful! Welcome to the Admin Panel!', 'success')
-                return redirect(url_for('admin_dashboard'))
-            else:
-                app.logger.debug("Login failed - invalid credentials")
-                flash('❌ Invalid credentials. Use: Friendscars / Friendscars@54961828', 'error')
+        if username == "Friendscars" and password == "Friendscars@54961828":
+            session['admin_logged_in'] = True
+            session['admin_username'] = username
+            flash('Login successful!', 'success')
+            return redirect(url_for('admin_dashboard'))
         else:
-            flash('❌ Please enter both username and password.', 'error')
+            flash('Wrong username or password!', 'error')
     
-    # For GET requests or failed login attempts
-    form = LoginForm()  # Create empty form for template
-    return render_template('admin_login.html', form=form)
+    return render_template('admin_login.html')
 
 @app.route('/quick-login')
 def quick_login():
