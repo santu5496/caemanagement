@@ -12,7 +12,10 @@ def DataRequiredAllowZero(message=None):
 
 class LoginForm(FlaskForm):
     class Meta:
-        csrf = False  # Disable CSRF protection
+        csrf = False
+        csrf_class = None
+        csrf_secret = None
+        csrf_token_field = None
     
     username = StringField('Username', validators=[DataRequired()])
     password = PasswordField('Password', validators=[DataRequired()])

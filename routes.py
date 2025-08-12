@@ -58,38 +58,33 @@ def vehicle_detail(vehicle_id):
 
 @app.route('/admin/login', methods=['GET', 'POST'])
 def admin_login():
-    """Admin login page"""
-    # Check if already logged in - redirect to dashboard
+    """Professional admin login page"""
+    # Check if already logged in
     if session.get('admin_logged_in'):
         return redirect(url_for('admin_dashboard'))
-
-    form = LoginForm()
     
     if request.method == 'POST':
-        app.logger.debug(f"POST request received at /admin/login")
-        app.logger.debug(f"Form validation: {form.validate_on_submit()}")
-        app.logger.debug(f"Form errors: {form.errors}")
-        app.logger.debug(f"Form data: username='{form.username.data}', password={'***' if form.password.data else 'None'}")
+        username = request.form.get('username', '').strip()
+        password = request.form.get('password', '')
         
-        # Manual validation since CSRF is disabled
-        username = form.username.data
-        password = form.password.data
+        app.logger.debug(f"Login attempt for user: {username}")
         
         if username and password:
-            app.logger.debug(f"Login attempt for user: {username}")
             if verify_admin(username, password):
                 session['admin_logged_in'] = True
                 session['admin_username'] = username
                 session.permanent = True
                 app.logger.debug("Login successful, redirecting to dashboard")
-                flash('✅ Login Successful! Welcome to the Admin Panel, Friendscars!', 'success')
+                flash('✅ Login Successful! Welcome to the Admin Panel!', 'success')
                 return redirect(url_for('admin_dashboard'))
             else:
                 app.logger.debug("Login failed - invalid credentials")
-                flash('❌ Login Failed! Invalid username or password. Please use: Friendscars / Friendscars@54961828', 'error')
+                flash('❌ Invalid credentials. Use: Friendscars / Friendscars@54961828', 'error')
         else:
-            flash('❌ Please enter both username and password to continue.', 'error')
-
+            flash('❌ Please enter both username and password.', 'error')
+    
+    # For GET requests or failed login attempts
+    form = LoginForm()  # Create empty form for template
     return render_template('admin_login.html', form=form)
 
 @app.route('/quick-login')
