@@ -108,7 +108,7 @@ def admin_dashboard():
     try:
         vehicles = get_all_vehicles()
         form = VehicleForm()
-        return render_template('wizard_admin.html', vehicles=vehicles, form=form)
+        return render_template('enhanced_admin.html', vehicles=vehicles, form=form)
     except Exception as e:
         app.logger.error(f"Error loading admin dashboard: {e}")
         flash('Error loading dashboard. Please try again.', 'error')
@@ -120,7 +120,17 @@ def admin_dashboard_direct():
     # For demo purposes, bypass session check temporarily
     vehicles = get_all_vehicles()
     form = VehicleForm()
-    return render_template('admin.html', vehicles=vehicles, form=form)
+    return render_template('enhanced_admin.html', vehicles=vehicles, form=form)
+
+@app.route('/admin-dark')
+def admin_dark_dashboard():
+    """Dark theme admin dashboard - direct access"""
+    # Set session for demo
+    session['admin_logged_in'] = True
+    session['admin_username'] = 'Friendscars'
+    vehicles = get_all_vehicles()
+    form = VehicleForm()
+    return render_template('enhanced_admin.html', vehicles=vehicles, form=form)
 
 @app.route('/admin/add_vehicle', methods=['POST'])
 def add_vehicle_route():
