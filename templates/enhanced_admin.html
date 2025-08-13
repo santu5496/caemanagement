@@ -669,18 +669,33 @@ function editVehicle(vehicleId) {
             if (data.success === false) {
                 throw new Error(data.message || 'Failed to load vehicle data');
             }
+            
+            // Ensure we have valid vehicle data
+            if (!data || typeof data !== 'object') {
+                throw new Error('Invalid vehicle data received');
+            }
+            
             populateForm(data);
             hideLoading();
-            new bootstrap.Modal(document.getElementById('vehicleModal')).show();
+            
+            // Ensure modal element exists before showing
+            const modalElement = document.getElementById('vehicleModal');
+            if (modalElement) {
+                new bootstrap.Modal(modalElement).show();
+            } else {
+                throw new Error('Vehicle modal not found');
+            }
         })
         .catch(error => {
             console.error('Error loading vehicle data:', error);
             hideLoading();
-            showToast(`Error loading vehicle data: ${error.message}`, 'danger');
+            showToast(`Error loading vehicle data: ${error.message || 'Unknown error'}`, 'danger');
         });
 }
 
 function populateForm(vehicle) {
+    console.log('Populating form with vehicle data:', vehicle);
+    
     // Clear previous validation states
     document.querySelectorAll('.is-invalid').forEach(el => {
         el.classList.remove('is-invalid');
@@ -688,17 +703,26 @@ function populateForm(vehicle) {
         if (feedback) feedback.textContent = '';
     });
 
-    // Populate all form fields
+    // Populate all form fields with proper error handling
     Object.keys(vehicle).forEach(key => {
-        // Find the element by ID or name, prioritizing ID
-        let field = document.getElementById(key);
-        if (!field) {
-            field = document.querySelector(`[name="${key}"]`);
-        }
-        
-        if (field && vehicle[key] !== null && vehicle[key] !== undefined) {
-            // Handle specific field types if necessary (e.g., select, checkboxes)
-            field.value = vehicle[key];
+        try {
+            // Skip certain keys that don't correspond to form fields
+            if (['created_at', 'updated_at', 'images'].includes(key)) {
+                return;
+            }
+            
+            // Find the element by ID or name, prioritizing ID
+            let field = document.getElementById(key);
+            if (!field) {
+                field = document.querySelector(`[name="${key}"]`);
+            }
+            
+            if (field && vehicle[key] !== null && vehicle[key] !== undefined) {
+                // Handle specific field types if necessary (e.g., select, checkboxes)
+                field.value = vehicle[key];
+            }
+        } catch (error) {
+            console.warn(`Error setting field ${key}:`, error);
         }
     });
 
