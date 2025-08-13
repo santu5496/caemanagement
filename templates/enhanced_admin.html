@@ -691,9 +691,15 @@ function populateForm(vehicle) {
         }
     });
 
-    // Handle images display
-    if (vehicle.images_list && vehicle.images_list.length > 0) {
-        displayCurrentImages(vehicle.images_list);
+    // Handle images display  
+    if (vehicle.images && Array.isArray(vehicle.images) && vehicle.images.length > 0) {
+        displayCurrentImages(vehicle.images);
+    } else if (vehicle.images && typeof vehicle.images === 'string' && vehicle.images.trim() !== '') {
+        // Handle comma-separated string format
+        const imageArray = vehicle.images.split(',').map(img => img.trim()).filter(img => img !== '');
+        if (imageArray.length > 0) {
+            displayCurrentImages(imageArray);
+        }
     }
 }
 
