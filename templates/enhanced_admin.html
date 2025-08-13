@@ -376,7 +376,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <form id="vehicleForm" method="POST" enctype="multipart/form-data">
-                {{ form.hidden_tag() }}
+
                 <div class="modal-body" style="max-height: 70vh; overflow-y: auto;">
 
                     <!-- Basic Information Section -->
@@ -752,10 +752,7 @@ function deleteVehicle(vehicleId) {
     fetch(`/admin/delete_vehicle/${vehicleId}`, {
         method: 'DELETE',
         headers: {
-            'Content-Type': 'application/json',
-            // Assuming CSRF token is available in a meta tag or global JS variable
-            // If not, you'll need to find another way to get it.
-            'X-CSRFToken': document.querySelector('meta[name="csrf-token"]')?.value || '{{ csrf_token() }}' 
+            'Content-Type': 'application/json'
         }
     })
     .then(response => response.json())
