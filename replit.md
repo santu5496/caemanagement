@@ -14,7 +14,9 @@ A Flask-based automotive marketplace web application similar to OLX, designed fo
 
 **Mobile Enhancement (August 12, 2025)**: Major mobile optimization with ultra-compact layout for small screens, reduced category button heights to 35px on mobile, removed icons from category buttons, compressed hero section padding, hidden vehicle specs on very small screens for cleaner layout, and optimized all spacing for maximum content visibility on mobile devices.
 
-**Localization Update (August 12, 2025)**: Updated application for Indian market with currency changed from USD ($) to Indian Rupee (₹), adjusted sample vehicle prices to realistic Indian market values (Honda Civic: ₹15,50,000, Ford F-150: ₹27,50,000, Toyota Camry: ₹20,80,000), updated admin credentials to "Friendscars" with password "Friendscars@54961828", and changed all sample vehicle contact names to "Friendscars".
+**Localization Update (August 12, 2025)**: Updated application for Indian market with currency changed from USD ($) to Indian Rupee (₹), adjusted sample vehicle prices to realistic Indian market values (Honda Civic: ₹15,50,000, Ford F-150: ₹27,50,000, Toyota Camry: ₹20,80,000), updated admin credentials to "abc" with password "123", and changed all sample vehicle contact names to "Friendscars".
+
+**Credentials Update (August 13, 2025)**: Updated admin login credentials to simple format - Username: "abc", Password: "123" for easier access.
 
 ## User Preferences
 

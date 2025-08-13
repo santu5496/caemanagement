@@ -66,7 +66,7 @@ def admin_login():
         username = request.form.get('username', '')
         password = request.form.get('password', '')
         
-        if username == "Friendscars" and password == "Friendscars@54961828":
+        if username == "abc" and password == "123":
             session['admin_logged_in'] = True
             session['admin_username'] = username
             flash('Login successful!', 'success')
@@ -121,7 +121,7 @@ def admin_dark_dashboard():
     """Dark theme admin dashboard - direct access"""
     # Set session for demo
     session['admin_logged_in'] = True
-    session['admin_username'] = 'Friendscars'
+    session['admin_username'] = 'abc'
     vehicles = get_all_vehicles()
     form = VehicleForm()
     return render_template('enhanced_admin.html', vehicles=vehicles, form=form)
@@ -134,14 +134,14 @@ def admin_auth():
     
     app.logger.debug(f"Auth attempt: {username}")
     
-    if username == 'Friendscars' and password == 'Friendscars@54961828':
+    if username == 'abc' and password == '123':
         session['admin_logged_in'] = True
         session['admin_username'] = username
         session.permanent = True
         flash('✅ Successfully logged in! Welcome to Admin Dashboard.', 'success')
         return redirect(url_for('admin_dashboard'))
     else:
-        flash('❌ Invalid username or password. Please use: Friendscars / Friendscars@54961828', 'error')
+        flash('❌ Invalid username or password. Please use: abc / 123', 'error')
         return redirect(url_for('admin_login'))
 
 @app.route('/admin/add_vehicle_page')
