@@ -657,15 +657,26 @@ function editVehicle(vehicleId) {
 
     // Fetch vehicle data
     fetch(`/admin/vehicle/${vehicleId}`)
-        .then(response => response.json())
+        .then(response => {
+            console.log('Response status:', response.status);
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+            return response.json();
+        })
         .then(data => {
+            console.log('Vehicle data received:', data);
+            if (data.success === false) {
+                throw new Error(data.message || 'Failed to load vehicle data');
+            }
             populateForm(data);
             hideLoading();
             new bootstrap.Modal(document.getElementById('vehicleModal')).show();
         })
         .catch(error => {
+            console.error('Error loading vehicle data:', error);
             hideLoading();
-            showToast('Error loading vehicle data', 'danger');
+            showToast(`Error loading vehicle data: ${error.message}`, 'danger');
         });
 }
 

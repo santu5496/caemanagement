@@ -238,13 +238,19 @@ def add_vehicle_route():
 @app.route('/admin/vehicle/<vehicle_id>', methods=['GET'])
 def get_vehicle_for_edit(vehicle_id):
     """Get vehicle data for editing in modal"""
+    app.logger.debug(f"Session data: {dict(session)}")
+    app.logger.debug(f"Admin logged in: {session.get('admin_logged_in')}")
+    
     if not session.get('admin_logged_in'):
+        app.logger.warning(f"Unauthorized access attempt to get vehicle {vehicle_id}")
         return jsonify({'success': False, 'message': 'Authentication required'}), 401
 
     vehicle = get_vehicle(vehicle_id)
     if not vehicle:
+        app.logger.warning(f"Vehicle not found: {vehicle_id}")
         return jsonify({'success': False, 'message': 'Vehicle not found'}), 404
 
+    app.logger.debug(f"Returning vehicle data for {vehicle_id}")
     return jsonify(vehicle.to_dict())
 
 @app.route('/admin/edit_vehicle/<vehicle_id>', methods=['GET', 'POST'])
