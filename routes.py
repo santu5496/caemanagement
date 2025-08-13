@@ -184,6 +184,7 @@ def add_vehicle_route():
                 description=form.description.data,
                 contact_name=form.contact_name.data,
                 contact_phone=form.contact_phone.data,
+                contact_email=form.contact_email.data or None,
                 images=image_filenames,
                 # Engine & Performance
                 fuel_type=form.fuel_type.data or None,
@@ -269,6 +270,7 @@ def edit_vehicle(vehicle_id):
                 'description': form.description.data,
                 'contact_name': form.contact_name.data,
                 'contact_phone': form.contact_phone.data,
+                'contact_email': form.contact_email.data or None,
                 'status': form.status.data,
                 # Engine & Performance
                 'fuel_type': form.fuel_type.data or None,
@@ -331,7 +333,7 @@ def get_vehicle_data(vehicle_id):
 
     return jsonify(vehicle.to_dict())
 
-@app.route('/admin/delete_vehicle/<vehicle_id>', methods=['POST'])
+@app.route('/admin/delete_vehicle/<vehicle_id>', methods=['POST', 'DELETE'])
 def delete_vehicle_route(vehicle_id):
     """Delete vehicle via AJAX"""
     if 'admin_logged_in' not in session:
