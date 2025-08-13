@@ -95,8 +95,40 @@
                     <div class="listing-card h-100">
                         <div class="listing-image-wrapper position-relative">
                             {% if vehicle.images_list %}
+                                {% if vehicle.images_list|length > 1 %}
+                                <!-- Carousel for multiple images -->
+                                <div id="carousel-{{ vehicle.id }}" class="carousel slide" data-bs-ride="false">
+                                    <div class="carousel-inner">
+                                        {% for image in vehicle.images_list %}
+                                        <div class="carousel-item {{ 'active' if loop.first else '' }}">
+                                            <img src="{{ url_for('static', filename='uploads/' + image) }}" 
+                                                 class="listing-image" alt="{{ vehicle.title }} - Image {{ loop.index }}">
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                    {% if vehicle.images_list|length > 1 %}
+                                    <button class="carousel-control-prev" type="button" data-bs-target="#carousel-{{ vehicle.id }}" data-bs-slide="prev">
+                                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                        <span class="visually-hidden">Previous</span>
+                                    </button>
+                                    <button class="carousel-control-next" type="button" data-bs-target="#carousel-{{ vehicle.id }}" data-bs-slide="next">
+                                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                        <span class="visually-hidden">Next</span>
+                                    </button>
+                                    <!-- Image indicators -->
+                                    <div class="carousel-indicators">
+                                        {% for image in vehicle.images_list %}
+                                        <button type="button" data-bs-target="#carousel-{{ vehicle.id }}" data-bs-slide-to="{{ loop.index0 }}" 
+                                                class="{{ 'active' if loop.first else '' }}" aria-label="Slide {{ loop.index }}"></button>
+                                        {% endfor %}
+                                    </div>
+                                    {% endif %}
+                                </div>
+                                {% else %}
+                                <!-- Single image -->
                                 <img src="{{ url_for('static', filename='uploads/' + vehicle.images_list[0]) }}" 
                                      class="listing-image" alt="{{ vehicle.title }}">
+                                {% endif %}
                             {% else %}
                                 <div class="listing-image listing-placeholder d-flex align-items-center justify-content-center">
                                     <i class="fas fa-car fa-3x text-muted"></i>
@@ -108,6 +140,9 @@
                                 <span class="badge bg-primary category-badge">{{ vehicle.category }}</span>
                                 {% if vehicle.status == 'sold' %}
                                     <span class="badge bg-danger sold-badge">SOLD</span>
+                                {% endif %}
+                                {% if vehicle.images_list|length > 1 %}
+                                    <span class="badge bg-dark image-count-badge">{{ vehicle.images_list|length }} Photos</span>
                                 {% endif %}
                             </div>
                             
