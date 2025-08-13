@@ -145,8 +145,8 @@
 }
 
 /* Global form field styling to ensure black text in all forms */
-.modal .form-control, 
-.modal .form-select, 
+.modal .form-control,
+.modal .form-select,
 .modal textarea,
 .modal input {
     color: #212529 !important;
@@ -154,8 +154,8 @@
     border: 2px solid #e9ecef !important;
 }
 
-.modal .form-control:focus, 
-.modal .form-select:focus, 
+.modal .form-control:focus,
+.modal .form-select:focus,
 .modal textarea:focus,
 .modal input:focus {
     color: #212529 !important;
@@ -166,6 +166,83 @@
 .modal .form-label {
     color: #212529 !important;
     font-weight: 600 !important;
+}
+
+/* Image slot specific styles */
+.image-upload-slot {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 150px; /* Fixed height for consistency */
+    border: 2px dashed #007bff;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    cursor: pointer;
+    transition: border-color 0.3s, background-color 0.3s;
+    position: relative;
+    overflow: hidden; /* To contain the image preview */
+}
+
+.image-upload-slot:hover {
+    border-color: #0056b3;
+}
+
+.image-upload-slot input[type="file"] {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.slot-content i {
+    font-size: 2rem;
+    color: #007bff;
+    margin-bottom: 0.5rem;
+}
+
+.slot-content p {
+    color: #6c757d;
+    font-size: 0.9rem;
+}
+
+.image-preview-container {
+    position: relative;
+    width: 100%;
+    height: 150px; /* Match slot height */
+    border-radius: 8px;
+    overflow: hidden;
+    display: none; /* Hidden by default */
+}
+
+.image-preview-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.remove-image-btn {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background: rgba(0,0,0,0.5);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 25px;
+    height: 25px;
+    font-size: 0.8rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 10;
+}
+.remove-image-btn:hover {
+    background: rgba(0,0,0,0.7);
 }
 </style>
 
@@ -304,11 +381,11 @@
                         </td>
                         <td>
                             {% if vehicle.images_list %}
-                                <img src="{{ url_for('static', filename='uploads/' + vehicle.images_list[0]) }}" 
-                                     class="rounded" style="width: 60px; height: 45px; object-fit: cover;" 
+                                <img src="{{ url_for('static', filename='uploads/' + vehicle.images_list[0]) }}"
+                                     class="rounded" style="width: 60px; height: 45px; object-fit: cover;"
                                      alt="{{ vehicle.title }}">
                             {% else %}
-                                <div class="bg-light rounded d-flex align-items-center justify-content-center text-muted" 
+                                <div class="bg-light rounded d-flex align-items-center justify-content-center text-muted"
                                      style="width: 60px; height: 45px;">
                                     <i class="fas fa-car"></i>
                                 </div>
@@ -342,15 +419,15 @@
                         </td>
                         <td>
                             <div class="btn-group btn-group-sm" role="group">
-                                <button type="button" class="btn btn-outline-primary btn-action" 
+                                <button type="button" class="btn btn-outline-primary btn-action"
                                         onclick="viewVehicle('{{ vehicle.id }}')" title="View Details">
                                     <i class="fas fa-eye"></i>
                                 </button>
-                                <button type="button" class="btn btn-outline-warning btn-action" 
+                                <button type="button" class="btn btn-outline-warning btn-action"
                                         onclick="editVehicle('{{ vehicle.id }}')" title="Edit">
                                     <i class="fas fa-edit"></i>
                                 </button>
-                                <button type="button" class="btn btn-outline-danger btn-action" 
+                                <button type="button" class="btn btn-outline-danger btn-action"
                                         onclick="confirmDelete('{{ vehicle.id }}')" title="Delete">
                                     <i class="fas fa-trash"></i>
                                 </button>
@@ -582,9 +659,24 @@
                         <h6><i class="fas fa-images me-2"></i>Vehicle Images</h6>
                         <div class="row g-3">
                             <div class="col-12">
-                                {{ form.images.label(class="form-label") }}
-                                {{ form.images(class="form-control") }}
-                                <div class="form-text">Select up to 6 high-quality images. Accepted formats: JPG, PNG, GIF (Max 16MB each)</div>
+                                <div class="row g-3" id="image-slots-container">
+                                    {% for i in range(1, 7) %}
+                                    <div class="col-md-2 mb-3">
+                                        <div class="image-upload-slot" id="image-slot-{{ i }}">
+                                            <input type="file" id="image-input-{{ i }}" name="image-{{ i }}" accept="image/*" onchange="previewImage({{ i }})">
+                                            <div class="slot-content text-center">
+                                                <i class="fas fa-camera"></i>
+                                                <p>Slot {{ i }}</p>
+                                            </div>
+                                            <div class="image-preview-container" id="image-preview-container-{{ i }}">
+                                                <img id="image-preview-{{ i }}" src="" alt="Image Preview">
+                                                <button type="button" class="remove-image-btn" onclick="removeImage({{ i }})">&times;</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                                <div class="form-text mt-2">Select up to 6 high-quality images. Accepted formats: JPG, PNG, GIF (Max 16MB each)</div>
                                 <div class="invalid-feedback"></div>
                             </div>
                             <div class="col-12" id="current-images-container"></div>
@@ -619,6 +711,7 @@
 <script>
 // Enhanced admin dashboard functionality
 let currentVehicleId = null;
+let uploadedImages = []; // Array to keep track of uploaded files for the current form submission
 
 function showLoading() {
     document.getElementById('loading-overlay').style.display = 'flex';
@@ -642,9 +735,9 @@ function openAddModal() {
         if (feedback) feedback.textContent = '';
     });
 
-    // Clear image preview
-    const container = document.getElementById('current-images-container');
-    if (container) container.innerHTML = '';
+    // Clear image slots
+    clearAllImageSlots();
+    document.getElementById('current-images-container').innerHTML = '';
 }
 
 function editVehicle(vehicleId) {
@@ -669,15 +762,19 @@ function editVehicle(vehicleId) {
             if (data.success === false) {
                 throw new Error(data.message || 'Failed to load vehicle data');
             }
-            
+
             // Ensure we have valid vehicle data
             if (!data || typeof data !== 'object') {
                 throw new Error('Invalid vehicle data received');
             }
-            
+
+            // Clear existing slots before populating
+            clearAllImageSlots();
+            document.getElementById('current-images-container').innerHTML = '';
+
             populateForm(data);
             hideLoading();
-            
+
             // Ensure modal element exists before showing
             const modalElement = document.getElementById('vehicleModal');
             if (modalElement) {
@@ -695,7 +792,7 @@ function editVehicle(vehicleId) {
 
 function populateForm(vehicle) {
     console.log('Populating form with vehicle data:', vehicle);
-    
+
     // Clear previous validation states
     document.querySelectorAll('.is-invalid').forEach(el => {
         el.classList.remove('is-invalid');
@@ -706,17 +803,17 @@ function populateForm(vehicle) {
     // Populate all form fields with proper error handling
     Object.keys(vehicle).forEach(key => {
         try {
-            // Skip certain keys that don't correspond to form fields
+            // Skip certain keys that don't correspond to form fields or are handled separately
             if (['created_at', 'updated_at', 'images'].includes(key)) {
                 return;
             }
-            
+
             // Find the element by ID or name, prioritizing ID
             let field = document.getElementById(key);
             if (!field) {
                 field = document.querySelector(`[name="${key}"]`);
             }
-            
+
             if (field && vehicle[key] !== null && vehicle[key] !== undefined) {
                 // Handle specific field types if necessary (e.g., select, checkboxes)
                 field.value = vehicle[key];
@@ -726,11 +823,11 @@ function populateForm(vehicle) {
         }
     });
 
-    // Handle images display  
+    // Handle images display
     if (vehicle.images && Array.isArray(vehicle.images) && vehicle.images.length > 0) {
         displayCurrentImages(vehicle.images);
     } else if (vehicle.images && typeof vehicle.images === 'string' && vehicle.images.trim() !== '') {
-        // Handle comma-separated string format
+        // Handle comma-separated string format if the backend sends it this way
         const imageArray = vehicle.images.split(',').map(img => img.trim()).filter(img => img !== '');
         if (imageArray.length > 0) {
             displayCurrentImages(imageArray);
@@ -746,19 +843,192 @@ function displayCurrentImages(images) {
     const imageRow = document.createElement('div');
     imageRow.className = 'row g-2 mb-3';
 
-    images.forEach(image => {
+    images.forEach((image, index) => {
         const col = document.createElement('div');
-        col.className = 'col-md-3';
-        col.innerHTML = `
-            <img src="/static/uploads/${image}" 
-                 class="img-thumbnail w-100" 
-                 alt="Vehicle Image" 
-                 style="height: 120px; object-fit: cover;">
-        `;
-        imageRow.appendChild(col);
-    });
+        col.className = 'col-md-2'; // Adjust column size as needed
 
-    container.appendChild(imageRow);
+        const slotNumber = index + 1; // Assuming images array is ordered by slot
+
+        // Find the corresponding image slot
+        const slotElement = document.getElementById(`image-slot-${slotNumber}`);
+        if (!slotElement) {
+            console.warn(`Image slot ${slotNumber} not found for image ${image}`);
+            return; // Skip if slot doesn't exist
+        }
+
+        // Update the slot with the image preview and remove button
+        const previewContainer = slotElement.querySelector('.image-preview-container');
+        const previewImage = previewContainer.querySelector('img');
+        const removeBtn = previewContainer.querySelector('.remove-image-btn');
+        const slotContent = slotElement.querySelector('.slot-content');
+        const uploadInput = document.getElementById(`image-input-${slotNumber}`);
+
+        if (previewContainer && previewImage && slotContent && uploadInput) {
+            previewImage.src = `/static/uploads/${image}`;
+            previewContainer.style.display = 'block'; // Show the preview container
+            slotContent.style.display = 'none'; // Hide the default slot content
+            slotElement.setAttribute('data-existing-image', image); // Mark as existing image
+            uploadInput.value = ''; // Clear any selected file from the input
+
+            // Add a remove button specifically for this existing image
+            if (!removeBtn) {
+                const newRemoveBtn = document.createElement('button');
+                newRemoveBtn.type = 'button';
+                newRemoveBtn.className = 'remove-image-btn';
+                newRemoveBtn.innerHTML = '&times;';
+                newRemoveBtn.onclick = () => removeExistingImage(slotNumber, image);
+                previewContainer.appendChild(newRemoveBtn);
+            }
+
+            // Update the styled upload slot to indicate it has an image
+            const uploadSlot = slotElement.querySelector('.image-upload-slot');
+            if (uploadSlot) {
+                uploadSlot.style.border = '1px solid #ced4da'; // Border for existing image
+                uploadSlot.style.background = 'none'; // No gradient for existing image
+            }
+        }
+
+        // Keep track of existing images for form submission
+        uploadedImages[slotNumber - 1] = image; // Store the filename
+    });
+    updateFormFileInput(); // Update the hidden input with current image list
+}
+
+
+// Function to preview the selected image in its slot
+function previewImage(slotNumber) {
+    const input = document.getElementById(`image-input-${slotNumber}`);
+    const previewContainer = document.getElementById(`image-preview-container-${slotNumber}`);
+    const previewImage = document.getElementById(`image-preview-${slotNumber}`);
+    const slotContent = document.getElementById(`image-slot-${slotNumber}`).querySelector('.slot-content');
+    const uploadSlot = document.getElementById(`image-slot-${slotNumber}`).querySelector('.image-upload-slot');
+
+
+    if (input.files && input.files[0]) {
+        const file = input.files[0];
+        if (file.size > 16 * 1024 * 1024) { // 16MB limit
+            showToast('File size exceeds 16MB limit.', 'danger');
+            input.value = ''; // Clear the input
+            return;
+        }
+
+        const reader = new FileReader();
+
+        reader.onload = function(e) {
+            previewImage.src = e.target.result;
+            previewContainer.style.display = 'block'; // Show preview container
+            slotContent.style.display = 'none'; // Hide default content
+
+            // Add remove button if it doesn't exist
+            let removeBtn = previewContainer.querySelector('.remove-image-btn');
+            if (!removeBtn) {
+                removeBtn = document.createElement('button');
+                removeBtn.type = 'button';
+                removeBtn.className = 'remove-image-btn';
+                removeBtn.innerHTML = '&times;';
+                removeBtn.onclick = () => removeImage(slotNumber);
+                previewContainer.appendChild(removeBtn);
+            }
+
+            // Update slot styling
+            if (uploadSlot) {
+                uploadSlot.style.border = '1px solid #ced4da'; // Border for a filled slot
+                uploadSlot.style.background = 'none';
+            }
+
+            // Store the file in the uploadedImages array
+            uploadedImages[slotNumber - 1] = file;
+            updateFormFileInput();
+        }
+        reader.readAsDataURL(file);
+    } else {
+        // If file input is cleared, reset the slot
+        removeImage(slotNumber);
+    }
+}
+
+function removeImage(slotNumber) {
+    const slot = document.getElementById(`image-slot-${slotNumber}`);
+    const previewContainer = document.getElementById(`image-preview-container-${slotNumber}`);
+    const preview = document.getElementById(`image-preview-${slotNumber}`);
+    const slotContent = slot?.querySelector('.slot-content');
+    const removeBtn = previewContainer?.querySelector('.remove-image-btn');
+    const input = document.getElementById(`image-input-${slotNumber}`);
+    const uploadSlot = slot?.querySelector('.image-upload-slot');
+
+    // Reset the slot
+    if (previewContainer) previewContainer.style.display = 'none';
+    if (preview) {
+        preview.src = '';
+    }
+    if (slotContent) slotContent.style.display = 'block';
+    if (input) input.value = '';
+    if (removeBtn) removeBtn.remove();
+    if (slot) slot.removeAttribute('data-existing-image'); // Clear existing image attribute
+
+    // Reset slot styling
+    if (uploadSlot) {
+        uploadSlot.style.border = '2px dashed #007bff';
+        uploadSlot.style.background = 'linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)';
+    }
+
+    // Update uploaded images array
+    uploadedImages[slotNumber - 1] = null;
+    updateFormFileInput();
+}
+
+function removeExistingImage(slotNumber, imageName) {
+    // Remove the visual representation
+    removeImage(slotNumber);
+
+    // Mark this image for deletion by setting its slot to null in uploadedImages
+    // The backend logic will need to handle deleting images marked as null in their respective slots
+    console.log(`Existing image ${imageName} marked for removal from slot ${slotNumber}`);
+}
+
+function clearAllImageSlots() {
+    for (let i = 1; i <= 6; i++) {
+        try {
+            const slot = document.getElementById(`image-slot-${i}`);
+            const previewContainer = document.getElementById(`image-preview-container-${i}`);
+            const preview = document.getElementById(`image-preview-${i}`);
+            const slotContent = slot?.querySelector('.slot-content');
+            const removeBtn = previewContainer?.querySelector('.remove-image-btn');
+            const input = document.getElementById(`image-input-${i}`);
+            const uploadSlot = slot?.querySelector('.image-upload-slot');
+
+            if (previewContainer) previewContainer.style.display = 'none';
+            if (preview) {
+                preview.src = '';
+            }
+            if (slotContent) slotContent.style.display = 'block';
+            if (input) input.value = '';
+            if (removeBtn) removeBtn.remove();
+            if (slot) slot.removeAttribute('data-existing-image');
+            if (uploadSlot) {
+                uploadSlot.style.border = '2px dashed #007bff';
+                uploadSlot.style.background = 'linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)';
+            }
+        } catch (error) {
+            console.warn(`Error clearing image slot ${i}:`, error);
+        }
+    }
+    uploadedImages = []; // Reset the array
+    updateFormFileInput();
+}
+
+// Helper function to update a hidden input field with the list of images to be submitted
+// This is useful if the backend expects a consolidated list of files or image identifiers
+function updateFormFileInput() {
+    const formData = new FormData(document.getElementById('vehicleForm'));
+    // You might want to append a field named 'images_to_submit' or similar
+    // For now, let's assume files are directly appended via their inputs.
+    // If you need to send existing image names and new files, you'll need a more complex approach.
+    // For example, an array of objects: [{ slot: 1, file: File, existing: null }, { slot: 2, file: null, existing: 'image1.jpg' }]
+    // Or separate fields for new uploads and fields to delete.
+
+    // For simplicity in this example, we rely on the input[type=file] to carry the new files.
+    // If removing existing images needs to be explicitly sent, you'd add a hidden input here.
 }
 
 function showToast(message, type) {
@@ -861,14 +1131,40 @@ document.getElementById('vehicleForm').addEventListener('submit', function(e) {
     submitBtn.disabled = true;
     submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Processing...';
 
+    // Prepare form data
     const formData = new FormData(this);
-    // Ensure the correct action URL is used based on whether it's an add or edit operation
-    const url = currentVehicleId ? `/admin/edit_vehicle/${currentVehicleId}` : '/admin/add_vehicle';
-    
-    // If editing, explicitly set the action in the form for clarity if needed, though fetch handles it
+
+    // Add existing image information if we are editing
+    // If an image slot has 'data-existing-image', we need to send that information.
+    // The backend will then know which images to keep or delete.
     if (currentVehicleId) {
-        this.action = url;
+        for (let i = 1; i <= 6; i++) {
+            const slot = document.getElementById(`image-slot-${i}`);
+            const existingImageName = slot.getAttribute('data-existing-image');
+
+            if (existingImageName) {
+                // If the slot was modified (new file uploaded or removed), the name might be null/empty from uploadedImages
+                // We need to differentiate between existing and new.
+                const fileInput = document.getElementById(`image-input-${i}`);
+                if (fileInput.files.length === 0) { // If no new file was uploaded to this slot
+                    if (existingImageName) { // And there was an existing image
+                        // Mark that this existing image should be kept if not explicitly removed
+                        // Or, if it was removed (removeExistingImage called), then uploadedImages[i-1] will be null
+                        if (uploadedImages[i-1] === null) { // Means removeExistingImage was called
+                            formData.append(`remove_image_${i}`, 'true');
+                        } else {
+                            // This existing image is being kept. No explicit action needed for the backend to keep it,
+                            // unless we need to explicitly tell the backend to associate it with the vehicle again.
+                            // A common pattern is to send the names of existing images that remain.
+                            formData.append(`existing_images`, existingImageName);
+                        }
+                    }
+                }
+            }
+        }
     }
+
+    const url = currentVehicleId ? `/admin/edit_vehicle/${currentVehicleId}` : '/admin/add_vehicle';
 
     fetch(url, {
         method: 'POST',
@@ -878,7 +1174,12 @@ document.getElementById('vehicleForm').addEventListener('submit', function(e) {
     .then(data => {
         if (data.success) {
             showToast(data.message || 'Vehicle saved successfully!', 'success');
-            bootstrap.Modal.getInstance(document.getElementById('vehicleModal')).hide();
+            // Use Bootstrap's modal instance to hide the modal
+            const modalElement = document.getElementById('vehicleModal');
+            const modalInstance = bootstrap.Modal.getInstance(modalElement);
+            if (modalInstance) {
+                modalInstance.hide();
+            }
             setTimeout(() => window.location.reload(), 1500);
         } else {
             showToast(data.message || 'Error saving vehicle', 'danger');
@@ -890,6 +1191,15 @@ document.getElementById('vehicleForm').addEventListener('submit', function(e) {
                         fieldElement.classList.add('is-invalid');
                         const feedback = fieldElement.parentNode.querySelector('.invalid-feedback');
                         if (feedback) feedback.textContent = data.errors[field];
+                    } else {
+                        // Handle potential errors for fields not directly in the form, like image uploads
+                        if (field.startsWith('image')) {
+                            const imageErrorContainer = document.querySelector('.form-text + .invalid-feedback'); // Find the feedback div after form-text
+                            if (imageErrorContainer) {
+                                imageErrorContainer.textContent = data.errors[field];
+                                imageErrorContainer.style.display = 'block';
+                            }
+                        }
                     }
                 });
             }
