@@ -1,11 +1,36 @@
 /* OLX-style marketplace design */
 
-/* Hero Section */
+/* Global Body Styling */
+body {
+    background-color: var(--light-bg) !important;
+    color: var(--text-primary);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* Enhanced Color Variables */
+:root {
+    --primary-color: #2563eb;
+    --primary-light: #3b82f6;
+    --primary-dark: #1d4ed8;
+    --success-color: #10b981;
+    --warning-color: #f59e0b;
+    --danger-color: #ef4444;
+    --light-bg: #f8fafc;
+    --card-bg: #ffffff;
+    --text-primary: #1e293b;
+    --text-secondary: #64748b;
+    --border-color: #e2e8f0;
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+/* Modern Hero Section */
 .hero-section {
-    background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 50%, var(--primary-dark) 100%);
     position: relative;
     overflow: hidden;
-    padding: 3rem 0 !important;
+    padding: 2.5rem 0 !important;
 }
 
 .hero-section::before {
@@ -21,38 +46,43 @@
 
 .search-box {
     border: none;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    box-shadow: var(--shadow-lg);
     backdrop-filter: blur(10px);
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 16px !important;
 }
 
-/* Category Cards */
+/* Enhanced Category Cards */
 .category-card {
-    background: white;
+    background: var(--card-bg);
     border: 2px solid transparent;
-    transition: all 0.3s ease;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: var(--shadow-sm);
     min-height: 50px;
+    border-radius: 12px;
 }
 
 .category-card:hover {
-    border-color: var(--bs-primary);
-    transform: translateY(-3px);
-    box-shadow: 0 8px 20px rgba(0, 123, 255, 0.2);
+    border-color: var(--primary-color);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+    background: linear-gradient(145deg, #ffffff 0%, var(--light-bg) 100%);
 }
 
-/* Listing Cards - OLX Style */
+/* Enhanced Listing Cards */
 .listing-card {
-    background: white;
-    border-radius: 12px;
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
-    border: 1px solid rgba(0, 0, 0, 0.05);
-    transition: all 0.3s ease;
+    background: var(--card-bg);
+    border-radius: 16px;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border-color);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     overflow: hidden;
 }
 
 .listing-card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--primary-light);
 }
 
 .listing-image-wrapper {
@@ -85,20 +115,22 @@
 }
 
 .category-badge {
-    background: rgba(0, 123, 255, 0.9) !important;
+    background: var(--primary-color) !important;
     backdrop-filter: blur(10px);
     border: none;
     font-weight: 600;
     font-size: 0.75rem;
+    border-radius: 8px;
 }
 
 .sold-badge {
-    background: rgba(220, 53, 69, 0.9) !important;
+    background: var(--danger-color) !important;
     backdrop-filter: blur(10px);
     font-weight: 600;
+    border-radius: 8px;
 }
 
-/* Favorite Button */
+/* Enhanced Favorite Button */
 .favorite-btn {
     position: absolute;
     top: 12px;
@@ -107,7 +139,8 @@
     height: 40px;
     border-radius: 50%;
     border: none;
-    background: rgba(255, 255, 255, 0.9);
+    background: rgba(255, 255, 255, 0.95);
+    box-shadow: var(--shadow-sm);
     color: #6c757d;
     font-size: 16px;
     transition: all 0.3s ease;
@@ -325,17 +358,17 @@
     }
 }
 
-/* Carousel Custom Styles for Vehicle Listings */
+/* Enhanced Carousel Styles */
 .carousel-control-prev,
 .carousel-control-next {
     width: 15%;
     opacity: 0;
-    transition: opacity 0.3s ease;
+    transition: all 0.3s ease;
 }
 
 .listing-card:hover .carousel-control-prev,
 .listing-card:hover .carousel-control-next {
-    opacity: 0.8;
+    opacity: 0.9;
 }
 
 .carousel-control-prev:hover,
@@ -344,33 +377,131 @@
 }
 
 .carousel-indicators {
-    bottom: 10px;
+    bottom: 12px;
     margin-bottom: 0;
 }
 
 .carousel-indicators [data-bs-target] {
-    width: 8px;
-    height: 8px;
+    width: 10px;
+    height: 10px;
     border-radius: 50%;
-    margin: 0 3px;
-    opacity: 0.5;
+    margin: 0 4px;
+    opacity: 0.6;
     background-color: white;
-    border: 1px solid rgba(0,0,0,0.3);
+    border: 2px solid rgba(0,0,0,0.2);
+    transition: all 0.3s ease;
 }
 
 .carousel-indicators .active {
     opacity: 1;
-    background-color: var(--bs-primary);
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    transform: scale(1.2);
 }
 
 .image-count-badge {
     position: absolute;
-    top: 10px;
-    right: 50px;
-    font-size: 0.75rem;
+    top: 12px;
+    right: 60px;
+    font-size: 0.7rem;
     z-index: 10;
-    background: rgba(0, 0, 0, 0.7) !important;
+    background: rgba(0, 0, 0, 0.8) !important;
     color: white;
+    border-radius: 12px;
+    padding: 4px 8px;
+}
+
+/* Enhanced Button Styles */
+.btn {
+    border-radius: 12px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    border-width: 1.5px;
+}
+
+.btn-primary {
+    background: var(--primary-color);
+    border-color: var(--primary-color);
+    color: white;
+}
+
+.btn-primary:hover, .btn-primary:focus {
+    background: var(--primary-dark);
+    border-color: var(--primary-dark);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-sm);
+    color: white;
+}
+
+.btn-outline-primary {
+    color: var(--primary-color);
+    border-color: var(--primary-color);
+    background: transparent;
+}
+
+.btn-outline-primary:hover, .btn-outline-primary:focus {
+    background: var(--primary-color);
+    border-color: var(--primary-color);
+    transform: translateY(-1px);
+    color: white;
+}
+
+.btn-success {
+    background: var(--success-color);
+    border-color: var(--success-color);
+    color: white;
+}
+
+.btn-success:hover, .btn-success:focus {
+    background: #059669;
+    border-color: #059669;
+    color: white;
+}
+
+.btn-danger {
+    background: var(--danger-color);
+    border-color: var(--danger-color);
+    color: white;
+}
+
+.btn-danger:hover, .btn-danger:focus {
+    background: #dc2626;
+    border-color: #dc2626;
+    color: white;
+}
+
+.btn-outline-warning {
+    color: var(--warning-color);
+    border-color: var(--warning-color);
+}
+
+.btn-outline-warning:hover {
+    background: var(--warning-color);
+    border-color: var(--warning-color);
+    color: white;
+}
+
+.btn-sm {
+    border-radius: 8px;
+    font-size: 0.85rem;
+}
+
+.btn-lg {
+    border-radius: 16px;
+    font-size: 1.1rem;
+    padding: 12px 24px;
+}
+
+/* Form Controls */
+.form-control, .form-select {
+    border-radius: 12px;
+    border-color: var(--border-color);
+    transition: all 0.3s ease;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.15);
 }
     
     /* Mobile grid improvements */
