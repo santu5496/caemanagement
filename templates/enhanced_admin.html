@@ -281,7 +281,7 @@
                 </div>
             </div>
         </div>
-        
+
         <div class="table-responsive">
             <table class="table table-hover mb-0" id="vehiclesTable">
                 <thead>
@@ -378,7 +378,7 @@
             <form id="vehicleForm" method="POST" enctype="multipart/form-data">
                 {{ form.hidden_tag() }}
                 <div class="modal-body" style="max-height: 70vh; overflow-y: auto;">
-                    
+
                     <!-- Basic Information Section -->
                     <div class="form-section">
                         <h6><i class="fas fa-info-circle me-2"></i>Basic Information</h6>
@@ -634,12 +634,14 @@ function openAddModal() {
     document.getElementById('submitText').textContent = 'Save Vehicle';
     document.getElementById('vehicleForm').reset();
     document.getElementById('vehicleForm').action = '/admin/add_vehicle';
-    
+
     // Clear validation states
     document.querySelectorAll('.is-valid, .is-invalid').forEach(el => {
         el.classList.remove('is-valid', 'is-invalid');
+        const feedback = el.parentNode.querySelector('.invalid-feedback');
+        if (feedback) feedback.textContent = '';
     });
-    
+
     // Clear image preview
     const container = document.getElementById('current-images-container');
     if (container) container.innerHTML = '';
@@ -650,9 +652,9 @@ function editVehicle(vehicleId) {
     document.getElementById('modalTitle').textContent = 'Edit Vehicle';
     document.getElementById('submitText').textContent = 'Update Vehicle';
     document.getElementById('vehicleForm').action = `/admin/edit_vehicle/${vehicleId}`;
-    
+
     showLoading();
-    
+
     // Fetch vehicle data
     fetch(`/admin/vehicle/${vehicleId}`)
         .then(response => response.json())
@@ -662,21 +664,33 @@ function editVehicle(vehicleId) {
             new bootstrap.Modal(document.getElementById('vehicleModal')).show();
         })
         .catch(error => {
-            console.error('Error:', error);
             hideLoading();
-            alert('Error loading vehicle data');
+            showToast('Error loading vehicle data', 'danger');
         });
 }
 
 function populateForm(vehicle) {
+    // Clear previous validation states
+    document.querySelectorAll('.is-invalid').forEach(el => {
+        el.classList.remove('is-invalid');
+        const feedback = el.parentNode.querySelector('.invalid-feedback');
+        if (feedback) feedback.textContent = '';
+    });
+
     // Populate all form fields
     Object.keys(vehicle).forEach(key => {
-        const field = document.getElementById(key) || document.querySelector(`[name="${key}"]`);
+        // Find the element by ID or name, prioritizing ID
+        let field = document.getElementById(key);
+        if (!field) {
+            field = document.querySelector(`[name="${key}"]`);
+        }
+        
         if (field && vehicle[key] !== null && vehicle[key] !== undefined) {
+            // Handle specific field types if necessary (e.g., select, checkboxes)
             field.value = vehicle[key];
         }
     });
-    
+
     // Handle images display
     if (vehicle.images && vehicle.images.length > 0) {
         displayCurrentImages(vehicle.images);
@@ -686,34 +700,44 @@ function populateForm(vehicle) {
 function displayCurrentImages(images) {
     const container = document.getElementById('current-images-container');
     if (!container) return;
-    
-    container.innerHTML = '<h6 class="text-muted mb-2">Current Images:</h6>';
-    const row = document.createElement('div');
-    row.className = 'row g-2';
-    
-    images.forEach((image, index) => {
+
+    container.innerHTML = '<h6 class="text-primary mb-3">Current Images</h6>';
+    const imageRow = document.createElement('div');
+    imageRow.className = 'row g-2 mb-3';
+
+    images.forEach(image => {
         const col = document.createElement('div');
-        col.className = 'col-6 col-md-4 col-lg-3';
+        col.className = 'col-md-3';
         col.innerHTML = `
-            <div class="image-preview position-relative">
-                <img src="/static/uploads/${image}" class="img-fluid rounded" style="height: 100px; object-fit: cover; width: 100%;">
-                <button type="button" class="btn btn-sm btn-danger position-absolute top-0 end-0 m-1" 
-                        onclick="removeImage('${image}')" style="padding: 2px 6px;">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
+            <img src="/static/uploads/${image}" 
+                 class="img-thumbnail w-100" 
+                 alt="Vehicle Image" 
+                 style="height: 120px; object-fit: cover;">
         `;
-        row.appendChild(col);
+        imageRow.appendChild(col);
     });
-    
-    container.appendChild(row);
+
+    container.appendChild(imageRow);
 }
 
-function removeImage(imageName) {
-    if (!confirm('Remove this image?')) return;
-    
-    // Logic to remove image would go here
-    console.log('Removing image:', imageName);
+function showToast(message, type) {
+    // Simple toast notification
+    const toast = document.createElement('div');
+    toast.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
+    toast.style.top = '20px';
+    toast.style.right = '20px';
+    toast.style.zIndex = '9999';
+    toast.innerHTML = `
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+    document.body.appendChild(toast);
+
+    setTimeout(() => {
+        if (toast && toast.parentNode) {
+            toast.parentNode.removeChild(toast);
+        }
+    }, 5000);
 }
 
 function confirmDelete(vehicleId) {
@@ -724,26 +748,29 @@ function confirmDelete(vehicleId) {
 
 function deleteVehicle(vehicleId) {
     showLoading();
-    
+
     fetch(`/admin/delete_vehicle/${vehicleId}`, {
         method: 'DELETE',
         headers: {
             'Content-Type': 'application/json',
-            'X-CSRFToken': document.querySelector('[name=csrf_token]').value
+            // Assuming CSRF token is available in a meta tag or global JS variable
+            // If not, you'll need to find another way to get it.
+            'X-CSRFToken': document.querySelector('meta[name="csrf-token"]')?.value || '{{ csrf_token() }}' 
         }
     })
     .then(response => response.json())
     .then(data => {
         hideLoading();
         if (data.success) {
-            location.reload();
+            showToast(data.message || 'Vehicle deleted successfully!', 'success');
+            setTimeout(() => location.reload(), 1500);
         } else {
-            alert('Error deleting vehicle: ' + data.message);
+            showToast('Error deleting vehicle: ' + data.message, 'danger');
         }
     })
     .catch(error => {
         hideLoading();
-        alert('Error deleting vehicle');
+        showToast('Error deleting vehicle', 'danger');
         console.error('Error:', error);
     });
 }
@@ -756,7 +783,7 @@ function viewVehicle(vehicleId) {
 document.getElementById('searchInput').addEventListener('input', function(e) {
     const searchTerm = e.target.value.toLowerCase();
     const rows = document.querySelectorAll('#vehiclesTable tbody tr');
-    
+
     rows.forEach(row => {
         const text = row.textContent.toLowerCase();
         row.style.display = text.includes(searchTerm) ? '' : 'none';
@@ -787,32 +814,51 @@ function bulkActions() {
     alert(`Bulk actions for ${selected.length} vehicles - feature coming soon!`);
 }
 
-// Enhanced form submission
+// Form submission handler
 document.getElementById('vehicleForm').addEventListener('submit', function(e) {
     e.preventDefault();
-    
-    const formData = new FormData(this);
+
     const submitBtn = document.getElementById('submitBtn');
     const originalText = submitBtn.innerHTML;
-    
     submitBtn.disabled = true;
-    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Saving...';
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Processing...';
+
+    const formData = new FormData(this);
+    // Ensure the correct action URL is used based on whether it's an add or edit operation
+    const url = currentVehicleId ? `/admin/edit_vehicle/${currentVehicleId}` : '/admin/add_vehicle';
     
-    fetch(this.action, {
+    // If editing, explicitly set the action in the form for clarity if needed, though fetch handles it
+    if (currentVehicleId) {
+        this.action = url;
+    }
+
+    fetch(url, {
         method: 'POST',
         body: formData
     })
     .then(response => response.json())
     .then(data => {
         if (data.success) {
+            showToast(data.message || 'Vehicle saved successfully!', 'success');
             bootstrap.Modal.getInstance(document.getElementById('vehicleModal')).hide();
-            location.reload();
+            setTimeout(() => window.location.reload(), 1500);
         } else {
-            alert('Error: ' + data.message);
+            showToast(data.message || 'Error saving vehicle', 'danger');
+            // Handle validation errors
+            if (data.errors) {
+                Object.keys(data.errors).forEach(field => {
+                    const fieldElement = document.querySelector(`[name="${field}"]`);
+                    if (fieldElement) {
+                        fieldElement.classList.add('is-invalid');
+                        const feedback = fieldElement.parentNode.querySelector('.invalid-feedback');
+                        if (feedback) feedback.textContent = data.errors[field];
+                    }
+                });
+            }
         }
     })
     .catch(error => {
-        alert('Error saving vehicle');
+        showToast('Network error occurred', 'danger');
         console.error('Error:', error);
     })
     .finally(() => {

@@ -22,7 +22,7 @@
                     <h5 class="mb-0">{{ vehicle.title }}</h5>
                 </div>
                 <div class="card-body">
-                    <form method="POST" enctype="multipart/form-data">
+                    <form method="POST" enctype="multipart/form-data" action="{{ url_for('edit_vehicle', vehicle_id=vehicle.id) }}">
                         {{ form.hidden_tag() }}
                         
                         <!-- Current Images Display -->
@@ -124,6 +124,13 @@
                         </div>
                         
                         <!-- Status -->
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                <h6 class="text-primary">Vehicle Status</h6>
+                                <hr>
+                            </div>
+                        </div>
+                        
                         <div class="mb-3">
                             {{ form.status.label(class="form-label") }}
                             {{ form.status(class="form-select") }}

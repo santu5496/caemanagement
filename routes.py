@@ -234,15 +234,22 @@ def add_vehicle_route():
     app.logger.debug(f"Validation errors: {errors}")
     return jsonify({'success': False, 'message': 'Please check all required fields', 'errors': errors}), 400
 
-@app.route('/admin/edit_vehicle/<vehicle_id>', methods=['POST'])
+@app.route('/admin/edit_vehicle/<vehicle_id>', methods=['GET', 'POST'])
 def edit_vehicle(vehicle_id):
-    """Edit existing vehicle via AJAX"""
-    # Authentication disabled for easy testing
+    """Edit existing vehicle via AJAX or form"""
+    if not session.get('admin_logged_in'):
+        return jsonify({'success': False, 'message': 'Authentication required'}), 401
 
     vehicle = get_vehicle(vehicle_id)
     if not vehicle:
         return jsonify({'success': False, 'message': 'Vehicle not found'}), 404
 
+    if request.method == 'GET':
+        # For edit vehicle page
+        form = VehicleForm(obj=vehicle)
+        return render_template('edit_vehicle.html', form=form, vehicle=vehicle)
+
+    # POST request for AJAX updates
     form = VehicleForm()
 
     if form.validate_on_submit():
@@ -312,7 +319,7 @@ def edit_vehicle(vehicle_id):
             errors[field] = 'Validation error'
     return jsonify({'success': False, 'message': 'Validation failed', 'errors': errors}), 400
 
-@app.route('/admin/get_vehicle/<vehicle_id>')
+@app.route('/admin/vehicle/<vehicle_id>')
 def get_vehicle_data(vehicle_id):
     """Get vehicle data for editing"""
     if 'admin_logged_in' not in session:
@@ -322,7 +329,7 @@ def get_vehicle_data(vehicle_id):
     if not vehicle:
         return jsonify({'success': False, 'message': 'Vehicle not found'}), 404
 
-    return jsonify({'success': True, 'vehicle': vehicle.to_dict()})
+    return jsonify(vehicle.to_dict())
 
 @app.route('/admin/delete_vehicle/<vehicle_id>', methods=['POST'])
 def delete_vehicle_route(vehicle_id):
