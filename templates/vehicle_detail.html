@@ -20,13 +20,13 @@
     <div class="row">
         <!-- Image Gallery -->
         <div class="col-lg-8">
-            {% if vehicle.images %}
+            {% if vehicle.images_list %}
                 <div class="card mb-4">
                     <div class="card-body p-0">
                         <!-- Main Image Display -->
                         <div id="vehicleCarousel" class="carousel slide" data-bs-ride="carousel">
                             <div class="carousel-inner">
-                                {% for image in vehicle.images %}
+                                {% for image in vehicle.images_list %}
                                     <div class="carousel-item {{ 'active' if loop.first else '' }}">
                                         <img src="{{ url_for('static', filename='uploads/' + image) }}" 
                                              class="d-block w-100 vehicle-detail-image" alt="{{ vehicle.title }}">
@@ -34,7 +34,7 @@
                                 {% endfor %}
                             </div>
                             
-                            {% if vehicle.images|length > 1 %}
+                            {% if vehicle.images_list|length > 1 %}
                                 <button class="carousel-control-prev" type="button" data-bs-target="#vehicleCarousel" data-bs-slide="prev">
                                     <span class="carousel-control-prev-icon"></span>
                                 </button>
@@ -45,10 +45,10 @@
                         </div>
                         
                         <!-- Thumbnail Navigation -->
-                        {% if vehicle.images|length > 1 %}
+                        {% if vehicle.images_list|length > 1 %}
                             <div class="p-3">
                                 <div class="row g-2">
-                                    {% for image in vehicle.images %}
+                                    {% for image in vehicle.images_list %}
                                         <div class="col-3">
                                             <img src="{{ url_for('static', filename='uploads/' + image) }}" 
                                                  class="img-thumbnail w-100 thumbnail-nav" 
