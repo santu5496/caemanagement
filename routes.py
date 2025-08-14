@@ -71,58 +71,24 @@ def vehicle_detail(vehicle_id):
 
 @app.route('/secret-admin-access-2025', methods=['GET', 'POST'])
 def admin_login():
-    """Secure admin login with access key protection"""
+    """Admin login portal - always shows login form"""
     # First check if already logged in
     if session.get('admin_logged_in'):
         return redirect(url_for('admin_dashboard'))
 
-    # Check if access key is provided for GET requests (to show login form)
-    if request.method == 'GET':
-        access_key = request.args.get('key')
-        if access_key != 'automarket2025':
-            # Return a generic 404-like response to hide the admin area completely
-            return render_template_string('''
-            <!DOCTYPE html>
-            <html>
-            <head><title>Page Not Found</title></head>
-            <body style="font-family: Arial; text-align: center; padding: 50px;">
-                <h1>404 - Page Not Found</h1>
-                <p>The page you are looking for does not exist.</p>
-                <a href="/">Return to Home</a>
-            </body>
-            </html>
-            '''), 404
-        
-        # Set session flag that user has proper access key
-        session['admin_access_granted'] = True
-
-    # Check if user has access key session for POST requests
     if request.method == 'POST':
-        if not session.get('admin_access_granted'):
-            return render_template_string('''
-            <!DOCTYPE html>
-            <html>
-            <head><title>Access Denied</title></head>
-            <body style="font-family: Arial; text-align: center; padding: 50px;">
-                <h1>403 - Access Denied</h1>
-                <p>Unauthorized access attempt.</p>
-                <a href="/">Return to Home</a>
-            </body>
-            </html>
-            '''), 403
-
         username = request.form.get('username', '')
         password = request.form.get('password', '')
 
         if username == "abc" and password == "123":
             session['admin_logged_in'] = True
             session['admin_username'] = username
-            session.pop('admin_access_granted', None)  # Remove access key session
             flash('Login successful!', 'success')
             return redirect(url_for('admin_dashboard'))
         else:
             flash('Wrong username or password!', 'error')
 
+    # Always show the login form
     return render_template('admin_login.html')
 
 @app.route('/quick-login')
@@ -186,7 +152,7 @@ def admin_login_legacy():
 @app.route('/staff', methods=['GET', 'POST'])
 def admin_staff():
     """Easy admin access route - /staff"""
-    return redirect('/secret-admin-access-2025?key=automarket2025')
+    return redirect('/secret-admin-access-2025')
 
 @app.route('/admin/add_vehicle_page')
 def add_vehicle_page():
