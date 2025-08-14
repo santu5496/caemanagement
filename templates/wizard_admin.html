@@ -583,26 +583,31 @@
                                         <label class="form-label">Vehicle Title<span class="required-indicator">*</span></label>
                                         {{ form.title(class="form-control form-control-lg", placeholder="e.g., 2020 Honda Civic LX - Excellent Condition", required=true) }}
                                         <div class="field-help">Create an attractive title that highlights key features</div>
+                                        <div class="invalid-feedback"></div>
                                     </div>
 
                                     <div class="col-md-6">
                                         <label class="form-label">Category<span class="required-indicator">*</span></label>
                                         {{ form.category(class="form-select form-select-lg", required=true) }}
+                                        <div class="invalid-feedback"></div>
                                     </div>
 
                                     <div class="col-md-6">
                                         <label class="form-label">Year<span class="required-indicator">*</span></label>
                                         {{ form.year(class="form-control", placeholder="e.g., 2020", required=true) }}
+                                        <div class="invalid-feedback"></div>
                                     </div>
 
                                     <div class="col-md-6">
                                         <label class="form-label">Make<span class="required-indicator">*</span></label>
                                         {{ form.make(class="form-control", placeholder="e.g., Honda", required=true) }}
+                                        <div class="invalid-feedback"></div>
                                     </div>
 
                                     <div class="col-md-6">
                                         <label class="form-label">Model<span class="required-indicator">*</span></label>
                                         {{ form.model(class="form-control", placeholder="e.g., Civic", required=true) }}
+                                        <div class="invalid-feedback"></div>
                                     </div>
 
                                     <div class="col-md-6">
@@ -620,6 +625,7 @@
                                             {{ form.mileage(class="form-control", placeholder="50000", required=true) }}
                                             <span class="input-group-text">miles</span>
                                         </div>
+                                        <div class="invalid-feedback"></div>
                                     </div>
 
                                     <div class="col-12">
@@ -796,11 +802,13 @@
                                     <div class="col-md-4">
                                         <label class="form-label">Contact Name<span class="required-indicator">*</span></label>
                                         {{ form.contact_name(class="form-control", placeholder="Contact person", required=true) }}
+                                        <div class="invalid-feedback"></div>
                                     </div>
 
                                     <div class="col-md-4">
                                         <label class="form-label">Contact Phone<span class="required-indicator">*</span></label>
                                         {{ form.contact_phone(class="form-control", placeholder="(555) 123-4567", required=true) }}
+                                        <div class="invalid-feedback"></div>
                                     </div>
 
                                     <div class="col-md-4">
@@ -899,6 +907,16 @@ function openWizard() {
     document.querySelectorAll('.image-preview-item').forEach(item => item.remove()); // Clear preview elements
     document.querySelectorAll('.image-upload-slot .slot-content').forEach(content => content.style.display = 'flex'); // Show slot content
     document.querySelectorAll('.image-upload-slot .image-remove-btn').forEach(btn => btn.style.display = 'none'); // Hide remove buttons
+
+    // Clear validation states
+    document.querySelectorAll('.form-control, .form-select').forEach(field => {
+        field.classList.remove('is-invalid');
+        const feedback = field.nextElementSibling;
+        if(feedback && feedback.classList.contains('invalid-feedback')) {
+            feedback.style.display = 'none';
+            feedback.textContent = '';
+        }
+    });
 
     currentStep = 1;
     updateWizardDisplay();
@@ -1012,32 +1030,38 @@ function getStepName(stepNum) {
 
 function validateCurrentStep() {
     const currentPane = document.getElementById(`step${currentStep}`);
+    if (!currentPane) return true; // Should not happen, but safety check
+
     let isValid = true;
     let errorMessages = [];
 
-    // Remove existing validation styles
+    // Remove existing validation styles for the current pane
     currentPane.querySelectorAll('.is-invalid').forEach(field => {
         field.classList.remove('is-invalid');
     });
     currentPane.querySelectorAll('.invalid-feedback').forEach(feedback => {
         feedback.style.display = 'none';
+        feedback.textContent = ''; // Clear error messages
     });
 
-    // Check required fields based on current step
+    // Validation logic per step
     if (currentStep === 1) {
         const requiredFields = [
-            { name: 'title', label: 'Vehicle Title' },
+            { name: 'title', label: 'Vehicle Title', minLength: 5 },
             { name: 'category', label: 'Category' },
-            { name: 'year', label: 'Year' },
             { name: 'make', label: 'Make' },
             { name: 'model', label: 'Model' },
+            { name: 'year', label: 'Year' },
             { name: 'price', label: 'Price' },
             { name: 'mileage', label: 'Mileage' }
         ];
 
         requiredFields.forEach(fieldInfo => {
-            const field = document.querySelector(`[name="${fieldInfo.name}"]`);
-            if (field && !field.value.trim()) {
+            const field = currentPane.querySelector(`[name="${fieldInfo.name}"]`);
+            if (!field) return;
+
+            // Check if field is empty
+            if (!field.value || !field.value.trim()) {
                 field.classList.add('is-invalid');
                 const feedback = field.nextElementSibling;
                 if(feedback && feedback.classList.contains('invalid-feedback')) {
@@ -1046,89 +1070,110 @@ function validateCurrentStep() {
                 }
                 errorMessages.push(`${fieldInfo.label} is required`);
                 isValid = false;
-            } else if (field) {
-                field.classList.remove('is-invalid');
-                const feedback = field.nextElementSibling;
-                if(feedback && feedback.classList.contains('invalid-feedback')) {
-                    feedback.style.display = 'none';
+            } else {
+                // Field has value, check additional validations
+                let fieldValid = true;
+                let fieldError = '';
+
+                // Title length validation
+                if (fieldInfo.name === 'title' && field.value.trim().length < 5) {
+                    fieldValid = false;
+                    fieldError = 'Vehicle Title must be at least 5 characters long';
                 }
 
-                // Additional validation
+                // Year validation
                 if (fieldInfo.name === 'year') {
                     const year = parseInt(field.value);
-                    if (year < 1990 || year > 2025) {
-                        field.classList.add('is-invalid');
-                        if(feedback && feedback.classList.contains('invalid-feedback')) {
-                            feedback.textContent = 'Year must be between 1990 and 2025';
-                            feedback.style.display = 'block';
-                        }
-                        errorMessages.push('Year must be between 1990 and 2025');
-                        isValid = false;
+                    if (isNaN(year) || year < 1990 || year > 2025) {
+                        fieldValid = false;
+                        fieldError = 'Year must be between 1990 and 2025';
                     }
                 }
 
+                // Price validation
                 if (fieldInfo.name === 'price') {
                     const price = parseFloat(field.value);
-                    if (price <= 0) {
-                        field.classList.add('is-invalid');
-                        if(feedback && feedback.classList.contains('invalid-feedback')) {
-                            feedback.textContent = 'Price must be greater than 0';
-                            feedback.style.display = 'block';
-                        }
-                        errorMessages.push('Price must be greater than 0');
-                        isValid = false;
+                    if (isNaN(price) || price <= 0) {
+                        fieldValid = false;
+                        fieldError = 'Price must be greater than 0';
                     }
                 }
 
+                // Mileage validation
                 if (fieldInfo.name === 'mileage') {
                     const mileage = parseInt(field.value);
-                    if (mileage < 0) {
-                        field.classList.add('is-invalid');
-                        if(feedback && feedback.classList.contains('invalid-feedback')) {
-                            feedback.textContent = 'Mileage cannot be negative';
-                            feedback.style.display = 'block';
-                        }
-                        errorMessages.push('Mileage cannot be negative');
-                        isValid = false;
+                    if (isNaN(mileage) || mileage < 0) {
+                        fieldValid = false;
+                        fieldError = 'Mileage cannot be negative';
+                    }
+                }
+
+                if (!fieldValid) {
+                    field.classList.add('is-invalid');
+                    const feedback = field.nextElementSibling;
+                    if(feedback && feedback.classList.contains('invalid-feedback')) {
+                        feedback.textContent = fieldError;
+                        feedback.style.display = 'block';
+                    }
+                    errorMessages.push(fieldError);
+                    isValid = false;
+                } else {
+                    field.classList.remove('is-invalid');
+                    const feedback = field.nextElementSibling;
+                    if(feedback && feedback.classList.contains('invalid-feedback')) {
+                        feedback.style.display = 'none';
                     }
                 }
             }
         });
     } else if (currentStep === 5) {
-        const requiredFields = [
+         const requiredFields = [
             { name: 'contact_name', label: 'Contact Name' },
             { name: 'contact_phone', label: 'Contact Phone' }
         ];
 
         requiredFields.forEach(fieldInfo => {
-            const field = document.querySelector(`[name="${fieldInfo.name}"]`);
-            if (field && !field.value.trim()) {
+            const field = currentPane.querySelector(`[name="${fieldInfo.name}"]`);
+            if (!field) return;
+
+            // Check if field is empty
+            if (!field.value || !field.value.trim()) {
                 field.classList.add('is-invalid');
-                 const feedback = field.nextElementSibling;
+                const feedback = field.nextElementSibling;
                 if(feedback && feedback.classList.contains('invalid-feedback')) {
                     feedback.textContent = `${fieldInfo.label} is required`;
                     feedback.style.display = 'block';
                 }
                 errorMessages.push(`${fieldInfo.label} is required`);
                 isValid = false;
-            } else if (field) {
-                field.classList.remove('is-invalid');
-                const feedback = field.nextElementSibling;
-                if(feedback && feedback.classList.contains('invalid-feedback')) {
-                    feedback.style.display = 'none';
-                }
+            } else {
+                // Field has value, check additional validations
+                let fieldValid = true;
+                let fieldError = '';
 
                 // Phone validation
                 if (fieldInfo.name === 'contact_phone') {
-                    const phoneRegex = /^[\d\s\-\(\)\+\.]{10,}$/;
+                    const phoneRegex = /^[\d\s\-\(\)\+\.]{10,}$/; // Basic validation for phone numbers
                     if (!phoneRegex.test(field.value)) {
-                        field.classList.add('is-invalid');
-                        if(feedback && feedback.classList.contains('invalid-feedback')) {
-                            feedback.textContent = 'Please enter a valid phone number';
-                            feedback.style.display = 'block';
-                        }
-                        errorMessages.push('Please enter a valid phone number');
-                        isValid = false;
+                        fieldValid = false;
+                        fieldError = 'Please enter a valid phone number';
+                    }
+                }
+
+                if (!fieldValid) {
+                    field.classList.add('is-invalid');
+                    const feedback = field.nextElementSibling;
+                    if(feedback && feedback.classList.contains('invalid-feedback')) {
+                        feedback.textContent = fieldError;
+                        feedback.style.display = 'block';
+                    }
+                    errorMessages.push(fieldError);
+                    isValid = false;
+                } else {
+                    field.classList.remove('is-invalid');
+                    const feedback = field.nextElementSibling;
+                    if(feedback && feedback.classList.contains('invalid-feedback')) {
+                        feedback.style.display = 'none';
                     }
                 }
             }
@@ -1323,7 +1368,6 @@ function submitVehicleForm() {
     if (!validateAllSteps()) {
         submitBtn.disabled = false;
         submitBtn.innerHTML = '<i class="fas fa-save me-2"></i>Save Vehicle';
-        //showAlert('Please fill in all required fields before saving.', 'warning'); // Already handled by validateCurrentStep
         return;
     }
 
@@ -1423,16 +1467,19 @@ function submitVehicleForm() {
 function validateAllSteps() {
     let allValid = true;
 
-    // Re-validate all steps to ensure all required fields are marked
+    // Temporarily set currentStep to each step to trigger validation logic
     for (let step = 1; step <= totalSteps; step++) {
-        currentStep = step; // Temporarily set currentStep for validation logic
+        const originalCurrentStep = currentStep;
+        currentStep = step; 
         if (!validateCurrentStep()) {
             allValid = false;
-            // Do not break here, let all steps be validated to show all errors
         }
+        currentStep = originalCurrentStep; // Restore currentStep
     }
-    currentStep = 1; // Reset currentStep to the initial step after validation
-
+    
+    // Reset currentStep to the actual current step after checking all
+    currentStep = document.getElementById('currentStepNum').textContent ? parseInt(document.getElementById('currentStepNum').textContent) : 1;
+    
     // Ensure at least one image is uploaded
     if (uploadedImages.filter(img => img !== null).length === 0) {
         showAlert('Please upload at least one image for your vehicle.', 'warning');
@@ -1455,6 +1502,142 @@ function getStepForField(fieldName) {
     };
     return stepMap[fieldName] || 1;
 }
+
+// Add real-time validation
+document.querySelectorAll('input, select, textarea').forEach(field => {
+    // Input event for most fields
+    if (field.tagName !== 'SELECT') {
+        field.addEventListener('input', function() {
+            // Clear existing validation state
+            this.classList.remove('is-invalid');
+            const feedback = this.nextElementSibling;
+            if(feedback && feedback.classList.contains('invalid-feedback')) {
+                feedback.style.display = 'none';
+                feedback.textContent = ''; // Clear error messages
+            }
+
+            // Real-time validation for specific fields
+            if (this.name === 'title' && this.value.trim().length > 0 && this.value.trim().length < 5) {
+                this.classList.add('is-invalid');
+                if(feedback && feedback.classList.contains('invalid-feedback')) {
+                    feedback.textContent = 'Vehicle Title must be at least 5 characters long';
+                    feedback.style.display = 'block';
+                }
+            }
+
+            if (this.name === 'year' && this.value) {
+                const year = parseInt(this.value);
+                if (isNaN(year) || year < 1990 || year > 2025) {
+                    this.classList.add('is-invalid');
+                    if(feedback && feedback.classList.contains('invalid-feedback')) {
+                        feedback.textContent = 'Year must be between 1990 and 2025';
+                        feedback.style.display = 'block';
+                    }
+                }
+            }
+
+            if (this.name === 'price' && this.value) {
+                const price = parseFloat(this.value);
+                if (isNaN(price) || price <= 0) {
+                    this.classList.add('is-invalid');
+                    if(feedback && feedback.classList.contains('invalid-feedback')) {
+                        feedback.textContent = 'Price must be greater than 0';
+                        feedback.style.display = 'block';
+                    }
+                }
+            }
+
+            if (this.name === 'mileage' && this.value) {
+                const mileage = parseInt(this.value);
+                if (isNaN(mileage) || mileage < 0) {
+                    this.classList.add('is-invalid');
+                    if(feedback && feedback.classList.contains('invalid-feedback')) {
+                        feedback.textContent = 'Mileage cannot be negative';
+                        feedback.style.display = 'block';
+                    }
+                }
+            }
+        });
+    }
+    
+    // Blur event for required fields and specific validations
+    field.addEventListener('blur', function() {
+        const requiredFields = ['title', 'category', 'make', 'model', 'year', 'price', 'mileage', 'contact_name', 'contact_phone'];
+        const fieldName = this.name;
+        const fieldValue = this.value;
+        const feedback = this.nextElementSibling;
+
+        // Clear existing state first
+        this.classList.remove('is-invalid');
+        if(feedback && feedback.classList.contains('invalid-feedback')) {
+            feedback.style.display = 'none';
+            feedback.textContent = '';
+        }
+
+        // Check if it's a required field and empty
+        if (requiredFields.includes(fieldName) && (!fieldValue || !fieldValue.trim())) {
+            this.classList.add('is-invalid');
+            if(feedback && feedback.classList.contains('invalid-feedback')) {
+                // Dynamically get label text for better feedback
+                let labelText = '';
+                const labelElement = document.querySelector(`label[for="${this.id}"]`);
+                if (labelElement) {
+                    labelText = labelElement.textContent.replace('*', '').trim();
+                } else {
+                    // Fallback if label is not found or not associated by 'for'
+                    labelText = fieldName.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase());
+                }
+                feedback.textContent = `${labelText} is required`;
+                feedback.style.display = 'block';
+            }
+            return; // Exit if it's just an empty required field
+        }
+
+        // Perform specific validations on blur if field has a value
+        if (fieldValue) {
+            let fieldValid = true;
+            let fieldError = '';
+
+            if (fieldName === 'title' && fieldValue.trim().length < 5) {
+                fieldValid = false;
+                fieldError = 'Vehicle Title must be at least 5 characters long';
+            } else if (fieldName === 'year') {
+                const year = parseInt(fieldValue);
+                if (isNaN(year) || year < 1990 || year > 2025) {
+                    fieldValid = false;
+                    fieldError = 'Year must be between 1990 and 2025';
+                }
+            } else if (fieldName === 'price') {
+                const price = parseFloat(fieldValue);
+                if (isNaN(price) || price <= 0) {
+                    fieldValid = false;
+                    fieldError = 'Price must be greater than 0';
+                }
+            } else if (fieldName === 'mileage') {
+                const mileage = parseInt(fieldValue);
+                if (isNaN(mileage) || mileage < 0) {
+                    fieldValid = false;
+                    fieldError = 'Mileage cannot be negative';
+                }
+            } else if (fieldName === 'contact_phone') {
+                const phoneRegex = /^[\d\s\-\(\)\+\.]{10,}$/; // Basic validation for phone numbers
+                if (!phoneRegex.test(fieldValue)) {
+                    fieldValid = false;
+                    fieldError = 'Please enter a valid phone number';
+                }
+            }
+
+            if (!fieldValid) {
+                this.classList.add('is-invalid');
+                if(feedback && feedback.classList.contains('invalid-feedback')) {
+                    feedback.textContent = fieldError;
+                    feedback.style.display = 'block';
+                }
+            }
+        }
+    });
+});
+
 
 // Auto-populate title
 function autoPopulateTitle() {
@@ -1497,6 +1680,9 @@ function editVehicle(id) {
     fetch(`/admin/vehicle/${id}`)
         .then(response => {
             console.log('Response status:', response.status);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
             return response.json();
         })
         .then(data => {
