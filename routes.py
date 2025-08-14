@@ -256,15 +256,20 @@ def get_vehicle_for_edit(vehicle_id):
         return jsonify({'success': False, 'message': 'Authentication required'}), 401
 
     try:
-        # Use fresh database session to avoid connection issues
-        vehicle = Vehicle.query.get(vehicle_id)
-        if not vehicle:
-            app.logger.warning(f"Vehicle not found: {vehicle_id}")
-            return jsonify({'success': False, 'message': 'Vehicle not found'}), 404
-
-        # Convert vehicle data to format expected by form
-        vehicle_data = vehicle.to_dict()
+        # Close any existing connections and get fresh session
+        db.session.close()
         
+        # Use fresh query with proper session handling
+        with db.session.begin():
+            vehicle = db.session.get(Vehicle, vehicle_id)
+            
+            if not vehicle:
+                app.logger.warning(f"Vehicle not found: {vehicle_id}")
+                return jsonify({'success': False, 'message': 'Vehicle not found'}), 404
+
+            # Convert vehicle data to format expected by form
+            vehicle_data = vehicle.to_dict()
+            
         # Ensure all fields have proper values for form binding
         form_data = {
             'id': vehicle_data.get('id', ''),
@@ -314,9 +319,19 @@ def get_vehicle_for_edit(vehicle_id):
         # Try to refresh the database connection
         try:
             db.session.rollback()
+            db.session.close()
         except:
             pass
-        return jsonify({'success': False, 'message': 'Database connection error. Please try again.'}), 500
+        
+        # Try alternative query method as fallback
+        try:
+            vehicle = Vehicle.query.filter_by(id=vehicle_id).first()
+            if vehicle:
+                return jsonify({'success': True, 'vehicle': vehicle.to_dict()})
+        except:
+            pass
+            
+        return jsonify({'success': False, 'message': 'Database connection error. Please refresh the page and try again.'}), 500
 
 @app.route('/admin/edit_vehicle/<vehicle_id>', methods=['GET', 'POST'])
 def edit_vehicle(vehicle_id):

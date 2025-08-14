@@ -622,7 +622,17 @@ def initialize_sample_data():
 
 # Helper functions for backward compatibility
 def get_vehicle(vehicle_id):
-    return Vehicle.query.get(vehicle_id)
+    """Safely get vehicle with proper session handling"""
+    try:
+        return db.session.get(Vehicle, vehicle_id)
+    except Exception as e:
+        db.session.rollback()
+        db.session.close()
+        # Fallback method
+        try:
+            return Vehicle.query.filter_by(id=vehicle_id).first()
+        except:
+            return None
 
 def get_all_vehicles():
     return Vehicle.query.all()
