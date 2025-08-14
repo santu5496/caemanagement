@@ -1444,16 +1444,22 @@ function submitVehicleForm() {
     fetch(endpoint, {
         method: 'POST',
         body: formData,
+        credentials: 'same-origin',
         headers: {
             'X-Requested-With': 'XMLHttpRequest'
         }
     })
     .then(response => {
         console.log('Got response, status:', response.status);
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
         return response.json().then(data => ({
             status: response.status,
             data: data
-        }));
+        })).catch(parseError => {
+            throw new Error('Invalid response format from server');
+        });
     })
     .then(({status, data}) => {
         console.log('Response data:', data);
@@ -1508,7 +1514,8 @@ function submitVehicleForm() {
     })
     .catch(error => {
         console.error('Save error:', error);
-        showAlert('❌ Error saving vehicle: ' + error.message, 'danger');
+        const errorMessage = error.message || 'Failed to save vehicle';
+        showAlert('❌ Error saving vehicle: ' + errorMessage, 'danger');
     })
     .finally(() => {
         submitBtn.disabled = false;
@@ -1762,13 +1769,21 @@ function editVehicle(id) {
     });
 
     // Fetch vehicle data
-    fetch(`/admin/vehicle/${id}`)
+    fetch(`/admin/vehicle/${id}`, {
+        method: 'GET',
+        credentials: 'same-origin',
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
         .then(response => {
             console.log('Response status:', response.status);
             if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
             }
-            return response.json();
+            return response.json().catch(parseError => {
+                throw new Error('Invalid response format from server');
+            });
         })
         .then(data => {
             console.log('Vehicle data received:', data);
@@ -1856,7 +1871,12 @@ function editVehicle(id) {
         })
         .catch(error => {
             console.error('Error fetching vehicle data:', error);
-            showAlert(`❌ Error loading vehicle data: ${error.message}`, 'danger');
+            const errorMessage = error.message || 'Failed to load vehicle data';
+            showAlert(`❌ Error loading vehicle data: ${errorMessage}`, 'danger');
+            
+            // Reset edit mode on error
+            isEditMode = false;
+            editVehicleId = null;
         });
 }
 
@@ -1866,8 +1886,9 @@ function deleteVehicle(id) {
         // Handle deletion
         fetch(`/admin/delete_vehicle/${id}`, { 
             method: 'DELETE',
+            credentials: 'same-origin',
             headers: {
-                'X-Requested-With': 'XMLHttpRequest' // For CSRF protection if needed
+                'X-Requested-With': 'XMLHttpRequest'
             }
         })
         .then(response => {
@@ -1886,7 +1907,8 @@ function deleteVehicle(id) {
         })
         .catch(error => {
             console.error('Error deleting vehicle:', error);
-            alert('An error occurred while trying to delete the vehicle.');
+            const errorMessage = error.message || 'Failed to delete vehicle';
+            alert('An error occurred while trying to delete the vehicle: ' + errorMessage);
         });
     }
 }
