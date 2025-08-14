@@ -35,6 +35,14 @@ if database_url:
     }
 else:
     app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///automarket.db"
+    app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
+        'pool_pre_ping': True,
+        'pool_recycle': 300,
+        'connect_args': {
+            'check_same_thread': False,
+            'timeout': 20
+        }
+    }
 
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
