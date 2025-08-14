@@ -940,7 +940,7 @@ function updateVehicleSummary() {
         { label: 'Year', value: formData.get('year') || 'Not specified' },
         { label: 'Make & Model', value: `${formData.get('make') || ''} ${formData.get('model') || ''}`.trim() || 'Not specified' },
         { label: 'Category', value: formData.get('category') || 'Not specified' },
-        { label: 'Price', value: formData.get('price') ? `$${parseInt(formData.get('price')).toLocaleString()}` : 'Not specified' },
+        { label: 'Price', value: formData.get('price') ? `₹${parseInt(formData.get('price')).toLocaleString()}` : 'Not specified' },
         { label: 'Mileage', value: formData.get('mileage') ? `${parseInt(formData.get('mileage')).toLocaleString()} miles` : 'Not specified' },
         { label: 'Fuel Type', value: formData.get('fuel_type') || 'Not specified' },
         { label: 'Transmission', value: formData.get('transmission') || 'Not specified' },

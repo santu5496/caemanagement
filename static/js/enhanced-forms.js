@@ -29,7 +29,7 @@ class VehicleFormManager {
             priceField.addEventListener('input', (e) => {
                 let value = e.target.value.replace(/[^\d.]/g, '');
                 if (value) {
-                    e.target.value = parseFloat(value).toLocaleString();
+                    e.target.value = parseFloat(value).toLocaleString('en-IN');
                 }
                 this.validateField(e.target);
             });
