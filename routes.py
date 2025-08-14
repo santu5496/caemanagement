@@ -68,7 +68,7 @@ def vehicle_detail(vehicle_id):
         return redirect(url_for('index'))
     return render_template('vehicle_detail.html', vehicle=vehicle)
 
-@app.route('/admin/login', methods=['GET', 'POST'])
+@app.route('/secret-admin-access-2025', methods=['GET', 'POST'])
 def admin_login():
     """Simple admin login"""
     if session.get('admin_logged_in'):
@@ -155,6 +155,17 @@ def admin_auth():
     else:
         flash('❌ Invalid username or password. Please use: abc / 123', 'error')
         return redirect(url_for('admin_login'))
+
+@app.route('/admin/login', methods=['GET', 'POST'])
+def admin_login_legacy():
+    """Legacy admin login redirect - redirects to new secret URL"""
+    return redirect(url_for('admin_login'))
+
+# Direct admin access route for easy URL sharing
+@app.route('/staff', methods=['GET', 'POST'])
+def admin_staff():
+    """Easy admin access route - /staff"""
+    return redirect(url_for('admin_login'))
 
 @app.route('/admin/add_vehicle_page')
 def add_vehicle_page():
