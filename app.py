@@ -23,6 +23,10 @@ app.config['WTF_CSRF_ENABLED'] = True
 # Initialize CSRF protection
 csrf = CSRFProtect(app)
 
+# Exempt certain routes from CSRF for development
+csrf.exempt('/admin/auth')
+csrf.exempt('/quick-login')
+
 app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1) # needed for url_for to generate with https
 
 # configure the database, relative to the app instance folder
