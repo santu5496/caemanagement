@@ -339,7 +339,7 @@ def edit_vehicle(vehicle_id):
     if not session.get('admin_logged_in'):
         return jsonify({'success': False, 'message': 'Authentication required'}), 401
 
-    vehicle = get_vehicle(vehicle_id)
+    vehicle = Vehicle.query.get(vehicle_id)
     if not vehicle:
         return jsonify({'success': False, 'message': 'Vehicle not found'}), 404
 
@@ -422,40 +422,57 @@ def edit_vehicle(vehicle_id):
 @app.route('/admin/vehicle/<vehicle_id>')
 def get_vehicle_data(vehicle_id):
     """Get vehicle data for editing"""
-    if 'admin_logged_in' not in session:
-        return jsonify({'success': False, 'message': 'Not authenticated'}), 401
+    if not session.get('admin_logged_in'):
+        return jsonify({'success': False, 'message': 'Authentication required'}), 401
 
-    vehicle = get_vehicle(vehicle_id)
-    if not vehicle:
-        return jsonify({'success': False, 'message': 'Vehicle not found'}), 404
+    try:
+        vehicle = Vehicle.query.get(vehicle_id)
+        if not vehicle:
+            return jsonify({'success': False, 'message': 'Vehicle not found'}), 404
 
-    return jsonify(vehicle.to_dict())
+        return jsonify({'success': True, 'vehicle': vehicle.to_dict()})
+    except Exception as e:
+        app.logger.error(f"Error fetching vehicle {vehicle_id}: {str(e)}")
+        return jsonify({'success': False, 'message': 'Database error'}), 500
 
 @app.route('/admin/delete_vehicle/<vehicle_id>', methods=['POST', 'DELETE'])
 def delete_vehicle_route(vehicle_id):
     """Delete vehicle via AJAX"""
-    if 'admin_logged_in' not in session:
-        return jsonify({'success': False, 'message': 'Not authenticated'}), 401
+    if not session.get('admin_logged_in'):
+        return jsonify({'success': False, 'message': 'Authentication required'}), 401
 
-    if delete_vehicle(vehicle_id):
+    try:
+        vehicle = Vehicle.query.get(vehicle_id)
+        if not vehicle:
+            return jsonify({'success': False, 'message': 'Vehicle not found'}), 404
+        
+        db.session.delete(vehicle)
+        db.session.commit()
         return jsonify({'success': True, 'message': 'Vehicle deleted successfully'})
-    else:
-        return jsonify({'success': False, 'message': 'Vehicle not found'}), 404
+    except Exception as e:
+        db.session.rollback()
+        app.logger.error(f"Error deleting vehicle {vehicle_id}: {str(e)}")
+        return jsonify({'success': False, 'message': 'Error deleting vehicle'}), 500
 
 @app.route('/admin/toggle_status/<vehicle_id>', methods=['POST'])
 def toggle_vehicle_status(vehicle_id):
     """Toggle vehicle status between available and sold via AJAX"""
-    if 'admin_logged_in' not in session:
-        return jsonify({'success': False, 'message': 'Not authenticated'}), 401
+    if not session.get('admin_logged_in'):
+        return jsonify({'success': False, 'message': 'Authentication required'}), 401
 
-    vehicle = get_vehicle(vehicle_id)
-    if vehicle:
+    try:
+        vehicle = Vehicle.query.get(vehicle_id)
+        if not vehicle:
+            return jsonify({'success': False, 'message': 'Vehicle not found'}), 404
+        
         new_status = 'sold' if vehicle.status == 'available' else 'available'
         vehicle.update_from_dict(status=new_status)
         db.session.commit()
         return jsonify({'success': True, 'message': f'Vehicle marked as {new_status}', 'new_status': new_status})
-    else:
-        return jsonify({'success': False, 'message': 'Vehicle not found'}), 404
+    except Exception as e:
+        db.session.rollback()
+        app.logger.error(f"Error toggling vehicle status {vehicle_id}: {str(e)}")
+        return jsonify({'success': False, 'message': 'Error updating vehicle status'}), 500
 
 # Error handlers
 @app.errorhandler(404)
