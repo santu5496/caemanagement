@@ -901,12 +901,27 @@ const totalSteps = 6;
 let uploadedImages = Array(6).fill(null);
 
 function openWizard() {
+    // Reset edit mode variables
+    isEditMode = false;
+    editVehicleId = null;
+    
     // Clear previous form data if opening for the first time or if not editing
     document.getElementById('vehicleWizardForm').reset();
     uploadedImages.fill(null); // Clear stored images
-    document.querySelectorAll('.image-preview-item').forEach(item => item.remove()); // Clear preview elements
-    document.querySelectorAll('.image-upload-slot .slot-content').forEach(content => content.style.display = 'flex'); // Show slot content
-    document.querySelectorAll('.image-upload-slot .image-remove-btn').forEach(btn => btn.style.display = 'none'); // Hide remove buttons
+    
+    // Clear image previews
+    for(let i = 1; i <= 6; i++) {
+        const previewImage = document.getElementById(`image-preview-${i}`);
+        const removeBtn = document.querySelector(`#image-slot-${i} .image-remove-btn`);
+        const slotContent = document.querySelector(`#image-slot-${i} .slot-content`);
+        
+        if(previewImage) {
+            previewImage.src = '';
+            previewImage.style.display = 'none';
+        }
+        if(removeBtn) removeBtn.style.display = 'none';
+        if(slotContent) slotContent.style.display = 'flex';
+    }
 
     // Clear validation states
     document.querySelectorAll('.form-control, .form-select').forEach(field => {
@@ -1061,7 +1076,7 @@ function validateCurrentStep() {
             if (!field) return;
 
             // Check if field is empty
-            if (!field.value || !field.value.trim()) {
+            if (!field.value || (typeof field.value === 'string' && !field.value.trim())) {
                 field.classList.add('is-invalid');
                 const feedback = field.nextElementSibling;
                 if(feedback && feedback.classList.contains('invalid-feedback')) {
@@ -1075,10 +1090,10 @@ function validateCurrentStep() {
                 let fieldValid = true;
                 let fieldError = '';
 
-                // Title length validation
-                if (fieldInfo.name === 'title' && field.value.trim().length < 5) {
+                // Title length validation - be more flexible for editing
+                if (fieldInfo.name === 'title' && field.value.toString().trim().length < 3) {
                     fieldValid = false;
-                    fieldError = 'Vehicle Title must be at least 5 characters long';
+                    fieldError = 'Vehicle Title must be at least 3 characters long';
                 }
 
                 // Year validation
@@ -1151,9 +1166,9 @@ function validateCurrentStep() {
                 let fieldValid = true;
                 let fieldError = '';
 
-                // Phone validation
+                // Phone validation - more flexible
                 if (fieldInfo.name === 'contact_phone') {
-                    const phoneRegex = /^[\d\s\-\(\)\+\.]{10,}$/; // Basic validation for phone numbers
+                    const phoneRegex = /^[\d\s\-\(\)\+\.]{8,}$/; // Basic validation for phone numbers
                     if (!phoneRegex.test(field.value)) {
                         fieldValid = false;
                         fieldError = 'Please enter a valid phone number';
@@ -1179,18 +1194,21 @@ function validateCurrentStep() {
             }
         });
     } else if (currentStep === 6) {
-        // Check if at least one image is uploaded for the last step
-        if (uploadedImages.every(img => img === null)) {
+        // For editing, don't require new images if vehicle already has images
+        const hasExistingImages = uploadedImages.some(img => typeof img === 'string' && img.length > 0);
+        const hasNewImages = uploadedImages.some(img => img instanceof File);
+        
+        if (!hasExistingImages && !hasNewImages) {
             showAlert('Please upload at least one image for your vehicle.', 'warning');
             isValid = false;
         }
     }
 
-    if (!isValid) {
-        const message = errorMessages.length > 0 ? 
-            `Please fix the following issues:\n• ${errorMessages.join('\n• ')}` :
-            'Please fill in all required fields before proceeding to the next step.';
+    if (!isValid && errorMessages.length > 0) {
+        const message = `Please fix the following issues:\n• ${errorMessages.join('\n• ')}`;
         showAlert(message, 'warning');
+    } else if (!isValid) {
+        showAlert('Please fill in all required fields before proceeding to the next step.', 'warning');
     } else {
         // Show success message for completed step
         showStepSuccess();
@@ -1344,14 +1362,20 @@ function updateHiddenFileInput() {
     const dataTransfer = new DataTransfer();
 
     uploadedImages.forEach(file => {
-        if (file) {
+        if (file instanceof File) {
             dataTransfer.items.add(file);
         }
+        // For existing images (strings), we don't add them to the file input
+        // They are preserved on the server side during edit operations
     });
     actualInput.files = dataTransfer.files;
 }
 
 // Submit vehicle form function
+// Global variable to track if we're in edit mode
+let isEditMode = false;
+let editVehicleId = null;
+
 function submitVehicleForm() {
     console.log('Save Vehicle button clicked!');
 
@@ -1387,9 +1411,14 @@ function submitVehicleForm() {
 
     console.log('Form data prepared, submitting...');
     console.log('Number of images attached:', formData.getAll('images').length);
+    console.log('Edit mode:', isEditMode, 'Vehicle ID:', editVehicleId);
+
+    // Determine the endpoint based on whether we're editing or adding
+    const endpoint = isEditMode && editVehicleId ? `/admin/edit_vehicle/${editVehicleId}` : '/admin/add_vehicle';
+    const actionText = isEditMode ? 'updated' : 'saved';
 
     // Submit via fetch
-    fetch('/admin/add_vehicle', {
+    fetch(endpoint, {
         method: 'POST',
         body: formData,
         headers: {
@@ -1407,12 +1436,12 @@ function submitVehicleForm() {
         console.log('Response data:', data);
 
         if (status === 200 && data.success) {
-            showAlert('🎉 Vehicle saved successfully! Your listing is now live on the marketplace.', 'success');
+            showAlert(`🎉 Vehicle ${actionText} successfully! Your listing is now live on the marketplace.`, 'success');
             clearSavedFormData(); // Clear auto-saved draft
             // Reset wizard and close modal after a delay
             setTimeout(() => {
                 document.getElementById('vehicleWizard').querySelector('.btn-close').click();
-                // Reload to show the new vehicle in the table
+                // Reload to show the updated vehicle in the table
                 window.location.reload(); 
             }, 3000);
         } else if (status === 400 && data.errors) {
@@ -1480,8 +1509,11 @@ function validateAllSteps() {
     // Reset currentStep to the actual current step after checking all
     currentStep = document.getElementById('currentStepNum').textContent ? parseInt(document.getElementById('currentStepNum').textContent) : 1;
     
-    // Ensure at least one image is uploaded
-    if (uploadedImages.filter(img => img !== null).length === 0) {
+    // Check image requirements - more flexible for editing
+    const hasFiles = uploadedImages.some(img => img instanceof File);
+    const hasExistingImages = uploadedImages.some(img => typeof img === 'string' && img.length > 0);
+    
+    if (!hasFiles && !hasExistingImages) {
         showAlert('Please upload at least one image for your vehicle.', 'warning');
         allValid = false;
     }
@@ -1673,8 +1705,38 @@ function viewVehicle(id) {
 
 function editVehicle(id) {
     console.log(`Editing vehicle with ID: ${id}`);
-    // Open wizard
-    openWizard(); // This also resets the form
+    
+    // Set edit mode
+    isEditMode = true;
+    editVehicleId = id;
+    
+    // Clear form first
+    document.getElementById('vehicleWizardForm').reset();
+    uploadedImages.fill(null);
+    
+    // Clear image previews
+    for(let i = 1; i <= 6; i++) {
+        const previewImage = document.getElementById(`image-preview-${i}`);
+        const removeBtn = document.querySelector(`#image-slot-${i} .image-remove-btn`);
+        const slotContent = document.querySelector(`#image-slot-${i} .slot-content`);
+        
+        if(previewImage) {
+            previewImage.src = '';
+            previewImage.style.display = 'none';
+        }
+        if(removeBtn) removeBtn.style.display = 'none';
+        if(slotContent) slotContent.style.display = 'flex';
+    }
+
+    // Clear validation states
+    document.querySelectorAll('.form-control, .form-select').forEach(field => {
+        field.classList.remove('is-invalid');
+        const feedback = field.nextElementSibling;
+        if(feedback && feedback.classList.contains('invalid-feedback')) {
+            feedback.style.display = 'none';
+            feedback.textContent = '';
+        }
+    });
 
     // Fetch vehicle data
     fetch(`/admin/vehicle/${id}`)
@@ -1725,27 +1787,23 @@ function editVehicle(id) {
 
             // Special handling for images display
             if (vehicleData.images && Array.isArray(vehicleData.images)) {
-                // Reset existing previews and slot content
-                for(let i = 1; i <= 6; i++) {
-                    removeImage(i); // Clear any previous preview and reset slot
-                    uploadedImages[i-1] = null; // Ensure uploadedImages array is clean
-                }
-
                 vehicleData.images.forEach((imageName, index) => {
                     if (imageName && index < 6) { // Ensure we don't exceed 6 slots
-                        uploadedImages[index] = imageName; // Store as string for now, will be replaced if re-uploaded
+                        uploadedImages[index] = imageName; // Store as string for existing images
 
                         const previewImage = document.getElementById(`image-preview-${index + 1}`);
                         const removeBtn = document.querySelector(`#image-slot-${index + 1} .image-remove-btn`);
                         const slotContent = document.querySelector(`#image-slot-${index + 1} .slot-content`);
 
-                        previewImage.src = `/static/uploads/${imageName}`;
-                        previewImage.style.display = 'block';
+                        if(previewImage) {
+                            previewImage.src = `/static/uploads/${imageName}`;
+                            previewImage.style.display = 'block';
+                        }
                         if(removeBtn) removeBtn.style.display = 'flex';
                         if (slotContent) slotContent.style.display = 'none';
                     }
                 });
-                updateHiddenFileInput(); // Update the hidden input with these existing image names (or null if removed)
+                updateHiddenFileInput(); // Update the hidden input
             }
 
             // Update current step to the first step for editing flow
