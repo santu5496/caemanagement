@@ -26,6 +26,8 @@ csrf = CSRFProtect(app)
 # Exempt certain routes from CSRF for development
 csrf.exempt('/admin/auth')
 csrf.exempt('/quick-login')
+csrf.exempt('/secret-admin-access-2025')
+csrf.exempt('/staff')
 
 app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1) # needed for url_for to generate with https
 
