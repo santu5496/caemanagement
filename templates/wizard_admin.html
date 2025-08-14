@@ -560,6 +560,7 @@
 
                     <form id="vehicleWizardForm" method="POST" enctype="multipart/form-data" action="/admin/add_vehicle">
                         {{ form.hidden_tag() }}
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/ >
 
                         <!-- Step 1: Basic Information -->
                         <div class="step-content">
@@ -871,7 +872,7 @@
                                 Next<i class="fas fa-arrow-right ms-2"></i>
                             </button>
 
-                            <button type="button" class="btn btn-success btn-wizard btn-lg" id="submitBtn" style="display: none;" onclick="saveVehicle()">
+                            <button type="button" class="btn btn-success btn-wizard btn-lg" id="submitBtn" style="display: none;" onclick="submitVehicleForm()">
                                 <i class="fas fa-save me-2"></i>Save Vehicle
                             </button>
 
@@ -1338,15 +1339,30 @@ function submitVehicleForm() {
     console.log('Form data prepared, submitting...');
     console.log('Number of images attached:', formData.getAll('images').length);
 
-    // Get CSRF token
+    // Get CSRF token - try multiple sources
+    let csrfToken = null;
     const csrfTokenElement = document.querySelector('input[name="csrf_token"]');
+    const metaCsrfToken = document.querySelector('meta[name="csrf-token"]');
+    
     if (csrfTokenElement) {
-        formData.set('csrf_token', csrfTokenElement.value);
+        csrfToken = csrfTokenElement.value;
+    } else if (metaCsrfToken) {
+        csrfToken = metaCsrfToken.getAttribute('content');
     } else {
-        console.error('CSRF token not found.');
-        submitBtn.disabled = false;
-        submitBtn.innerHTML = '<i class="fas fa-save me-2"></i>Save Vehicle';
-        return;
+        // Try to get from hidden_tag
+        const hiddenCsrfInputs = document.querySelectorAll('input[type="hidden"]');
+        for (let input of hiddenCsrfInputs) {
+            if (input.name.includes('csrf') || input.name.includes('token')) {
+                csrfToken = input.value;
+                break;
+            }
+        }
+    }
+    
+    if (csrfToken) {
+        formData.set('csrf_token', csrfToken);
+    } else {
+        console.warn('CSRF token not found, proceeding without it');
     }
 
     // Submit via fetch

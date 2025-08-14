@@ -5,6 +5,7 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import DeclarativeBase
 from werkzeug.middleware.proxy_fix import ProxyFix
+from flask_wtf.csrf import CSRFProtect
 
 # Setup logging
 logging.basicConfig(level=logging.DEBUG)
@@ -30,7 +31,7 @@ if database_url:
     }
 else:
     app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///automarket.db"
-    
+
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 # Configure upload settings
