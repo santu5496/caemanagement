@@ -61,11 +61,11 @@ def admin_login():
     """Simple admin login"""
     if session.get('admin_logged_in'):
         return redirect(url_for('admin_dashboard'))
-    
+
     if request.method == 'POST':
         username = request.form.get('username', '')
         password = request.form.get('password', '')
-        
+
         if username == "abc" and password == "123":
             session['admin_logged_in'] = True
             session['admin_username'] = username
@@ -73,7 +73,7 @@ def admin_login():
             return redirect(url_for('admin_dashboard'))
         else:
             flash('Wrong username or password!', 'error')
-    
+
     return render_template('admin_login.html')
 
 @app.route('/quick-login')
@@ -102,7 +102,7 @@ def admin_dashboard():
     try:
         vehicles = get_all_vehicles()
         form = VehicleForm()
-        return render_template('enhanced_admin.html', vehicles=vehicles, form=form)
+        return render_template('wizard_admin.html', vehicles=vehicles, form=form)
     except Exception as e:
         app.logger.error(f"Error loading admin dashboard: {e}")
         flash('Error loading dashboard. Please try again.', 'error')
@@ -131,9 +131,9 @@ def admin_auth():
     """Simple authentication endpoint without CSRF for testing"""
     username = request.form.get('username', '').strip()
     password = request.form.get('password', '')
-    
+
     app.logger.debug(f"Auth attempt: {username}")
-    
+
     if username == 'abc' and password == '123':
         session['admin_logged_in'] = True
         session['admin_username'] = username
@@ -150,7 +150,7 @@ def add_vehicle_page():
     if not session.get('admin_logged_in'):
         flash('Please log in to access the admin area.', 'error')
         return redirect(url_for('admin_login'))
-    
+
     form = VehicleForm()
     return render_template('add_vehicle.html', form=form)
 
@@ -231,7 +231,7 @@ def add_vehicle_route():
             errors[field] = error_list[0]
         else:
             errors[field] = 'Validation error'
-    
+
     app.logger.debug(f"Validation errors: {errors}")
     return jsonify({'success': False, 'message': 'Please check all required fields', 'errors': errors}), 400
 
@@ -240,7 +240,7 @@ def get_vehicle_for_edit(vehicle_id):
     """Get vehicle data for editing in modal"""
     app.logger.debug(f"Session data: {dict(session)}")
     app.logger.debug(f"Admin logged in: {session.get('admin_logged_in')}")
-    
+
     if not session.get('admin_logged_in'):
         app.logger.warning(f"Unauthorized access attempt to get vehicle {vehicle_id}")
         return jsonify({'success': False, 'message': 'Authentication required'}), 401
