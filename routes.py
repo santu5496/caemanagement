@@ -160,13 +160,13 @@ def admin_auth():
 @app.route('/admin/login', methods=['GET', 'POST'])
 def admin_login_legacy():
     """Legacy admin login redirect - redirects to new secret URL"""
-    return redirect(url_for('admin_login'))
+    return redirect('/secret-admin-access-2025')
 
 # Direct admin access route for easy URL sharing
 @app.route('/staff', methods=['GET', 'POST'])
 def admin_staff():
     """Easy admin access route - /staff"""
-    return redirect(url_for('admin_login'))
+    return redirect('/secret-admin-access-2025')
 
 @app.route('/admin/add_vehicle_page')
 def add_vehicle_page():

@@ -559,8 +559,6 @@
                     </div>
 
                     <form id="vehicleWizardForm" method="POST" enctype="multipart/form-data" action="/admin/add_vehicle">
-                        {{ form.hidden_tag() }}
-                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/ >
 
                         <!-- Step 1: Basic Information -->
                         <div class="step-content">
@@ -1339,31 +1337,7 @@ function submitVehicleForm() {
     console.log('Form data prepared, submitting...');
     console.log('Number of images attached:', formData.getAll('images').length);
 
-    // Get CSRF token - try multiple sources
-    let csrfToken = null;
-    const csrfTokenElement = document.querySelector('input[name="csrf_token"]');
-    const metaCsrfToken = document.querySelector('meta[name="csrf-token"]');
-    
-    if (csrfTokenElement) {
-        csrfToken = csrfTokenElement.value;
-    } else if (metaCsrfToken) {
-        csrfToken = metaCsrfToken.getAttribute('content');
-    } else {
-        // Try to get from hidden_tag
-        const hiddenCsrfInputs = document.querySelectorAll('input[type="hidden"]');
-        for (let input of hiddenCsrfInputs) {
-            if (input.name.includes('csrf') || input.name.includes('token')) {
-                csrfToken = input.value;
-                break;
-            }
-        }
-    }
-    
-    if (csrfToken) {
-        formData.set('csrf_token', csrfToken);
-    } else {
-        console.warn('CSRF token not found, proceeding without it');
-    }
+    // No CSRF token needed since protection is disabled
 
     // Submit via fetch
     fetch('/admin/add_vehicle', {
@@ -1606,7 +1580,7 @@ function autoSaveFormData() {
             const savedData = {};
 
             for (let [key, value] of formData.entries()) {
-                if (value && key !== 'csrf_token' && key !== 'images') { // Exclude CSRF and images for simple save
+                if (value && key !== 'images') { // Exclude images for simple save
                     savedData[key] = value;
                 }
             }
