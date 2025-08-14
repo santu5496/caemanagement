@@ -1776,14 +1776,19 @@ function editVehicle(id) {
             'X-Requested-With': 'XMLHttpRequest'
         }
     })
-        .then(response => {
+        .then(async response => {
             console.log('Response status:', response.status);
             if (!response.ok) {
                 throw new Error(`HTTP ${response.status}: ${response.statusText}`);
             }
-            return response.json().catch(parseError => {
+            
+            try {
+                const data = await response.json();
+                return data;
+            } catch (parseError) {
+                console.error('JSON parse error:', parseError);
                 throw new Error('Invalid response format from server');
-            });
+            }
         })
         .then(data => {
             console.log('Vehicle data received:', data);
