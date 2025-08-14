@@ -121,23 +121,7 @@ def admin_dashboard():
         flash('Error loading dashboard. Please try again.', 'error')
         return redirect(url_for('admin_login'))
 
-@app.route('/admin/dashboard')
-def admin_dashboard_direct():
-    """Direct admin dashboard access for testing"""
-    # For demo purposes, bypass session check temporarily
-    vehicles = get_all_vehicles()
-    form = VehicleForm()
-    return render_template('enhanced_admin.html', vehicles=vehicles, form=form)
 
-@app.route('/admin-dark')
-def admin_dark_dashboard():
-    """Dark theme admin dashboard - direct access"""
-    # Set session for demo
-    session['admin_logged_in'] = True
-    session['admin_username'] = 'abc'
-    vehicles = get_all_vehicles()
-    form = VehicleForm()
-    return render_template('enhanced_admin.html', vehicles=vehicles, form=form)
 
 @app.route('/admin/auth', methods=['POST'])
 def admin_auth():
@@ -181,9 +165,9 @@ def add_vehicle_page():
 @app.route('/admin/add_vehicle', methods=['POST'])
 def add_vehicle_route():
     """Add new vehicle via AJAX"""
-    # Temporarily disable authentication for testing
-    # if not session.get('admin_logged_in'):
-    #     return jsonify({'success': False, 'message': 'Authentication required'}), 401
+    # Check authentication
+    if not session.get('admin_logged_in'):
+        return jsonify({'success': False, 'message': 'Authentication required'}), 401
 
     form = VehicleForm()
     app.logger.debug(f"Raw form data: {dict(request.form)}")
