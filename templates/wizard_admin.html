@@ -260,22 +260,68 @@
     margin-top: 1rem;
 }
 
+/* Image Slot specific styling */
+.image-upload-slot {
+    border: 2px dashed #007bff;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0,123,255,0.1);
+    min-height: 200px;
+    cursor: pointer;
+}
+
+.image-upload-slot:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0,123,255,0.2);
+}
+
+.slot-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+
+.slot-content i {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+}
+
+.slot-content p {
+    margin-bottom: 0.25rem;
+    font-weight: bold;
+}
+
+.slot-content small {
+    font-size: 0.8rem;
+}
+
+.image-upload-slot img {
+    object-fit: cover;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
 @media (max-width: 768px) {
     .step-indicators {
         flex-wrap: wrap;
         gap: 1rem;
     }
-    
+
     .step-item {
         flex: 1 1 calc(33.333% - 1rem);
         min-width: 100px;
     }
-    
+
     .wizard-navigation {
         flex-direction: column;
         gap: 1rem;
     }
-    
+
     .step-content {
         padding: 1.5rem;
     }
@@ -386,7 +432,7 @@
                 </div>
             </div>
         </div>
-        
+
         <div class="table-responsive">
             <table class="table table-hover mb-0" id="vehiclesTable">
                 <thead>
@@ -464,14 +510,14 @@
                 </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
-            
+
             <div class="modal-body p-0">
                 <div class="wizard-container p-4">
                     <!-- Progress Bar -->
                     <div class="progress-bar-custom">
                         <div class="progress-fill" id="progressFill" style="width: 16.67%;"></div>
                     </div>
-                    
+
                     <!-- Step Indicators -->
                     <div class="step-indicators">
                         <div class="step-item active" data-step="1">
@@ -514,7 +560,7 @@
 
                     <form id="vehicleWizardForm" method="POST" enctype="multipart/form-data" action="/admin/add_vehicle">
                         {{ form.hidden_tag() }}
-                        
+
                         <!-- Step 1: Basic Information -->
                         <div class="step-content">
                             <div class="step-pane active" id="step1">
@@ -532,34 +578,34 @@
                                         <strong>Tip:</strong> Make sure your vehicle title is descriptive and includes key features to attract buyers.
                                     </div>
                                 </div>
-                                
+
                                 <div class="row g-4">
                                     <div class="col-12">
                                         <label class="form-label">Vehicle Title<span class="required-indicator">*</span></label>
                                         {{ form.title(class="form-control form-control-lg", placeholder="e.g., 2020 Honda Civic LX - Excellent Condition", required=true) }}
                                         <div class="field-help">Create an attractive title that highlights key features</div>
                                     </div>
-                                    
+
                                     <div class="col-md-6">
                                         <label class="form-label">Category<span class="required-indicator">*</span></label>
                                         {{ form.category(class="form-select form-select-lg", required=true) }}
                                     </div>
-                                    
+
                                     <div class="col-md-6">
                                         <label class="form-label">Year<span class="required-indicator">*</span></label>
                                         {{ form.year(class="form-control", placeholder="e.g., 2020", required=true) }}
                                     </div>
-                                    
+
                                     <div class="col-md-6">
                                         <label class="form-label">Make<span class="required-indicator">*</span></label>
                                         {{ form.make(class="form-control", placeholder="e.g., Honda", required=true) }}
                                     </div>
-                                    
+
                                     <div class="col-md-6">
                                         <label class="form-label">Model<span class="required-indicator">*</span></label>
                                         {{ form.model(class="form-control", placeholder="e.g., Civic", required=true) }}
                                     </div>
-                                    
+
                                     <div class="col-md-6">
                                         <label class="form-label">Price<span class="required-indicator">*</span></label>
                                         <div class="input-group input-group-lg">
@@ -567,7 +613,7 @@
                                             {{ form.price(class="form-control", placeholder="25000", required=true) }}
                                         </div>
                                     </div>
-                                    
+
                                     <div class="col-md-6">
                                         <label class="form-label">Mileage<span class="required-indicator">*</span></label>
                                         <div class="input-group input-group-lg">
@@ -575,14 +621,14 @@
                                             <span class="input-group-text">miles</span>
                                         </div>
                                     </div>
-                                    
+
                                     <div class="col-12">
                                         <label class="form-label">Description</label>
                                         {{ form.description(class="form-control", rows="4", placeholder="Describe the vehicle's condition, features, and any important details...") }}
                                     </div>
                                 </div>
                             </div>
-                            
+
                             <!-- Step 2: Engine & Performance -->
                             <div class="step-pane" id="step2">
                                 <div class="step-header">
@@ -599,113 +645,113 @@
                                         <strong>Great!</strong> You've completed the basic information. Now let's add technical details.
                                     </div>
                                 </div>
-                                
+
                                 <div class="row g-4">
                                     <div class="col-md-6">
                                         <label class="form-label">Fuel Type</label>
                                         {{ form.fuel_type(class="form-select") }}
                                     </div>
-                                    
+
                                     <div class="col-md-6">
                                         <label class="form-label">Transmission</label>
                                         {{ form.transmission(class="form-select") }}
                                     </div>
-                                    
+
                                     <div class="col-md-4">
                                         <label class="form-label">Engine Size</label>
                                         {{ form.engine_size(class="form-control", placeholder="e.g., 2.0L") }}
                                     </div>
-                                    
+
                                     <div class="col-md-4">
                                         <label class="form-label">Horsepower</label>
                                         {{ form.horsepower(class="form-control", placeholder="e.g., 180") }}
                                     </div>
-                                    
+
                                     <div class="col-md-4">
                                         <label class="form-label">Drivetrain</label>
                                         {{ form.drivetrain(class="form-select") }}
                                     </div>
-                                    
+
                                     <div class="col-12">
                                         <label class="form-label">Fuel Economy</label>
                                         {{ form.fuel_economy(class="form-control", placeholder="e.g., 25 city / 32 highway mpg") }}
                                     </div>
                                 </div>
                             </div>
-                            
+
                             <!-- Step 3: Ownership & History -->
                             <div class="step-pane" id="step3">
                                 <div class="step-header">
                                     <h3 class="step-title">Ownership & History</h3>
                                     <p class="step-description">Previous ownership and vehicle history information</p>
                                 </div>
-                                
+
                                 <div class="row g-4">
                                     <div class="col-md-6">
                                         <label class="form-label">Number of Previous Owners</label>
                                         {{ form.number_of_owners(class="form-control", placeholder="e.g., 1") }}
                                     </div>
-                                    
+
                                     <div class="col-md-6">
                                         <label class="form-label">Odometer Reading</label>
                                         {{ form.odometer_reading(class="form-control", placeholder="Current mileage") }}
                                     </div>
-                                    
+
                                     <div class="col-md-4">
                                         <label class="form-label">Previous Owner Name</label>
                                         {{ form.previous_owner_name(class="form-control", placeholder="Owner name") }}
                                     </div>
-                                    
+
                                     <div class="col-md-4">
                                         <label class="form-label">Previous Owner Phone</label>
                                         {{ form.previous_owner_phone(class="form-control", placeholder="(555) 123-4567") }}
                                     </div>
-                                    
+
                                     <div class="col-md-4">
                                         <label class="form-label">Previous Owner Email</label>
                                         {{ form.previous_owner_email(class="form-control", placeholder="owner@email.com") }}
                                     </div>
-                                    
+
                                     <div class="col-md-6">
                                         <label class="form-label">Accident History</label>
                                         {{ form.accident_history(class="form-control", rows="3", placeholder="Any accident history or damage reports...") }}
                                     </div>
-                                    
+
                                     <div class="col-md-6">
                                         <label class="form-label">Service Records</label>
                                         {{ form.service_records(class="form-control", rows="3", placeholder="Maintenance and service records...") }}
                                     </div>
                                 </div>
                             </div>
-                            
+
                             <!-- Step 4: Insurance & Documentation -->
                             <div class="step-pane" id="step4">
                                 <div class="step-header">
                                     <h3 class="step-title">Insurance & Documentation</h3>
                                     <p class="step-description">Legal documents and insurance information</p>
                                 </div>
-                                
+
                                 <div class="row g-4">
                                     <div class="col-md-4">
                                         <label class="form-label">Insurance Company</label>
                                         {{ form.insurance_company(class="form-control", placeholder="e.g., State Farm") }}
                                     </div>
-                                    
+
                                     <div class="col-md-4">
                                         <label class="form-label">Policy Number</label>
                                         {{ form.insurance_policy_number(class="form-control", placeholder="Policy number") }}
                                     </div>
-                                    
+
                                     <div class="col-md-4">
                                         <label class="form-label">Insurance Expiry</label>
                                         {{ form.insurance_expiry(class="form-control", placeholder="MM/DD/YYYY") }}
                                     </div>
-                                    
+
                                     <div class="col-md-6">
                                         <label class="form-label">Registration Number</label>
                                         {{ form.registration_number(class="form-control", placeholder="Registration number") }}
                                     </div>
-                                    
+
                                     <div class="col-md-6">
                                         <label class="form-label">VIN Number</label>
                                         {{ form.vin_number(class="form-control", placeholder="17-character VIN", maxlength="17") }}
@@ -713,111 +759,120 @@
                                     </div>
                                 </div>
                             </div>
-                            
+
                             <!-- Step 5: Features & Condition -->
                             <div class="step-pane" id="step5">
                                 <div class="step-header">
                                     <h3 class="step-title">Features & Condition</h3>
                                     <p class="step-description">Vehicle features, colors, and condition details</p>
                                 </div>
-                                
+
                                 <div class="row g-4">
                                     <div class="col-md-4">
                                         <label class="form-label">Exterior Color</label>
                                         {{ form.exterior_color(class="form-control", placeholder="e.g., Blue") }}
                                     </div>
-                                    
+
                                     <div class="col-md-4">
                                         <label class="form-label">Interior Color</label>
                                         {{ form.interior_color(class="form-control", placeholder="e.g., Black") }}
                                     </div>
-                                    
+
                                     <div class="col-md-4">
                                         <label class="form-label">Condition Rating</label>
                                         {{ form.condition_rating(class="form-select") }}
                                     </div>
-                                    
+
                                     <div class="col-md-6">
                                         <label class="form-label">Features</label>
                                         {{ form.features(class="form-control", rows="3", placeholder="List features separated by commas (e.g., Sunroof, Leather seats, Navigation...)") }}
                                     </div>
-                                    
+
                                     <div class="col-md-6">
                                         <label class="form-label">Warranty Information</label>
                                         {{ form.warranty_info(class="form-control", rows="3", placeholder="Warranty information and coverage details...") }}
                                     </div>
-                                    
+
                                     <div class="col-md-4">
                                         <label class="form-label">Contact Name<span class="required-indicator">*</span></label>
                                         {{ form.contact_name(class="form-control", placeholder="Contact person", required=true) }}
                                     </div>
-                                    
+
                                     <div class="col-md-4">
                                         <label class="form-label">Contact Phone<span class="required-indicator">*</span></label>
                                         {{ form.contact_phone(class="form-control", placeholder="(555) 123-4567", required=true) }}
                                     </div>
-                                    
+
                                     <div class="col-md-4">
                                         <label class="form-label">Contact Email</label>
                                         {{ form.contact_email(class="form-control", placeholder="contact@email.com") }}
                                     </div>
                                 </div>
                             </div>
-                            
+
                             <!-- Step 6: Photos & Finish -->
                             <div class="step-pane" id="step6">
                                 <div class="step-header">
                                     <h3 class="step-title">Photos & Final Review</h3>
                                     <p class="step-description">Add photos and review your vehicle listing</p>
                                 </div>
-                                
+
+                                <!-- 6 Image Upload Slots -->
                                 <div class="row g-4">
-                                    <div class="col-12">
-                                        <label class="form-label">Vehicle Images (Max 6)</label>
-                                        <div class="image-upload-area" onclick="document.getElementById('imageInput').click()">
-                                            <i class="fas fa-cloud-upload-alt fa-3x text-primary mb-3"></i>
-                                            <h5>Add Vehicle Photos</h5>
-                                            <p class="text-muted">Click here to select up to 6 images</p>
-                                            <input type="file" id="imageInput" name="images" multiple accept="image/*" style="display: none;" onchange="handleImageUpload(this)">
-                                            <button type="button" class="btn btn-primary">
-                                                <i class="fas fa-plus me-2"></i>Choose Images
-                                            </button>
-                                            <div class="field-help">Accepted formats: JPG, PNG, GIF (Max 6 images, 16MB each)</div>
-                                        </div>
-                                        <div class="image-preview-grid" id="imagePreviewGrid"></div>
-                                        <div id="imageCount" class="text-center mt-2 text-muted">0 / 6 images selected</div>
-                                    </div>
-                                    
-                                    <div class="col-12">
-                                        <div class="summary-section">
-                                            <h6 class="mb-3"><i class="fas fa-clipboard-list me-2"></i>Vehicle Summary</h6>
-                                            <div id="vehicleSummary">
-                                                <!-- Summary will be populated by JavaScript -->
+                                    {% for i in range(1, 7) %}
+                                    <div class="col-md-4" id="image-slot-{{ i }}">
+                                        <div class="image-upload-slot border rounded-3 p-4 text-center position-relative" 
+                                             style="min-height: 200px; cursor: pointer; border: 2px dashed #007bff !important; 
+                                                    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+                                                    transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(0,123,255,0.1);" 
+                                             onclick="triggerImageUpload({{ i }})"
+                                             onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 15px rgba(0,123,255,0.2)';"
+                                             onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(0,123,255,0.1)';">
+                                            <div class="slot-content d-flex flex-column align-items-center justify-content-center h-100">
+                                                <i class="fas fa-cloud-upload-alt fa-2x text-primary mb-2"></i>
+                                                <p class="mb-1 fw-bold">Click to upload</p>
+                                                <small class="text-muted">or drag and drop image here</small>
+                                                <small class="d-block text-muted mt-1">Max 5MB • JPG, PNG, GIF</small>
                                             </div>
+                                            <input type="file" id="image-input-{{ i }}" accept="image/*" style="display: none;" onchange="handleImageUpload({{ i }}, this)">
+                                            <img id="image-preview-{{ i }}" class="img-fluid rounded-3 w-100 h-100" style="display: none; object-fit: cover; position: absolute; top: 0; left: 0;">
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+
+                                <!-- Hidden field for form submission -->
+                                {{ form.images(style="display: none;", multiple=True) }}
+
+                                <div class="col-12">
+                                    <div class="summary-section">
+                                        <h6 class="mb-3"><i class="fas fa-clipboard-list me-2"></i>Vehicle Summary</h6>
+                                        <div id="vehicleSummary">
+                                            <!-- Summary will be populated by JavaScript -->
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        
+
                         <!-- Navigation -->
                         <div class="wizard-navigation">
                             <button type="button" class="btn btn-secondary btn-wizard" id="prevBtn" onclick="changeStep(-1)" style="display: none;">
                                 <i class="fas fa-arrow-left me-2"></i>Previous
                             </button>
-                            
+
                             <div class="navigation-info">
                                 Step <span id="currentStepNum">1</span> of 6
                             </div>
-                            
+
                             <button type="button" class="btn btn-primary btn-wizard" id="nextBtn" onclick="changeStep(1)">
                                 Next<i class="fas fa-arrow-right ms-2"></i>
                             </button>
-                            
+
                             <button type="button" class="btn btn-success btn-wizard btn-lg" id="submitBtn" style="display: none;" onclick="console.log('Button clicked!'); submitVehicleForm();">
                                 <i class="fas fa-save me-2"></i>Save Vehicle
                             </button>
-                            
+
                             <button type="button" class="btn btn-info btn-wizard" onclick="testAlert()" style="display: none;" id="testBtn">
                                 <i class="fas fa-bell me-2"></i>Test Alert
                             </button>
@@ -833,6 +888,9 @@
 let currentStep = 1;
 const totalSteps = 6;
 
+// Array to store image files
+let uploadedImages = Array(6).fill(null);
+
 function openWizard() {
     currentStep = 1;
     updateWizardDisplay();
@@ -847,7 +905,7 @@ function changeStep(direction) {
     } else if (direction === -1 && currentStep > 1) {
         currentStep--;
     }
-    
+
     updateWizardDisplay();
 }
 
@@ -855,15 +913,15 @@ function updateWizardDisplay() {
     // Update progress bar with smooth animation
     const progress = (currentStep / totalSteps) * 100;
     document.getElementById('progressFill').style.width = progress + '%';
-    
+
     // Update step indicators with icons
     document.querySelectorAll('.step-item').forEach((item, index) => {
         const stepNum = index + 1;
         const circle = item.querySelector('.step-circle');
-        
+
         item.classList.toggle('active', stepNum === currentStep);
         item.classList.toggle('completed', stepNum < currentStep);
-        
+
         // Update circle content
         if (stepNum < currentStep) {
             circle.innerHTML = '<i class="fas fa-check"></i>';
@@ -873,7 +931,7 @@ function updateWizardDisplay() {
             circle.innerHTML = stepNum;
         }
     });
-    
+
     // Update step panes with smooth transition
     document.querySelectorAll('.step-pane').forEach((pane, index) => {
         if (index + 1 === currentStep) {
@@ -887,33 +945,33 @@ function updateWizardDisplay() {
             pane.classList.remove('active');
         }
     });
-    
+
     // Update navigation buttons
     const prevBtn = document.getElementById('prevBtn');
     const nextBtn = document.getElementById('nextBtn');
     const submitBtn = document.getElementById('submitBtn');
     const testBtn = document.getElementById('testBtn');
-    
+
     prevBtn.style.display = currentStep === 1 ? 'none' : 'block';
     nextBtn.style.display = currentStep === totalSteps ? 'none' : 'block';
     submitBtn.style.display = currentStep === totalSteps ? 'block' : 'none';
     testBtn.style.display = currentStep === totalSteps ? 'block' : 'none';
-    
+
     // Update button text based on next step
     if (currentStep < totalSteps) {
         const nextStepName = getStepName(currentStep + 1);
         nextBtn.innerHTML = `Next: ${nextStepName} <i class="fas fa-arrow-right ms-2"></i>`;
     }
-    
+
     // Update step counter
     document.getElementById('currentStepNum').textContent = currentStep;
-    
+
     // Update summary on last step
     if (currentStep === totalSteps) {
         updateVehicleSummary();
         showAlert('🎉 Almost done! Please review your vehicle information and save.', 'info');
     }
-    
+
     // Scroll to top of modal
     document.querySelector('.wizard-container').scrollTop = 0;
 }
@@ -946,12 +1004,12 @@ function validateCurrentStep() {
     const currentPane = document.getElementById(`step${currentStep}`);
     let isValid = true;
     let errorMessages = [];
-    
+
     // Remove existing validation styles
     currentPane.querySelectorAll('.is-invalid').forEach(field => {
         field.classList.remove('is-invalid');
     });
-    
+
     // Check required fields based on current step
     if (currentStep === 1) {
         const requiredFields = [
@@ -963,7 +1021,7 @@ function validateCurrentStep() {
             { name: 'price', label: 'Price' },
             { name: 'mileage', label: 'Mileage' }
         ];
-        
+
         requiredFields.forEach(fieldInfo => {
             const field = document.querySelector(`[name="${fieldInfo.name}"]`);
             if (field && !field.value.trim()) {
@@ -972,7 +1030,7 @@ function validateCurrentStep() {
                 isValid = false;
             } else if (field) {
                 field.classList.remove('is-invalid');
-                
+
                 // Additional validation
                 if (fieldInfo.name === 'year') {
                     const year = parseInt(field.value);
@@ -982,7 +1040,7 @@ function validateCurrentStep() {
                         isValid = false;
                     }
                 }
-                
+
                 if (fieldInfo.name === 'price') {
                     const price = parseFloat(field.value);
                     if (price <= 0) {
@@ -991,7 +1049,7 @@ function validateCurrentStep() {
                         isValid = false;
                     }
                 }
-                
+
                 if (fieldInfo.name === 'mileage') {
                     const mileage = parseInt(field.value);
                     if (mileage < 0) {
@@ -1007,7 +1065,7 @@ function validateCurrentStep() {
             { name: 'contact_name', label: 'Contact Name' },
             { name: 'contact_phone', label: 'Contact Phone' }
         ];
-        
+
         requiredFields.forEach(fieldInfo => {
             const field = document.querySelector(`[name="${fieldInfo.name}"]`);
             if (field && !field.value.trim()) {
@@ -1016,7 +1074,7 @@ function validateCurrentStep() {
                 isValid = false;
             } else if (field) {
                 field.classList.remove('is-invalid');
-                
+
                 // Phone validation
                 if (fieldInfo.name === 'contact_phone') {
                     const phoneRegex = /^[\d\s\-\(\)\+\.]{10,}$/;
@@ -1028,8 +1086,14 @@ function validateCurrentStep() {
                 }
             }
         });
+    } else if (currentStep === 6) {
+        // Check if at least one image is uploaded for the last step
+        if (uploadedImages.every(img => img === null)) {
+            showAlert('Please upload at least one image for your vehicle.', 'warning');
+            isValid = false;
+        }
     }
-    
+
     if (!isValid) {
         const message = errorMessages.length > 0 ? 
             `Please fix the following issues:\n• ${errorMessages.join('\n• ')}` :
@@ -1039,7 +1103,7 @@ function validateCurrentStep() {
         // Show success message for completed step
         showStepSuccess();
     }
-    
+
     return isValid;
 }
 
@@ -1051,7 +1115,7 @@ function showStepSuccess() {
         4: 'Insurance & Documentation',
         5: 'Features & Condition'
     };
-    
+
     if (currentStep < 6) {
         showAlert(`✅ ${stepTitles[currentStep]} completed successfully!`, 'success');
     }
@@ -1061,7 +1125,7 @@ function showAlert(message, type = 'info') {
     // Remove any existing alerts first
     const existingAlerts = document.querySelectorAll('.alert');
     existingAlerts.forEach(alert => alert.remove());
-    
+
     const alertDiv = document.createElement('div');
     alertDiv.className = `alert alert-${type} alert-dismissible fade show position-relative`;
     alertDiv.style.cssText = 'z-index: 9999; margin-bottom: 1rem; font-size: 1.1rem; font-weight: 500;';
@@ -1072,10 +1136,10 @@ function showAlert(message, type = 'info') {
         </div>
         <button type="button" class="btn-close" onclick="this.parentElement.remove()"></button>
     `;
-    
+
     const container = document.querySelector('.wizard-container');
     container.insertBefore(alertDiv, container.firstChild);
-    
+
     // Auto-remove after 8 seconds for success, 10 seconds for errors
     const timeout = type === 'success' ? 8000 : 10000;
     setTimeout(() => {
@@ -1083,7 +1147,7 @@ function showAlert(message, type = 'info') {
             alertDiv.remove();
         }
     }, timeout);
-    
+
     // Scroll to top to ensure alert is visible
     container.scrollTop = 0;
 }
@@ -1092,7 +1156,15 @@ function updateVehicleSummary() {
     const form = document.getElementById('vehicleWizardForm');
     const formData = new FormData(form);
     const summary = document.getElementById('vehicleSummary');
-    
+
+    // Get selected images count
+    let imageCount = 0;
+    for(let i = 0; i < 6; i++) {
+        if (uploadedImages[i]) {
+            imageCount++;
+        }
+    }
+
     const summaryData = [
         { label: 'Vehicle Title', value: formData.get('title') || 'Not specified' },
         { label: 'Year', value: formData.get('year') || 'Not specified' },
@@ -1104,9 +1176,9 @@ function updateVehicleSummary() {
         { label: 'Transmission', value: formData.get('transmission') || 'Not specified' },
         { label: 'Contact Person', value: formData.get('contact_name') || 'Not specified' },
         { label: 'Contact Phone', value: formData.get('contact_phone') || 'Not specified' },
-        { label: 'Images', value: `${selectedFiles.length} image(s) selected` }
+        { label: 'Images', value: `${imageCount} image(s) selected` }
     ];
-    
+
     summary.innerHTML = summaryData.map(item => 
         `<div class="summary-item">
             <strong>${item.label}:</strong>
@@ -1115,96 +1187,109 @@ function updateVehicleSummary() {
     ).join('');
 }
 
-// Image preview functionality
-let selectedFiles = [];
-
-function handleImageUpload(input) {
-    const files = Array.from(input.files);
-    const maxFiles = 6;
-    
-    if (files.length > maxFiles) {
-        showAlert(`You can only select up to ${maxFiles} images. Only the first ${maxFiles} will be used.`, 'warning');
-    }
-    
-    selectedFiles = files.slice(0, maxFiles);
-    updateImagePreview();
+// Image preview functionality for multiple slots
+function triggerImageUpload(slotIndex) {
+    document.getElementById(`image-input-${slotIndex}`).click();
 }
 
-function updateImagePreview() {
-    const grid = document.getElementById('imagePreviewGrid');
-    const counter = document.getElementById('imageCount');
-    grid.innerHTML = '';
-    
-    selectedFiles.forEach((file, index) => {
-        if (file.type.startsWith('image/')) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const item = document.createElement('div');
-                item.className = 'image-preview-item';
-                item.innerHTML = `
-                    <img src="${e.target.result}" alt="Preview ${index + 1}">
-                    <button type="button" class="image-remove-btn" onclick="removeImage(${index})">
-                        <i class="fas fa-times"></i>
-                    </button>
-                `;
-                grid.appendChild(item);
-            };
-            reader.readAsDataURL(file);
+function handleImageUpload(slotIndex, input) {
+    const file = input.files[0];
+    if (!file) return;
+
+    const maxFileSize = 5 * 1024 * 1024; // 5MB
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
+
+    if (!allowedTypes.includes(file.type)) {
+        showAlert('Invalid file type. Please upload JPG, PNG, or GIF.', 'warning');
+        return;
+    }
+    if (file.size > maxFileSize) {
+        showAlert('File size exceeds the 5MB limit.', 'warning');
+        return;
+    }
+
+    uploadedImages[slotIndex - 1] = file; // Store the file
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const previewImage = document.getElementById(`image-preview-${slotIndex}`);
+        previewImage.src = e.target.result;
+        previewImage.style.display = 'block';
+
+        // Hide slot content
+        const slotContent = document.querySelector(`#image-slot-${slotIndex} .slot-content`);
+        if (slotContent) slotContent.style.display = 'none';
+    };
+    reader.readAsDataURL(file);
+
+    // Update the hidden input for form submission with all files
+    updateHiddenFileInput();
+}
+
+function removeImage(slotIndex) {
+    uploadedImages[slotIndex - 1] = null; // Clear the image from array
+
+    const previewImage = document.getElementById(`image-preview-${slotIndex}`);
+    previewImage.src = '';
+    previewImage.style.display = 'none';
+
+    // Show slot content again
+    const slotContent = document.querySelector(`#image-slot-${slotIndex} .slot-content`);
+    if (slotContent) slotContent.style.display = 'flex';
+
+    updateHiddenFileInput();
+}
+
+// Function to update the hidden file input with all selected files
+function updateHiddenFileInput() {
+    const actualInput = document.querySelector('input[name="images"]');
+    const dataTransfer = new DataTransfer();
+
+    uploadedImages.forEach(file => {
+        if (file) {
+            dataTransfer.items.add(file);
         }
     });
-    
-    counter.textContent = `${selectedFiles.length} / 6 images selected`;
-}
+    actualInput.files = dataTransfer.files;
 
-function removeImage(index) {
-    selectedFiles.splice(index, 1);
-    updateImagePreview();
-    
-    // Update the input files
-    const input = document.getElementById('imageInput');
-    const dt = new DataTransfer();
-    selectedFiles.forEach(file => dt.items.add(file));
-    input.files = dt.files;
+    // Update image count display
+    const imageCount = uploadedImages.filter(img => img !== null).length;
+    document.getElementById('imageCount').textContent = `${imageCount} / 6 images selected`;
 }
 
 // Submit vehicle form function
 function submitVehicleForm() {
     console.log('Save Vehicle button clicked!');
-    
+
     // Final validation
     if (!validateAllSteps()) {
-        showAlert('Please complete all required fields before saving.', 'warning');
+        showAlert('Please complete all required fields and upload at least one image before saving.', 'warning');
         return;
     }
-    
+
     // Show confirmation dialog
     if (!confirm('Are you sure you want to save this vehicle? All information will be published to the marketplace.')) {
         return;
     }
-    
+
     showAlert('🔄 Processing your vehicle listing...', 'info');
-    
+
     const submitBtn = document.getElementById('submitBtn');
     submitBtn.disabled = true;
     submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Saving Vehicle...';
-    
+
     // Get form data
     const form = document.getElementById('vehicleWizardForm');
     const formData = new FormData(form);
-    
-    // Add selected images
-    formData.delete('images');
-    selectedFiles.forEach(file => {
-        formData.append('images', file);
-    });
-    
+
+    // Add selected images (already handled by updateHiddenFileInput which populates form.images)
     console.log('Form data prepared, submitting...');
-    console.log('Selected files:', selectedFiles.length);
-    
+    console.log('Number of images attached:', formData.getAll('images').length);
+
     // Get CSRF token
     const csrfToken = document.querySelector('input[name="csrf_token"]').value;
     formData.append('csrf_token', csrfToken);
-    
+
     // Submit via fetch
     fetch('/admin/add_vehicle', {
         method: 'POST',
@@ -1222,33 +1307,39 @@ function submitVehicleForm() {
     })
     .then(({status, data}) => {
         console.log('Response data:', data);
-        
+
         if (status === 200 && data.success) {
             showAlert('🎉 Vehicle saved successfully! Your listing is now live on the marketplace.', 'success');
             clearSavedFormData(); // Clear auto-saved draft
+            // Reset wizard and close modal after a delay
             setTimeout(() => {
-                window.location.reload();
+                document.getElementById('vehicleWizard').querySelector('.btn-close').click();
+                // Reload to show the new vehicle in the table
+                window.location.reload(); 
             }, 3000);
         } else if (status === 400 && data.errors) {
             // Show specific validation errors and go to relevant step
             let errorMessages = [];
             let firstErrorStep = null;
-            
+
             for (const [field, error] of Object.entries(data.errors)) {
                 errorMessages.push(`${field}: ${error}`);
-                
+
                 // Determine which step has the error
                 if (!firstErrorStep) {
                     firstErrorStep = getStepForField(field);
                 }
             }
-            
+
             showAlert('Please fix these errors: ' + errorMessages.join(', '), 'warning');
-            
+
             // Go to the step with the first error
             if (firstErrorStep && firstErrorStep !== currentStep) {
                 currentStep = firstErrorStep;
                 updateWizardDisplay();
+            } else if (firstErrorStep && firstErrorStep === 6) {
+                // If error is in images and we are already on step 6, just show alert
+                showAlert('Please fix the image upload issues.', 'warning');
             }
         } else {
             throw new Error(data.message || 'Failed to save vehicle');
@@ -1266,25 +1357,33 @@ function submitVehicleForm() {
 
 function validateAllSteps() {
     let allValid = true;
-    
+
     // Validate step 1 (required fields)
     const step1Fields = ['title', 'category', 'year', 'make', 'model', 'price', 'mileage'];
     step1Fields.forEach(fieldName => {
         const field = document.querySelector(`[name="${fieldName}"]`);
         if (!field || !field.value.trim()) {
+            field.classList.add('is-invalid'); // Mark invalid
             allValid = false;
         }
     });
-    
+
     // Validate step 5 (contact fields)
     const step5Fields = ['contact_name', 'contact_phone'];
     step5Fields.forEach(fieldName => {
         const field = document.querySelector(`[name="${fieldName}"]`);
         if (!field || !field.value.trim()) {
+            field.classList.add('is-invalid'); // Mark invalid
             allValid = false;
         }
     });
     
+    // Validate step 6 (at least one image)
+    if (uploadedImages.filter(img => img !== null).length === 0) {
+        allValid = false;
+        // Optionally, highlight the image area or show a specific message
+    }
+
     return allValid;
 }
 
@@ -1308,8 +1407,8 @@ function autoPopulateTitle() {
     const make = document.querySelector('[name=make]').value;
     const model = document.querySelector('[name=model]').value;
     const title = document.querySelector('[name=title]');
-    
-    if (year && make && model && !title.value) {
+
+    if (year && make && model && !title.value.trim()) {
         title.value = `${year} ${make} ${model}`;
     }
 }
@@ -1322,7 +1421,7 @@ document.querySelector('[name=model]').addEventListener('blur', autoPopulateTitl
 document.getElementById('searchInput').addEventListener('input', function(e) {
     const searchTerm = e.target.value.toLowerCase();
     const rows = document.querySelectorAll('#vehiclesTable tbody tr');
-    
+
     rows.forEach(row => {
         const text = row.textContent.toLowerCase();
         row.style.display = text.includes(searchTerm) ? '' : 'none';
@@ -1337,14 +1436,39 @@ function viewVehicle(id) {
 function editVehicle(id) {
     // Open wizard in edit mode
     openWizard();
-    // Load vehicle data - would need backend endpoint
+    // TODO: Load vehicle data into the form and pre-fill fields
+    // This would require a new backend endpoint to fetch vehicle data by ID.
+    // For now, just opening the wizard.
+    console.log(`Editing vehicle with ID: ${id}`);
 }
 
 function deleteVehicle(id) {
-    if (confirm('Are you sure you want to delete this vehicle?')) {
+    if (confirm('Are you sure you want to delete this vehicle? This action cannot be undone.')) {
         // Handle deletion
-        fetch(`/admin/delete_vehicle/${id}`, { method: 'DELETE' })
-        .then(() => location.reload());
+        fetch(`/admin/delete_vehicle/${id}`, { 
+            method: 'DELETE',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest' // For CSRF protection if needed
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                alert('Vehicle deleted successfully!');
+                location.reload();
+            } else {
+                alert('Failed to delete vehicle: ' + (data.message || 'Unknown error'));
+            }
+        })
+        .catch(error => {
+            console.error('Error deleting vehicle:', error);
+            alert('An error occurred while trying to delete the vehicle.');
+        });
     }
 }
 
@@ -1355,25 +1479,22 @@ function testAlert() {
 
 // Add click handler when page loads
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('Page loaded, setting up save button...');
-    
+    console.log('Page loaded, setting up button handlers...');
+
     const submitBtn = document.getElementById('submitBtn');
     if (submitBtn) {
-        console.log('Submit button found, adding click handler');
         submitBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            console.log('Submit button clicked via event listener!');
+            e.preventDefault(); // Prevent default form submission if any
             submitVehicleForm();
         });
     } else {
-        console.log('Submit button not found');
+        console.log('Submit button not found.');
     }
-    
+
     // Add keyboard shortcuts
     document.addEventListener('keydown', function(e) {
         // Ctrl/Cmd + Right Arrow = Next step
-        if ((e.ctrlKey || e.metaKey) && e.key === 'ArrowRight' && currentStep < totalSteps) {
+        if ((e.ctrlKey || e.metaKey) && e.key === 'ArrowRight' && currentStep < totalSteps && currentStep !== totalSteps) {
             e.preventDefault();
             changeStep(1);
         }
@@ -1388,29 +1509,33 @@ document.addEventListener('DOMContentLoaded', function() {
             submitVehicleForm();
         }
     });
-    
+
     // Auto-save form data to localStorage
     setInterval(autoSaveFormData, 30000); // Save every 30 seconds
-    
+
     // Load saved form data
     loadSavedFormData();
 });
 
 // Auto-save functionality
 function autoSaveFormData() {
-    if (currentStep > 1) { // Only save if user has started filling the form
+    if (currentStep > 1 || Object.values(uploadedImages).some(img => img !== null)) { // Only save if user has started filling the form or uploaded images
         const form = document.getElementById('vehicleWizardForm');
         const formData = new FormData(form);
         const savedData = {};
-        
+
         for (let [key, value] of formData.entries()) {
-            if (value && key !== 'csrf_token' && key !== 'images') {
+            if (value && key !== 'csrf_token' && key !== 'images') { // Exclude CSRF and images for simple save
                 savedData[key] = value;
             }
         }
-        
+
+        // Saving image metadata (filenames) or count might be an option, but not the files themselves for simplicity
+        // Here we save the count of uploaded images
+        savedData.imageCount = uploadedImages.filter(img => img !== null).length;
+
         localStorage.setItem('automarket_vehicle_draft', JSON.stringify(savedData));
-        showAlert('📝 Draft saved automatically', 'info');
+        console.log('Draft saved automatically.');
     }
 }
 
@@ -1419,25 +1544,39 @@ function loadSavedFormData() {
     if (savedData) {
         try {
             const data = JSON.parse(savedData);
-            
+
             // Ask user if they want to restore
             if (confirm('Found a previously saved draft. Would you like to restore it?')) {
                 Object.keys(data).forEach(key => {
-                    const field = document.querySelector(`[name="${key}"]`);
-                    if (field) {
-                        field.value = data[key];
+                    if (key !== 'imageCount') { // Avoid trying to set imageCount as a field value
+                        const field = document.querySelector(`[name="${key}"]`);
+                        if (field) {
+                            field.value = data[key];
+                        }
                     }
                 });
+                
+                // Restore image previews if count is > 0
+                if (data.imageCount > 0) {
+                    showAlert(`Restored ${data.imageCount} image(s) from draft. Please re-upload files if necessary.`, 'info');
+                }
+
                 showAlert('✅ Draft restored successfully!', 'success');
+            } else {
+                // If user declines, clear the draft
+                clearSavedFormData();
             }
         } catch (e) {
             console.error('Error loading saved data:', e);
+            // Optionally clear the corrupted data
+            clearSavedFormData();
         }
     }
 }
 
 function clearSavedFormData() {
     localStorage.removeItem('automarket_vehicle_draft');
+    console.log('Draft cleared.');
 }
 </script>
 {% endblock %}

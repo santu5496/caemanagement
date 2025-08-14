@@ -142,10 +142,10 @@ class VehicleFormManager {
         const container = document.createElement('div');
         container.id = 'image-preview-container';
         container.className = 'row g-2 mt-2';
-        
+
         const imageInput = document.getElementById('images');
         imageInput.parentNode.appendChild(container);
-        
+
         return container;
     }
 
@@ -222,7 +222,7 @@ class VehicleFormManager {
                 const year = yearField.value;
                 const make = makeField.value;
                 const model = modelField.value;
-                
+
                 if (year && make && model && !titleField.value) {
                     titleField.value = `${year} ${make} ${model}`;
                 }
@@ -250,26 +250,26 @@ class VehicleFormManager {
         const isValid = field.checkValidity();
         field.classList.remove('is-valid', 'is-invalid');
         field.classList.add(isValid ? 'is-valid' : 'is-invalid');
-        
+
         // Update custom feedback
         const feedback = field.parentNode.querySelector('.invalid-feedback');
         if (feedback && !isValid) {
             feedback.textContent = field.validationMessage;
         }
-        
+
         return isValid;
     }
 
     validateEmail(field) {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         const isValid = emailRegex.test(field.value) || field.value === '';
-        
+
         if (!isValid && field.value) {
             field.setCustomValidity('Please enter a valid email address');
         } else {
             field.setCustomValidity('');
         }
-        
+
         this.validateField(field);
         return isValid;
     }
@@ -301,7 +301,7 @@ class VehicleFormManager {
             // Scroll to first invalid field
             invalidFields[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
             invalidFields[0].focus();
-            
+
             // Show toast notification
             this.showToast('Please fill in all required fields correctly', 'error');
         }
@@ -320,7 +320,7 @@ class VehicleFormManager {
 
         const toastId = 'toast-' + Date.now();
         const bgClass = type === 'error' ? 'bg-danger' : type === 'success' ? 'bg-success' : 'bg-info';
-        
+
         const toastHtml = `
             <div id="${toastId}" class="toast ${bgClass} text-white" role="alert">
                 <div class="toast-body d-flex align-items-center">
@@ -330,13 +330,13 @@ class VehicleFormManager {
                 </div>
             </div>
         `;
-        
+
         toastContainer.insertAdjacentHTML('beforeend', toastHtml);
-        
+
         const toastElement = document.getElementById(toastId);
         const toast = new bootstrap.Toast(toastElement, { delay: 5000 });
         toast.show();
-        
+
         // Remove toast element after it's hidden
         toastElement.addEventListener('hidden.bs.toast', () => {
             toastElement.remove();
@@ -346,18 +346,18 @@ class VehicleFormManager {
     resetForm() {
         this.form.reset();
         this.form.classList.remove('was-validated');
-        
+
         // Clear all validation states
         this.form.querySelectorAll('.is-valid, .is-invalid').forEach(field => {
             field.classList.remove('is-valid', 'is-invalid');
         });
-        
+
         // Clear image preview
         const previewContainer = document.getElementById('image-preview-container');
         if (previewContainer) {
             previewContainer.innerHTML = '';
         }
-        
+
         // Clear image errors
         this.clearImageError();
     }
@@ -391,13 +391,13 @@ class AutoSaveManager {
     saveToStorage() {
         const formData = new FormData(this.form);
         const data = {};
-        
+
         for (let [key, value] of formData.entries()) {
             if (value && key !== 'csrf_token' && key !== 'images') {
                 data[key] = value;
             }
         }
-        
+
         localStorage.setItem(this.storageKey, JSON.stringify(data));
     }
 
@@ -436,11 +436,263 @@ function debounce(func, wait) {
     };
 }
 
+// Enhanced Forms JavaScript
+let uploadedImages = [];
+
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('Enhanced forms loaded');
+
+    // Initialize any enhanced form features here
+    initializeWizardSteps();
+    initializeImageSlots();
+});
+
+function initializeWizardSteps() {
+    // Wizard step navigation logic
+    const nextBtns = document.querySelectorAll('.btn-next');
+    const prevBtns = document.querySelectorAll('.btn-prev');
+
+    nextBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const currentTab = document.querySelector('.tab-pane.active');
+            const nextTabId = this.getAttribute('data-next');
+
+            if (nextTabId) {
+                // Hide current tab
+                currentTab.classList.remove('show', 'active');
+
+                // Show next tab
+                const nextTab = document.getElementById(nextTabId);
+                nextTab.classList.add('show', 'active');
+
+                // Update progress
+                updateProgress();
+            }
+        });
+    });
+
+    prevBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const currentTab = document.querySelector('.tab-pane.active');
+            const prevTabId = this.getAttribute('data-prev');
+
+            if (prevTabId) {
+                // Hide current tab
+                currentTab.classList.remove('show', 'active');
+
+                // Show previous tab
+                const prevTab = document.getElementById(prevTabId);
+                prevTab.classList.add('show', 'active');
+
+                // Update progress
+                updateProgress();
+            }
+        });
+    });
+}
+
+function initializeImageSlots() {
+    // Initialize the slot content for all 6 slots
+    for (let i = 1; i <= 6; i++) {
+        const slot = document.getElementById(`image-slot-${i}`);
+        if (slot) {
+            const slotContent = slot.querySelector('.slot-content');
+            if (slotContent) {
+                slotContent.innerHTML = `
+                    <i class="fas fa-cloud-upload-alt fa-2x text-primary mb-2"></i>
+                    <p class="mb-1 fw-bold">Click to upload</p>
+                    <small class="text-muted">or drag and drop image here</small>
+                    <small class="d-block text-muted mt-1">Max 5MB • JPG, PNG, GIF</small>
+                `;
+            }
+
+            // Add drag and drop functionality
+            slot.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                const uploadSlot = this.querySelector('.image-upload-slot');
+                if (uploadSlot) {
+                    uploadSlot.style.background = 'linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%)';
+                }
+            });
+
+            slot.addEventListener('dragleave', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                const uploadSlot = this.querySelector('.image-upload-slot');
+                if (uploadSlot) {
+                    uploadSlot.style.background = 'linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)';
+                }
+            });
+
+            slot.addEventListener('drop', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                const uploadSlot = this.querySelector('.image-upload-slot');
+                if (uploadSlot) {
+                    uploadSlot.style.background = 'linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)';
+                }
+
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    const input = document.getElementById(`image-input-${i}`);
+                    if (input) {
+                        try {
+                            input.files = files;
+                            handleImageUpload(i, input);
+                        } catch (error) {
+                            console.error('Error handling dropped file:', error);
+                            showToast('Error handling dropped file', 'danger');
+                        }
+                    }
+                }
+            });
+        }
+    }
+}
+
+function triggerImageUpload(slotNumber) {
+    document.getElementById(`image-input-${slotNumber}`).click();
+}
+
+function handleImageUpload(slotNumber, input) {
+    const file = input.files[0];
+    if (!file) return;
+
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+        showToast('Please select a valid image file.', 'error');
+        return;
+    }
+
+    // Validate file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+        showToast('Image size should be less than 5MB.', 'error');
+        return;
+    }
+
+    const slot = document.getElementById(`image-slot-${slotNumber}`);
+    const preview = document.getElementById(`image-preview-${slotNumber}`);
+    const slotContent = slot.querySelector('.slot-content');
+
+    // Read and display the image
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        preview.src = e.target.result;
+        preview.style.display = 'block';
+        slotContent.style.display = 'none';
+
+        // Add remove button
+        let removeBtn = slot.querySelector('.remove-image-btn');
+        if (!removeBtn) {
+            removeBtn = document.createElement('button');
+            removeBtn.type = 'button';
+            removeBtn.className = 'btn btn-danger btn-sm position-absolute remove-image-btn';
+            removeBtn.style.cssText = 'top: 5px; right: 5px; z-index: 10;';
+            removeBtn.innerHTML = '<i class="fas fa-times"></i>';
+            removeBtn.onclick = function() { removeImage(slotNumber); };
+            slot.style.position = 'relative';
+            slot.appendChild(removeBtn);
+        }
+
+        // Update slot styling
+        const uploadSlot = slot.querySelector('.image-upload-slot');
+        if (uploadSlot) {
+            uploadSlot.style.border = '2px solid #28a745';
+            uploadSlot.style.background = 'linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%)';
+        }
+    };
+    reader.readAsDataURL(file);
+
+    // Store the file for form submission
+    uploadedImages[slotNumber - 1] = file;
+    updateFormFileInput();
+}
+
+function removeImage(slotNumber) {
+    const slot = document.getElementById(`image-slot-${slotNumber}`);
+    const preview = document.getElementById(`image-preview-${slotNumber}`);
+    const slotContent = slot.querySelector('.slot-content');
+    const removeBtn = slot.querySelector('.remove-image-btn');
+    const input = document.getElementById(`image-input-${slotNumber}`);
+
+    // Hide preview and show upload content
+    preview.style.display = 'none';
+    preview.src = '';
+    slotContent.style.display = 'flex';
+
+    // Remove the remove button
+    if (removeBtn) {
+        removeBtn.remove();
+    }
+
+    // Clear the input
+    input.value = '';
+
+    // Reset slot styling
+    const uploadSlot = slot.querySelector('.image-upload-slot');
+    if (uploadSlot) {
+        uploadSlot.style.border = '2px dashed #007bff';
+        uploadSlot.style.background = 'linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)';
+    }
+
+    // Remove from uploaded images array
+    uploadedImages[slotNumber - 1] = null;
+    updateFormFileInput();
+}
+
+function updateFormFileInput() {
+    const formFileInput = document.querySelector('input[name="images"]');
+    if (formFileInput) {
+        const dt = new DataTransfer();
+        uploadedImages.forEach(file => {
+            if (file) {
+                dt.items.add(file);
+            }
+        });
+        formFileInput.files = dt.files;
+    }
+}
+
+function updateProgress() {
+    const activeTab = document.querySelector('.tab-pane.active');
+    const allTabs = document.querySelectorAll('.tab-pane');
+    const activeIndex = Array.from(allTabs).indexOf(activeTab);
+    const progress = ((activeIndex + 1) / allTabs.length) * 100;
+
+    const progressBar = document.querySelector('.progress-bar');
+    if (progressBar) {
+        progressBar.style.width = progress + '%';
+        progressBar.setAttribute('aria-valuenow', progress);
+    }
+}
+
+function showToast(message, type) {
+    // Simple toast notification
+    const toast = document.createElement('div');
+    toast.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
+    toast.style.top = '20px';
+    toast.style.right = '20px';
+    toast.style.zIndex = '9999';
+    toast.innerHTML = `
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+    document.body.appendChild(toast);
+
+    // Auto remove after 3 seconds
+    setTimeout(() => {
+        if (toast.parentNode) {
+            toast.parentNode.removeChild(toast);
+        }
+    }, 3000);
+}
+
 // Initialize when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
     // Initialize form manager
     new VehicleFormManager();
-    
+
     // Initialize auto-save for vehicle form
     new AutoSaveManager('vehicleForm', 'vehicle_form_autosave');
 });
