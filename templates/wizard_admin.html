@@ -1728,6 +1728,28 @@ document.getElementById('searchInput').addEventListener('input', function(e) {
     });
 });
 
+// Initialize edit button handlers after page load
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('Page loaded, setting up button handlers...');
+    
+    // Set up edit button handlers
+    document.addEventListener('click', function(e) {
+        if (e.target.matches('button[onclick*="editVehicle"]') || e.target.closest('button[onclick*="editVehicle"]')) {
+            e.preventDefault();
+            const button = e.target.matches('button') ? e.target : e.target.closest('button');
+            const onclickAttr = button.getAttribute('onclick');
+            if (onclickAttr) {
+                const match = onclickAttr.match(/editVehicle\('([^']+)'\)/);
+                if (match) {
+                    const vehicleId = match[1];
+                    console.log('Edit button clicked for vehicle:', vehicleId);
+                    editVehicle(vehicleId);
+                }
+            }
+        }
+    });
+});
+
 // Vehicle actions
 function viewVehicle(id) {
     window.open(`/vehicle/${id}`, '_blank');
@@ -1736,8 +1758,153 @@ function viewVehicle(id) {
 async function editVehicle(id) {
     console.log(`Editing vehicle with ID: ${id}`);
     
-    // Set edit mode
-    isEditMode = true;
+    try {
+        // Set edit mode
+        isEditMode = true;
+        editVehicleId = id;
+        
+        // Reset form before loading data
+        document.getElementById('vehicleForm').reset();
+        
+        // Fetch vehicle data
+        const response = await fetch(`/admin/vehicle/${id}`, {
+            method: 'GET',
+            credentials: 'same-origin',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        });
+        
+        console.log('Response status:', response.status);
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        console.log('Vehicle data received:', data);
+        
+        if (!data.success) {
+            throw new Error(data.message || 'Failed to fetch vehicle data');
+        }
+        
+        const vehicleData = data.vehicle;
+        console.log('Populating form with data:', vehicleData);
+        
+        // Populate form fields
+        Object.keys(vehicleData).forEach(key => {
+            const input = document.querySelector(`[name="${key}"]`);
+            if (input) {
+                const value = vehicleData[key];
+                console.log(`Setting ${key} to:`, value);
+                
+                if (input.type === 'checkbox') {
+                    input.checked = !!value;
+                } else if (input.tagName === 'SELECT') {
+                    // Handle select dropdowns
+                    input.value = value || '';
+                } else if (key === 'images' && Array.isArray(value)) {
+                    console.log(`Setting ${key} to:`, value);
+                    // Handle image display for edit mode
+                    displayExistingImages(value);
+                } else {
+                    input.value = value || '';
+                }
+            } else {
+                console.log(`No input found for field: ${key}`);
+            }
+        });
+        
+        // Handle existing images display
+        function displayExistingImages(images) {
+            const imagePreview = document.getElementById('imagePreview');
+            if (imagePreview && images && images.length > 0) {
+                imagePreview.innerHTML = '';
+                images.forEach((image, index) => {
+                    const imageContainer = document.createElement('div');
+                    imageContainer.className = 'col-md-3 mb-2';
+                    imageContainer.innerHTML = `
+                        <div class="position-relative">
+                            <img src="/static/uploads/${image}" class="img-thumbnail w-100" alt="Vehicle Image ${index + 1}">
+                            <div class="position-absolute top-0 end-0 p-1">
+                                <span class="badge bg-primary">Existing</span>
+                            </div>
+                        </div>
+                    `;
+                    imagePreview.appendChild(imageContainer);
+                });
+            }
+        }
+        
+        // Update image slots if they exist
+        if (vehicleData.images && Array.isArray(vehicleData.images)) {
+            vehicleData.images.forEach((imageName, index) => {
+                const slot = document.querySelector(`#imageSlot${index + 1}`);
+                if (slot) {
+                    const img = slot.querySelector('img');
+                    const removeBtn = slot.querySelector('.remove-image');
+                    const slotContent = slot.querySelector('.image-slot-content');
+                    
+                    if (img) {
+                        img.src = `/static/uploads/${imageName}`;
+                        img.style.display = 'block';
+                    }
+                    if(removeBtn) removeBtn.style.display = 'flex';
+                    if (slotContent) slotContent.style.display = 'none';
+                }
+            });
+            updateHiddenFileInput(); // Update the hidden input
+        }
+
+        // Update modal title for edit mode
+        const modalTitle = document.getElementById('modalTitle');
+        if (modalTitle) {
+            modalTitle.innerHTML = '<i class="fas fa-edit me-2"></i>Edit Vehicle - Step by Step';
+        }
+
+        // Update current step to the first step for editing flow
+        currentStep = 1;
+        updateWizardDisplay(); // Refresh UI to show step 1 and correct progress
+
+        // Make modal visible - try multiple approaches
+        const modal = document.getElementById('vehicleWizard');
+        if (modal) {
+            // First try Bootstrap 5 modal
+            try {
+                const bsModal = new bootstrap.Modal(modal, {
+                    backdrop: 'static',
+                    keyboard: false
+                });
+                bsModal.show();
+            } catch (e) {
+                console.log('Bootstrap modal failed, trying jQuery:', e);
+                // Fallback to jQuery if available
+                if (typeof $ !== 'undefined') {
+                    $(modal).modal('show');
+                } else {
+                    // Manual modal display as last resort
+                    modal.style.display = 'block';
+                    modal.classList.add('show');
+                    document.body.classList.add('modal-open');
+                    
+                    // Create backdrop
+                    const backdrop = document.createElement('div');
+                    backdrop.className = 'modal-backdrop fade show';
+                    document.body.appendChild(backdrop);
+                }
+            }
+        }
+        
+    } catch (error) {
+        console.error('Error fetching vehicle data:', error);
+        const errorMessage = error.message || 'Failed to load vehicle data';
+        showAlert(`❌ Error loading vehicle data: ${errorMessage}`, 'danger');
+        
+        // Reset edit mode on error
+        isEditMode = false;
+        editVehicleId = null;
+    }
+} = true;
     editVehicleId = id;
     
     // Clear form first
