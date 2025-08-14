@@ -505,7 +505,7 @@
     <div class="modal-dialog modal-xl">
         <div class="modal-content border-0 shadow-lg">
             <div class="modal-header bg-primary text-white">
-                <h5 class="modal-title">
+                <h5 class="modal-title" id="modalTitle">
                     <i class="fas fa-magic me-2"></i>Add Vehicle - Step by Step
                 </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
@@ -905,6 +905,12 @@ function openWizard() {
     isEditMode = false;
     editVehicleId = null;
     
+    // Reset modal title for new vehicle
+    const modalTitle = document.getElementById('modalTitle');
+    if (modalTitle) {
+        modalTitle.innerHTML = '<i class="fas fa-magic me-2"></i>Add Vehicle - Step by Step';
+    }
+    
     // Clear previous form data if opening for the first time or if not editing
     document.getElementById('vehicleWizardForm').reset();
     uploadedImages.fill(null); // Clear stored images
@@ -1075,8 +1081,12 @@ function validateCurrentStep() {
             const field = currentPane.querySelector(`[name="${fieldInfo.name}"]`);
             if (!field) return;
 
+            // For editing mode, be more lenient with validation
+            const fieldValue = field.value;
+            const isEmpty = !fieldValue || (typeof fieldValue === 'string' && !fieldValue.trim());
+
             // Check if field is empty
-            if (!field.value || (typeof field.value === 'string' && !field.value.trim())) {
+            if (isEmpty) {
                 field.classList.add('is-invalid');
                 const feedback = field.nextElementSibling;
                 if(feedback && feedback.classList.contains('invalid-feedback')) {
@@ -1091,9 +1101,15 @@ function validateCurrentStep() {
                 let fieldError = '';
 
                 // Title length validation - be more flexible for editing
-                if (fieldInfo.name === 'title' && field.value.toString().trim().length < 3) {
-                    fieldValid = false;
-                    fieldError = 'Vehicle Title must be at least 3 characters long';
+                if (fieldInfo.name === 'title') {
+                    const titleLength = fieldValue.toString().trim().length;
+                    if (titleLength < 3) {
+                        fieldValid = false;
+                        fieldError = 'Vehicle Title must be at least 3 characters long';
+                    } else if (titleLength > 200) {
+                        fieldValid = false;
+                        fieldError = 'Vehicle Title must be less than 200 characters';
+                    }
                 }
 
                 // Year validation
@@ -1205,8 +1221,15 @@ function validateCurrentStep() {
     }
 
     if (!isValid && errorMessages.length > 0) {
-        const message = `Please fix the following issues:\n• ${errorMessages.join('\n• ')}`;
+        const message = `Please fix the following issues: ${errorMessages.join(', ')}`;
         showAlert(message, 'warning');
+        
+        // Scroll to first invalid field
+        const firstInvalidField = currentPane.querySelector('.is-invalid');
+        if (firstInvalidField) {
+            firstInvalidField.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            firstInvalidField.focus();
+        }
     } else if (!isValid) {
         showAlert('Please fill in all required fields before proceeding to the next step.', 'warning');
     } else {
@@ -1771,14 +1794,26 @@ function editVehicle(id) {
                     if (input.type === 'checkbox') {
                         input.checked = Boolean(value);
                     } else if (input.tagName === 'SELECT') {
-                        // Handle select dropdowns
-                        input.value = value || '';
+                        // Handle select dropdowns - ensure value exists in options
+                        const valueToSet = value || '';
+                        const optionExists = Array.from(input.options).some(option => option.value === valueToSet);
+                        if (optionExists || valueToSet === '') {
+                            input.value = valueToSet;
+                        }
                         // Trigger change event to update display
                         input.dispatchEvent(new Event('change'));
                     } else if (input.type === 'number') {
-                        input.value = value || '';
+                        input.value = value !== null && value !== undefined ? value : '';
                     } else {
-                        input.value = value || '';
+                        input.value = value !== null && value !== undefined ? value : '';
+                    }
+                    
+                    // Clear any validation errors when populating
+                    input.classList.remove('is-invalid');
+                    const feedback = input.nextElementSibling;
+                    if(feedback && feedback.classList.contains('invalid-feedback')) {
+                        feedback.style.display = 'none';
+                        feedback.textContent = '';
                     }
                 } else {
                     console.log(`No input found for field: ${key}`);
@@ -1804,6 +1839,12 @@ function editVehicle(id) {
                     }
                 });
                 updateHiddenFileInput(); // Update the hidden input
+            }
+
+            // Update modal title for edit mode
+            const modalTitle = document.getElementById('modalTitle');
+            if (modalTitle) {
+                modalTitle.innerHTML = '<i class="fas fa-edit me-2"></i>Edit Vehicle - Step by Step';
             }
 
             // Update current step to the first step for editing flow

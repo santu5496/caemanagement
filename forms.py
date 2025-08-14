@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
-from flask_wtf.file import FileField, FileAllowed, MultipleFileField
-from wtforms import StringField, TextAreaField, SelectField, IntegerField, FloatField, PasswordField, EmailField
+from flask_wtf.file import FileField, FileAllowed, FileRequired
+from wtforms import StringField, IntegerField, FloatField, TextAreaField, SelectField, MultipleFileField, PasswordField, EmailField
 from wtforms.validators import DataRequired, NumberRange, Length, Optional, Email, ValidationError
 
 def DataRequiredAllowZero(message=None):
@@ -16,8 +16,8 @@ class LoginForm(FlaskForm):
 
 class VehicleForm(FlaskForm):
     # Basic Information
-    title = StringField('Vehicle Title', validators=[DataRequired(), Length(min=5, max=100)])
-    category = SelectField('Category', 
+    title = StringField('Vehicle Title', validators=[DataRequired(), Length(min=3, max=200, message="Title must be between 3 and 200 characters long")])
+    category = SelectField('Category',
                           choices=[('Cars', 'Cars'), ('Trucks', 'Trucks'), ('Commercial Vehicles', 'Commercial Vehicles')],
                           validators=[DataRequired()])
     make = StringField('Make', validators=[DataRequired(), Length(max=50)])
@@ -26,27 +26,27 @@ class VehicleForm(FlaskForm):
     price = FloatField('Price ($)', validators=[DataRequired(), NumberRange(min=0)])
     mileage = IntegerField('Mileage (miles)', validators=[DataRequiredAllowZero(), NumberRange(min=0, max=999999)])
     description = TextAreaField('Description', validators=[Length(max=1000)])
-    status = SelectField('Status', 
+    status = SelectField('Status',
                         choices=[('available', 'Available'), ('sold', 'Sold')],
                         default='available',
                         validators=[Optional()])
-    
+
     # Engine & Performance
-    fuel_type = SelectField('Fuel Type', 
-                           choices=[('', 'Select Fuel Type'), ('Petrol', 'Petrol'), ('Gasoline', 'Gasoline'), ('Diesel', 'Diesel'), 
+    fuel_type = SelectField('Fuel Type',
+                           choices=[('', 'Select Fuel Type'), ('Petrol', 'Petrol'), ('Gasoline', 'Gasoline'), ('Diesel', 'Diesel'),
                                    ('Hybrid', 'Hybrid'), ('Electric', 'Electric'), ('CNG', 'CNG')],
                            validators=[Optional()])
-    transmission = SelectField('Transmission', 
+    transmission = SelectField('Transmission',
                               choices=[('', 'Select Transmission'), ('Manual', 'Manual'), ('Automatic', 'Automatic'), ('CVT', 'CVT')],
                               validators=[Optional()])
     engine_size = StringField('Engine Size (Optional - e.g., 2.0L, 3.5L V6)', validators=[Optional(), Length(max=20)])
     horsepower = IntegerField('Horsepower (Optional)', validators=[Optional(), NumberRange(min=0, max=2000)])
     fuel_economy = StringField('Fuel Economy (e.g., 25 city / 32 highway mpg)', validators=[Optional(), Length(max=30)])
-    drivetrain = SelectField('Drivetrain (Optional)', 
-                            choices=[('', 'Select Drivetrain'), ('FWD', 'Front-Wheel Drive'), ('RWD', 'Rear-Wheel Drive'), 
+    drivetrain = SelectField('Drivetrain (Optional)',
+                            choices=[('', 'Select Drivetrain'), ('FWD', 'Front-Wheel Drive'), ('RWD', 'Rear-Wheel Drive'),
                                     ('AWD', 'All-Wheel Drive'), ('4WD', '4-Wheel Drive')],
                             validators=[Optional()])
-    
+
     # Ownership & History
     number_of_owners = IntegerField('Number of Previous Owners', validators=[Optional(), NumberRange(min=0, max=20)])
     previous_owner_name = StringField('Previous Owner Name', validators=[Optional(), Length(max=100)])
@@ -55,27 +55,28 @@ class VehicleForm(FlaskForm):
     odometer_reading = IntegerField('Odometer Reading (miles)', validators=[Optional(), NumberRange(min=0)])
     accident_history = TextAreaField('Accident History', validators=[Optional(), Length(max=1000)])
     service_records = TextAreaField('Service Records', validators=[Optional(), Length(max=1000)])
-    
+
     # Insurance & Documentation
     insurance_company = StringField('Insurance Company', validators=[Optional(), Length(max=100)])
-    insurance_policy_number = StringField('Insurance Policy Number', validators=[Optional(), Length(max=50)])
-    insurance_expiry = StringField('Insurance Expiry (MM/DD/YYYY)', validators=[Optional(), Length(max=10)])
+    insurance_policy_number = StringField('Policy Number', validators=[Optional(), Length(max=50)])
+    insurance_expiry = StringField('Insurance Expiry', validators=[Optional(), Length(max=20)])
     registration_number = StringField('Registration Number', validators=[Optional(), Length(max=50)])
-    vin_number = StringField('VIN Number (17 characters)', validators=[Optional(), Length(min=17, max=17)])
-    
+    vin_number = StringField('VIN Number', validators=[Optional(), Length(max=17)])
+
+
     # Additional Features & Condition (Optional)
     exterior_color = StringField('Exterior Color (Optional)', validators=[Optional(), Length(max=30)])
     interior_color = StringField('Interior Color (Optional)', validators=[Optional(), Length(max=30)])
     features = TextAreaField('Features (Optional - comma-separated)', validators=[Optional(), Length(max=1000)])
-    condition_rating = SelectField('Condition Rating (Optional)', 
-                                  choices=[('', 'Select Condition'), ('Excellent', 'Excellent'), ('Good', 'Good'), 
+    condition_rating = SelectField('Condition Rating (Optional)',
+                                  choices=[('', 'Select Condition'), ('Excellent', 'Excellent'), ('Good', 'Good'),
                                           ('Fair', 'Fair'), ('Poor', 'Poor')],
                                   validators=[Optional()])
     warranty_info = TextAreaField('Warranty Information (Optional)', validators=[Optional(), Length(max=500)])
-    
+
     # Contact & Images
     contact_name = StringField('Contact Name', validators=[DataRequired(), Length(max=100)])
     contact_phone = StringField('Contact Phone', validators=[DataRequired(), Length(max=50)])
     contact_email = EmailField('Contact Email (Optional)', validators=[Optional(), Email(), Length(max=100)])
-    images = MultipleFileField('Vehicle Images (Max 6)', 
+    images = MultipleFileField('Vehicle Images (Max 6)',
                               validators=[FileAllowed(['jpg', 'jpeg', 'png', 'gif'], 'Images only!')])
