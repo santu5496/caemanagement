@@ -260,8 +260,52 @@ def get_vehicle_for_edit(vehicle_id):
         app.logger.warning(f"Vehicle not found: {vehicle_id}")
         return jsonify({'success': False, 'message': 'Vehicle not found'}), 404
 
-    app.logger.debug(f"Returning vehicle data for {vehicle_id}")
-    return jsonify(vehicle.to_dict())
+    # Convert vehicle data to format expected by form
+    vehicle_data = vehicle.to_dict()
+    
+    # Ensure all fields have proper values for form binding
+    form_data = {
+        'id': vehicle_data.get('id', ''),
+        'title': vehicle_data.get('title', ''),
+        'category': vehicle_data.get('category', ''),
+        'make': vehicle_data.get('make', ''),
+        'model': vehicle_data.get('model', ''),
+        'year': vehicle_data.get('year', ''),
+        'price': vehicle_data.get('price', ''),
+        'mileage': vehicle_data.get('mileage', ''),
+        'description': vehicle_data.get('description', ''),
+        'contact_name': vehicle_data.get('contact_name', ''),
+        'contact_phone': vehicle_data.get('contact_phone', ''),
+        'contact_email': vehicle_data.get('contact_email', ''),
+        'status': vehicle_data.get('status', 'available'),
+        'fuel_type': vehicle_data.get('fuel_type', ''),
+        'transmission': vehicle_data.get('transmission', ''),
+        'engine_size': vehicle_data.get('engine_size', ''),
+        'horsepower': vehicle_data.get('horsepower', ''),
+        'fuel_economy': vehicle_data.get('fuel_economy', ''),
+        'drivetrain': vehicle_data.get('drivetrain', ''),
+        'number_of_owners': vehicle_data.get('number_of_owners', ''),
+        'previous_owner_name': vehicle_data.get('previous_owner_name', ''),
+        'previous_owner_phone': vehicle_data.get('previous_owner_phone', ''),
+        'previous_owner_email': vehicle_data.get('previous_owner_email', ''),
+        'odometer_reading': vehicle_data.get('odometer_reading', ''),
+        'accident_history': vehicle_data.get('accident_history', ''),
+        'service_records': vehicle_data.get('service_records', ''),
+        'insurance_company': vehicle_data.get('insurance_company', ''),
+        'insurance_policy_number': vehicle_data.get('insurance_policy_number', ''),
+        'insurance_expiry': vehicle_data.get('insurance_expiry', ''),
+        'registration_number': vehicle_data.get('registration_number', ''),
+        'vin_number': vehicle_data.get('vin_number', ''),
+        'exterior_color': vehicle_data.get('exterior_color', ''),
+        'interior_color': vehicle_data.get('interior_color', ''),
+        'features': vehicle_data.get('features', ''),
+        'condition_rating': vehicle_data.get('condition_rating', ''),
+        'warranty_info': vehicle_data.get('warranty_info', ''),
+        'images': vehicle_data.get('images', [])
+    }
+
+    app.logger.debug(f"Returning vehicle data for {vehicle_id}: {form_data}")
+    return jsonify({'success': True, 'vehicle': form_data})
 
 @app.route('/admin/edit_vehicle/<vehicle_id>', methods=['GET', 'POST'])
 def edit_vehicle(vehicle_id):
