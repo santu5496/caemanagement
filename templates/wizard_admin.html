@@ -519,8 +519,18 @@
                         <div class="step-content">
                             <div class="step-pane active" id="step1">
                                 <div class="step-header">
-                                    <h3 class="step-title">Basic Vehicle Information</h3>
-                                    <p class="step-description">Let's start with the essential details about your vehicle</p>
+                                    <h3 class="step-title">
+                                        <i class="fas fa-info-circle me-2 text-primary"></i>
+                                        Step 1: Basic Vehicle Information
+                                    </h3>
+                                    <p class="step-description">
+                                        Start by entering the essential details about your vehicle. 
+                                        <strong>Required fields are marked with a red asterisk (*)</strong>
+                                    </p>
+                                    <div class="alert alert-info">
+                                        <i class="fas fa-lightbulb me-2"></i>
+                                        <strong>Tip:</strong> Make sure your vehicle title is descriptive and includes key features to attract buyers.
+                                    </div>
                                 </div>
                                 
                                 <div class="row g-4">
@@ -576,8 +586,18 @@
                             <!-- Step 2: Engine & Performance -->
                             <div class="step-pane" id="step2">
                                 <div class="step-header">
-                                    <h3 class="step-title">Engine & Performance</h3>
-                                    <p class="step-description">Technical specifications and performance details</p>
+                                    <h3 class="step-title">
+                                        <i class="fas fa-cogs me-2 text-primary"></i>
+                                        Step 2: Engine & Performance
+                                    </h3>
+                                    <p class="step-description">
+                                        Add technical specifications that help buyers understand your vehicle's performance.
+                                        <em>All fields in this step are optional.</em>
+                                    </p>
+                                    <div class="alert alert-success">
+                                        <i class="fas fa-check-circle me-2"></i>
+                                        <strong>Great!</strong> You've completed the basic information. Now let's add technical details.
+                                    </div>
                                 </div>
                                 
                                 <div class="row g-4">
@@ -832,27 +852,58 @@ function changeStep(direction) {
 }
 
 function updateWizardDisplay() {
-    // Update progress bar
+    // Update progress bar with smooth animation
     const progress = (currentStep / totalSteps) * 100;
     document.getElementById('progressFill').style.width = progress + '%';
     
-    // Update step indicators
+    // Update step indicators with icons
     document.querySelectorAll('.step-item').forEach((item, index) => {
         const stepNum = index + 1;
+        const circle = item.querySelector('.step-circle');
+        
         item.classList.toggle('active', stepNum === currentStep);
         item.classList.toggle('completed', stepNum < currentStep);
+        
+        // Update circle content
+        if (stepNum < currentStep) {
+            circle.innerHTML = '<i class="fas fa-check"></i>';
+        } else if (stepNum === currentStep) {
+            circle.innerHTML = `<i class="fas fa-${getStepIcon(stepNum)}"></i>`;
+        } else {
+            circle.innerHTML = stepNum;
+        }
     });
     
-    // Update step panes
+    // Update step panes with smooth transition
     document.querySelectorAll('.step-pane').forEach((pane, index) => {
-        pane.classList.toggle('active', index + 1 === currentStep);
+        if (index + 1 === currentStep) {
+            pane.classList.add('active');
+            // Focus on first input field
+            setTimeout(() => {
+                const firstInput = pane.querySelector('input, select, textarea');
+                if (firstInput) firstInput.focus();
+            }, 300);
+        } else {
+            pane.classList.remove('active');
+        }
     });
     
     // Update navigation buttons
-    document.getElementById('prevBtn').style.display = currentStep === 1 ? 'none' : 'block';
-    document.getElementById('nextBtn').style.display = currentStep === totalSteps ? 'none' : 'block';
-    document.getElementById('submitBtn').style.display = currentStep === totalSteps ? 'block' : 'none';
-    document.getElementById('testBtn').style.display = currentStep === totalSteps ? 'block' : 'none';
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const submitBtn = document.getElementById('submitBtn');
+    const testBtn = document.getElementById('testBtn');
+    
+    prevBtn.style.display = currentStep === 1 ? 'none' : 'block';
+    nextBtn.style.display = currentStep === totalSteps ? 'none' : 'block';
+    submitBtn.style.display = currentStep === totalSteps ? 'block' : 'none';
+    testBtn.style.display = currentStep === totalSteps ? 'block' : 'none';
+    
+    // Update button text based on next step
+    if (currentStep < totalSteps) {
+        const nextStepName = getStepName(currentStep + 1);
+        nextBtn.innerHTML = `Next: ${nextStepName} <i class="fas fa-arrow-right ms-2"></i>`;
+    }
     
     // Update step counter
     document.getElementById('currentStepNum').textContent = currentStep;
@@ -860,43 +911,150 @@ function updateWizardDisplay() {
     // Update summary on last step
     if (currentStep === totalSteps) {
         updateVehicleSummary();
+        showAlert('🎉 Almost done! Please review your vehicle information and save.', 'info');
     }
+    
+    // Scroll to top of modal
+    document.querySelector('.wizard-container').scrollTop = 0;
+}
+
+function getStepIcon(stepNum) {
+    const icons = {
+        1: 'info-circle',
+        2: 'cogs', 
+        3: 'history',
+        4: 'shield-alt',
+        5: 'star',
+        6: 'camera'
+    };
+    return icons[stepNum] || 'circle';
+}
+
+function getStepName(stepNum) {
+    const names = {
+        1: 'Basic Info',
+        2: 'Engine Details',
+        3: 'History',
+        4: 'Documents', 
+        5: 'Features',
+        6: 'Photos & Review'
+    };
+    return names[stepNum] || 'Next Step';
 }
 
 function validateCurrentStep() {
     const currentPane = document.getElementById(`step${currentStep}`);
     let isValid = true;
+    let errorMessages = [];
+    
+    // Remove existing validation styles
+    currentPane.querySelectorAll('.is-invalid').forEach(field => {
+        field.classList.remove('is-invalid');
+    });
     
     // Check required fields based on current step
     if (currentStep === 1) {
-        const requiredFields = ['title', 'category', 'year', 'make', 'model', 'price', 'mileage'];
-        requiredFields.forEach(fieldName => {
-            const field = document.querySelector(`[name="${fieldName}"]`);
+        const requiredFields = [
+            { name: 'title', label: 'Vehicle Title' },
+            { name: 'category', label: 'Category' },
+            { name: 'year', label: 'Year' },
+            { name: 'make', label: 'Make' },
+            { name: 'model', label: 'Model' },
+            { name: 'price', label: 'Price' },
+            { name: 'mileage', label: 'Mileage' }
+        ];
+        
+        requiredFields.forEach(fieldInfo => {
+            const field = document.querySelector(`[name="${fieldInfo.name}"]`);
             if (field && !field.value.trim()) {
                 field.classList.add('is-invalid');
+                errorMessages.push(`${fieldInfo.label} is required`);
                 isValid = false;
             } else if (field) {
                 field.classList.remove('is-invalid');
+                
+                // Additional validation
+                if (fieldInfo.name === 'year') {
+                    const year = parseInt(field.value);
+                    if (year < 1990 || year > 2025) {
+                        field.classList.add('is-invalid');
+                        errorMessages.push('Year must be between 1990 and 2025');
+                        isValid = false;
+                    }
+                }
+                
+                if (fieldInfo.name === 'price') {
+                    const price = parseFloat(field.value);
+                    if (price <= 0) {
+                        field.classList.add('is-invalid');
+                        errorMessages.push('Price must be greater than 0');
+                        isValid = false;
+                    }
+                }
+                
+                if (fieldInfo.name === 'mileage') {
+                    const mileage = parseInt(field.value);
+                    if (mileage < 0) {
+                        field.classList.add('is-invalid');
+                        errorMessages.push('Mileage cannot be negative');
+                        isValid = false;
+                    }
+                }
             }
         });
     } else if (currentStep === 5) {
-        const requiredFields = ['contact_name', 'contact_phone'];
-        requiredFields.forEach(fieldName => {
-            const field = document.querySelector(`[name="${fieldName}"]`);
+        const requiredFields = [
+            { name: 'contact_name', label: 'Contact Name' },
+            { name: 'contact_phone', label: 'Contact Phone' }
+        ];
+        
+        requiredFields.forEach(fieldInfo => {
+            const field = document.querySelector(`[name="${fieldInfo.name}"]`);
             if (field && !field.value.trim()) {
                 field.classList.add('is-invalid');
+                errorMessages.push(`${fieldInfo.label} is required`);
                 isValid = false;
             } else if (field) {
                 field.classList.remove('is-invalid');
+                
+                // Phone validation
+                if (fieldInfo.name === 'contact_phone') {
+                    const phoneRegex = /^[\d\s\-\(\)\+\.]{10,}$/;
+                    if (!phoneRegex.test(field.value)) {
+                        field.classList.add('is-invalid');
+                        errorMessages.push('Please enter a valid phone number');
+                        isValid = false;
+                    }
+                }
             }
         });
     }
     
     if (!isValid) {
-        showAlert('Please fill in all required fields before proceeding to the next step.', 'warning');
+        const message = errorMessages.length > 0 ? 
+            `Please fix the following issues:\n• ${errorMessages.join('\n• ')}` :
+            'Please fill in all required fields before proceeding to the next step.';
+        showAlert(message, 'warning');
+    } else {
+        // Show success message for completed step
+        showStepSuccess();
     }
     
     return isValid;
+}
+
+function showStepSuccess() {
+    const stepTitles = {
+        1: 'Basic Information',
+        2: 'Engine & Performance',
+        3: 'Ownership & History', 
+        4: 'Insurance & Documentation',
+        5: 'Features & Condition'
+    };
+    
+    if (currentStep < 6) {
+        showAlert(`✅ ${stepTitles[currentStep]} completed successfully!`, 'success');
+    }
 }
 
 function showAlert(message, type = 'info') {
@@ -1012,13 +1170,19 @@ function removeImage(index) {
 // Submit vehicle form function
 function submitVehicleForm() {
     console.log('Save Vehicle button clicked!');
-    showAlert('Processing your request...', 'info');
     
-    // Validate all required fields
-    if (!validateCurrentStep()) {
-        showAlert('Please fill in all required fields before saving.', 'warning');
+    // Final validation
+    if (!validateAllSteps()) {
+        showAlert('Please complete all required fields before saving.', 'warning');
         return;
     }
+    
+    // Show confirmation dialog
+    if (!confirm('Are you sure you want to save this vehicle? All information will be published to the marketplace.')) {
+        return;
+    }
+    
+    showAlert('🔄 Processing your vehicle listing...', 'info');
     
     const submitBtn = document.getElementById('submitBtn');
     submitBtn.disabled = true;
@@ -1060,29 +1224,82 @@ function submitVehicleForm() {
         console.log('Response data:', data);
         
         if (status === 200 && data.success) {
-            showAlert('Vehicle saved successfully! Page will refresh in 2 seconds.', 'success');
+            showAlert('🎉 Vehicle saved successfully! Your listing is now live on the marketplace.', 'success');
+            clearSavedFormData(); // Clear auto-saved draft
             setTimeout(() => {
                 window.location.reload();
-            }, 2000);
+            }, 3000);
         } else if (status === 400 && data.errors) {
-            // Show specific validation errors
+            // Show specific validation errors and go to relevant step
             let errorMessages = [];
+            let firstErrorStep = null;
+            
             for (const [field, error] of Object.entries(data.errors)) {
                 errorMessages.push(`${field}: ${error}`);
+                
+                // Determine which step has the error
+                if (!firstErrorStep) {
+                    firstErrorStep = getStepForField(field);
+                }
             }
+            
             showAlert('Please fix these errors: ' + errorMessages.join(', '), 'warning');
+            
+            // Go to the step with the first error
+            if (firstErrorStep && firstErrorStep !== currentStep) {
+                currentStep = firstErrorStep;
+                updateWizardDisplay();
+            }
         } else {
             throw new Error(data.message || 'Failed to save vehicle');
         }
     })
     .catch(error => {
         console.error('Save error:', error);
-        showAlert('Error saving vehicle: ' + error.message, 'danger');
+        showAlert('❌ Error saving vehicle: ' + error.message, 'danger');
     })
     .finally(() => {
         submitBtn.disabled = false;
         submitBtn.innerHTML = '<i class="fas fa-save me-2"></i>Save Vehicle';
     });
+}
+
+function validateAllSteps() {
+    let allValid = true;
+    
+    // Validate step 1 (required fields)
+    const step1Fields = ['title', 'category', 'year', 'make', 'model', 'price', 'mileage'];
+    step1Fields.forEach(fieldName => {
+        const field = document.querySelector(`[name="${fieldName}"]`);
+        if (!field || !field.value.trim()) {
+            allValid = false;
+        }
+    });
+    
+    // Validate step 5 (contact fields)
+    const step5Fields = ['contact_name', 'contact_phone'];
+    step5Fields.forEach(fieldName => {
+        const field = document.querySelector(`[name="${fieldName}"]`);
+        if (!field || !field.value.trim()) {
+            allValid = false;
+        }
+    });
+    
+    return allValid;
+}
+
+function getStepForField(fieldName) {
+    const stepMap = {
+        'title': 1, 'category': 1, 'year': 1, 'make': 1, 'model': 1, 'price': 1, 'mileage': 1, 'description': 1,
+        'fuel_type': 2, 'transmission': 2, 'engine_size': 2, 'horsepower': 2, 'fuel_economy': 2, 'drivetrain': 2,
+        'number_of_owners': 3, 'previous_owner_name': 3, 'previous_owner_phone': 3, 'previous_owner_email': 3,
+        'odometer_reading': 3, 'accident_history': 3, 'service_records': 3,
+        'insurance_company': 4, 'insurance_policy_number': 4, 'insurance_expiry': 4, 'registration_number': 4, 'vin_number': 4,
+        'exterior_color': 5, 'interior_color': 5, 'features': 5, 'condition_rating': 5, 'warranty_info': 5,
+        'contact_name': 5, 'contact_phone': 5, 'contact_email': 5,
+        'images': 6
+    };
+    return stepMap[fieldName] || 1;
 }
 
 // Auto-populate title
@@ -1152,6 +1369,75 @@ document.addEventListener('DOMContentLoaded', function() {
     } else {
         console.log('Submit button not found');
     }
+    
+    // Add keyboard shortcuts
+    document.addEventListener('keydown', function(e) {
+        // Ctrl/Cmd + Right Arrow = Next step
+        if ((e.ctrlKey || e.metaKey) && e.key === 'ArrowRight' && currentStep < totalSteps) {
+            e.preventDefault();
+            changeStep(1);
+        }
+        // Ctrl/Cmd + Left Arrow = Previous step  
+        if ((e.ctrlKey || e.metaKey) && e.key === 'ArrowLeft' && currentStep > 1) {
+            e.preventDefault();
+            changeStep(-1);
+        }
+        // Ctrl/Cmd + S = Save (on last step)
+        if ((e.ctrlKey || e.metaKey) && e.key === 's' && currentStep === totalSteps) {
+            e.preventDefault();
+            submitVehicleForm();
+        }
+    });
+    
+    // Auto-save form data to localStorage
+    setInterval(autoSaveFormData, 30000); // Save every 30 seconds
+    
+    // Load saved form data
+    loadSavedFormData();
 });
+
+// Auto-save functionality
+function autoSaveFormData() {
+    if (currentStep > 1) { // Only save if user has started filling the form
+        const form = document.getElementById('vehicleWizardForm');
+        const formData = new FormData(form);
+        const savedData = {};
+        
+        for (let [key, value] of formData.entries()) {
+            if (value && key !== 'csrf_token' && key !== 'images') {
+                savedData[key] = value;
+            }
+        }
+        
+        localStorage.setItem('automarket_vehicle_draft', JSON.stringify(savedData));
+        showAlert('📝 Draft saved automatically', 'info');
+    }
+}
+
+function loadSavedFormData() {
+    const savedData = localStorage.getItem('automarket_vehicle_draft');
+    if (savedData) {
+        try {
+            const data = JSON.parse(savedData);
+            
+            // Ask user if they want to restore
+            if (confirm('Found a previously saved draft. Would you like to restore it?')) {
+                Object.keys(data).forEach(key => {
+                    const field = document.querySelector(`[name="${key}"]`);
+                    if (field) {
+                        field.value = data[key];
+                    }
+                });
+                showAlert('✅ Draft restored successfully!', 'success');
+            }
+        } catch (e) {
+            console.error('Error loading saved data:', e);
+        }
+    }
+}
+
+function clearSavedFormData() {
+    localStorage.removeItem('automarket_vehicle_draft');
+}
 </script>
 {% endblock %}
