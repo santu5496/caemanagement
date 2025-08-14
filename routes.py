@@ -2,6 +2,7 @@ import os
 import uuid
 from flask import render_template, request, redirect, url_for, flash, session, jsonify
 from werkzeug.utils import secure_filename
+
 from app import app, db
 from models import Vehicle, AdminUser, add_vehicle, get_all_vehicles, get_vehicle, delete_vehicle, verify_admin, get_available_vehicles, get_vehicles_by_category, initialize_sample_data
 from forms import VehicleForm, LoginForm
