@@ -1728,6 +1728,11 @@ document.getElementById('searchInput').addEventListener('input', function(e) {
     });
 });
 
+// Make editVehicle function globally accessible
+window.editVehicle = editVehicle;
+window.viewVehicle = viewVehicle;
+window.deleteVehicle = deleteVehicle;
+
 // Initialize edit button handlers after page load
 document.addEventListener('DOMContentLoaded', function() {
     console.log('Page loaded, setting up button handlers...');
@@ -1750,12 +1755,13 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-// Vehicle actions
-function viewVehicle(id) {
+// Vehicle actions - make globally accessible
+window.viewVehicle = function(id) {
     window.open(`/vehicle/${id}`, '_blank');
-}
+};
 
-async function editVehicle(id) {
+// Define editVehicle function globally
+window.editVehicle = async function(id) {
     console.log(`Editing vehicle with ID: ${id}`);
     
     // Set edit mode
@@ -2042,7 +2048,7 @@ async function editVehicle(id) {
 }
 
 
-function deleteVehicle(id) {
+window.deleteVehicle = function(id) {
     if (confirm('Are you sure you want to delete this vehicle? This action cannot be undone.')) {
         // Handle deletion
         fetch(`/admin/delete_vehicle/${id}`, { 
