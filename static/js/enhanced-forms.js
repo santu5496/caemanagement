@@ -437,14 +437,18 @@ function debounce(func, wait) {
 }
 
 // Enhanced Forms JavaScript
-let uploadedImages = [];
+// Remove duplicate declaration - uploadedImages is already declared globally in wizard_admin.html
 
 document.addEventListener('DOMContentLoaded', function() {
     console.log('Enhanced forms loaded');
 
     // Initialize any enhanced form features here
-    initializeWizardSteps();
-    initializeImageSlots();
+    if (typeof initializeWizardSteps === 'function') {
+        initializeWizardSteps();
+    }
+    if (typeof initializeImageSlots === 'function') {
+        initializeImageSlots();
+    }
 });
 
 function initializeWizardSteps() {

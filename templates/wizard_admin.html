@@ -607,11 +607,12 @@
                                     </div>
 
                                     <div class="col-md-6">
-                                        <label class="form-label">Price<span class="required-indicator">*</span></label>
-                                        <div class="input-group input-group-lg">
-                                            <span class="input-group-text">$</span>
-                                            {{ form.price(class="form-control", placeholder="25000", required=true) }}
+                                        <label for="price" class="form-label">Price (₹) *</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text">₹</span>
+                                            {{ form.price(class="form-control", id="price", placeholder="e.g., 1500000", min="1", step="1000", required=true, oninput="this.setCustomValidity(this.value <= 0 ? 'Price must be greater than 0' : '')") }}
                                         </div>
+                                        <div class="invalid-feedback">Please enter a valid price greater than 0</div>
                                     </div>
 
                                     <div class="col-md-6">
@@ -836,6 +837,7 @@
                                             </div>
                                             <input type="file" id="image-input-{{ i }}" accept="image/*" style="display: none;" onchange="handleImageUpload({{ i }}, this)">
                                             <img id="image-preview-{{ i }}" class="img-fluid rounded-3 w-100 h-100" style="display: none; object-fit: cover; position: absolute; top: 0; left: 0;">
+                                            <button type="button" class="image-remove-btn" onclick="event.stopPropagation(); removeImage({{ i }});" style="display: none;">X</button>
                                         </div>
                                     </div>
                                     {% endfor %}
@@ -869,7 +871,7 @@
                                 Next<i class="fas fa-arrow-right ms-2"></i>
                             </button>
 
-                            <button type="button" class="btn btn-success btn-wizard btn-lg" id="submitBtn" style="display: none;" onclick="console.log('Button clicked!'); submitVehicleForm();">
+                            <button type="button" class="btn btn-success btn-wizard btn-lg" id="submitBtn" style="display: none;" onclick="saveVehicle()">
                                 <i class="fas fa-save me-2"></i>Save Vehicle
                             </button>
 
@@ -961,6 +963,8 @@ function updateWizardDisplay() {
     if (currentStep < totalSteps) {
         const nextStepName = getStepName(currentStep + 1);
         nextBtn.innerHTML = `Next: ${nextStepName} <i class="fas fa-arrow-right ms-2"></i>`;
+    } else {
+        nextBtn.innerHTML = 'Next <i class="fas fa-arrow-right ms-2"></i>'; // Reset text for final step
     }
 
     // Update step counter
@@ -1009,6 +1013,9 @@ function validateCurrentStep() {
     currentPane.querySelectorAll('.is-invalid').forEach(field => {
         field.classList.remove('is-invalid');
     });
+    currentPane.querySelectorAll('.invalid-feedback').forEach(feedback => {
+        feedback.style.display = 'none';
+    });
 
     // Check required fields based on current step
     if (currentStep === 1) {
@@ -1026,16 +1033,29 @@ function validateCurrentStep() {
             const field = document.querySelector(`[name="${fieldInfo.name}"]`);
             if (field && !field.value.trim()) {
                 field.classList.add('is-invalid');
+                const feedback = field.nextElementSibling;
+                if(feedback && feedback.classList.contains('invalid-feedback')) {
+                    feedback.textContent = `${fieldInfo.label} is required`;
+                    feedback.style.display = 'block';
+                }
                 errorMessages.push(`${fieldInfo.label} is required`);
                 isValid = false;
             } else if (field) {
                 field.classList.remove('is-invalid');
+                const feedback = field.nextElementSibling;
+                if(feedback && feedback.classList.contains('invalid-feedback')) {
+                    feedback.style.display = 'none';
+                }
 
                 // Additional validation
                 if (fieldInfo.name === 'year') {
                     const year = parseInt(field.value);
                     if (year < 1990 || year > 2025) {
                         field.classList.add('is-invalid');
+                        if(feedback && feedback.classList.contains('invalid-feedback')) {
+                            feedback.textContent = 'Year must be between 1990 and 2025';
+                            feedback.style.display = 'block';
+                        }
                         errorMessages.push('Year must be between 1990 and 2025');
                         isValid = false;
                     }
@@ -1045,6 +1065,10 @@ function validateCurrentStep() {
                     const price = parseFloat(field.value);
                     if (price <= 0) {
                         field.classList.add('is-invalid');
+                        if(feedback && feedback.classList.contains('invalid-feedback')) {
+                            feedback.textContent = 'Price must be greater than 0';
+                            feedback.style.display = 'block';
+                        }
                         errorMessages.push('Price must be greater than 0');
                         isValid = false;
                     }
@@ -1054,6 +1078,10 @@ function validateCurrentStep() {
                     const mileage = parseInt(field.value);
                     if (mileage < 0) {
                         field.classList.add('is-invalid');
+                        if(feedback && feedback.classList.contains('invalid-feedback')) {
+                            feedback.textContent = 'Mileage cannot be negative';
+                            feedback.style.display = 'block';
+                        }
                         errorMessages.push('Mileage cannot be negative');
                         isValid = false;
                     }
@@ -1070,16 +1098,29 @@ function validateCurrentStep() {
             const field = document.querySelector(`[name="${fieldInfo.name}"]`);
             if (field && !field.value.trim()) {
                 field.classList.add('is-invalid');
+                 const feedback = field.nextElementSibling;
+                if(feedback && feedback.classList.contains('invalid-feedback')) {
+                    feedback.textContent = `${fieldInfo.label} is required`;
+                    feedback.style.display = 'block';
+                }
                 errorMessages.push(`${fieldInfo.label} is required`);
                 isValid = false;
             } else if (field) {
                 field.classList.remove('is-invalid');
+                const feedback = field.nextElementSibling;
+                if(feedback && feedback.classList.contains('invalid-feedback')) {
+                    feedback.style.display = 'none';
+                }
 
                 // Phone validation
                 if (fieldInfo.name === 'contact_phone') {
                     const phoneRegex = /^[\d\s\-\(\)\+\.]{10,}$/;
                     if (!phoneRegex.test(field.value)) {
                         field.classList.add('is-invalid');
+                        if(feedback && feedback.classList.contains('invalid-feedback')) {
+                            feedback.textContent = 'Please enter a valid phone number';
+                            feedback.style.display = 'block';
+                        }
                         errorMessages.push('Please enter a valid phone number');
                         isValid = false;
                     }
@@ -1213,8 +1254,10 @@ function handleImageUpload(slotIndex, input) {
     const reader = new FileReader();
     reader.onload = function(e) {
         const previewImage = document.getElementById(`image-preview-${slotIndex}`);
+        const removeBtn = document.querySelector(`#image-slot-${slotIndex} .image-remove-btn`);
         previewImage.src = e.target.result;
         previewImage.style.display = 'block';
+        if(removeBtn) removeBtn.style.display = 'flex';
 
         // Hide slot content
         const slotContent = document.querySelector(`#image-slot-${slotIndex} .slot-content`);
@@ -1230,8 +1273,12 @@ function removeImage(slotIndex) {
     uploadedImages[slotIndex - 1] = null; // Clear the image from array
 
     const previewImage = document.getElementById(`image-preview-${slotIndex}`);
+    const removeBtn = document.querySelector(`#image-slot-${slotIndex} .image-remove-btn`);
+
     previewImage.src = '';
     previewImage.style.display = 'none';
+    if(removeBtn) removeBtn.style.display = 'none';
+
 
     // Show slot content again
     const slotContent = document.querySelector(`#image-slot-${slotIndex} .slot-content`);
@@ -1251,44 +1298,56 @@ function updateHiddenFileInput() {
         }
     });
     actualInput.files = dataTransfer.files;
-
-    // Update image count display
-    const imageCount = uploadedImages.filter(img => img !== null).length;
-    document.getElementById('imageCount').textContent = `${imageCount} / 6 images selected`;
 }
 
 // Submit vehicle form function
 function submitVehicleForm() {
     console.log('Save Vehicle button clicked!');
 
-    // Final validation
-    if (!validateAllSteps()) {
-        showAlert('Please complete all required fields and upload at least one image before saving.', 'warning');
-        return;
-    }
-
-    // Show confirmation dialog
-    if (!confirm('Are you sure you want to save this vehicle? All information will be published to the marketplace.')) {
-        return;
-    }
-
-    showAlert('🔄 Processing your vehicle listing...', 'info');
-
     const submitBtn = document.getElementById('submitBtn');
+    if (!submitBtn) {
+        console.error('Submit button not found');
+        return;
+    }
+
     submitBtn.disabled = true;
     submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Saving Vehicle...';
 
+    // Validate all required fields first
+    if (!validateAllSteps()) {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i class="fas fa-save me-2"></i>Save Vehicle';
+        //showAlert('Please fill in all required fields before saving.', 'warning'); // Already handled by validateCurrentStep
+        return;
+    }
+
     // Get form data
     const form = document.getElementById('vehicleWizardForm');
+    if (!form) {
+        console.error('Form not found');
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i class="fas fa-save me-2"></i>Save Vehicle';
+        return;
+    }
+
     const formData = new FormData(form);
 
-    // Add selected images (already handled by updateHiddenFileInput which populates form.images)
+    // Ensure we have uploaded images in the form data
+    updateHiddenFileInput();
+
     console.log('Form data prepared, submitting...');
     console.log('Number of images attached:', formData.getAll('images').length);
 
     // Get CSRF token
-    const csrfToken = document.querySelector('input[name="csrf_token"]').value;
-    formData.append('csrf_token', csrfToken);
+    const csrfTokenElement = document.querySelector('input[name="csrf_token"]');
+    if (csrfTokenElement) {
+        formData.set('csrf_token', csrfTokenElement.value);
+    } else {
+        console.error('CSRF token not found.');
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i class="fas fa-save me-2"></i>Save Vehicle';
+        return;
+    }
 
     // Submit via fetch
     fetch('/admin/add_vehicle', {
@@ -1326,8 +1385,19 @@ function submitVehicleForm() {
                 errorMessages.push(`${field}: ${error}`);
 
                 // Determine which step has the error
-                if (!firstErrorStep) {
-                    firstErrorStep = getStepForField(field);
+                const fieldElement = document.querySelector(`[name="${field}"]`);
+                if (fieldElement) {
+                    fieldElement.classList.add('is-invalid');
+                    const feedback = fieldElement.nextElementSibling;
+                    if(feedback && feedback.classList.contains('invalid-feedback')) {
+                        feedback.textContent = error;
+                        feedback.style.display = 'block';
+                    }
+                    if (!firstErrorStep) {
+                        firstErrorStep = getStepForField(field);
+                    }
+                } else {
+                    console.warn(`Element for field "${field}" not found.`);
                 }
             }
 
@@ -1358,30 +1428,20 @@ function submitVehicleForm() {
 function validateAllSteps() {
     let allValid = true;
 
-    // Validate step 1 (required fields)
-    const step1Fields = ['title', 'category', 'year', 'make', 'model', 'price', 'mileage'];
-    step1Fields.forEach(fieldName => {
-        const field = document.querySelector(`[name="${fieldName}"]`);
-        if (!field || !field.value.trim()) {
-            field.classList.add('is-invalid'); // Mark invalid
+    // Re-validate all steps to ensure all required fields are marked
+    for (let step = 1; step <= totalSteps; step++) {
+        currentStep = step; // Temporarily set currentStep for validation logic
+        if (!validateCurrentStep()) {
             allValid = false;
+            // Do not break here, let all steps be validated to show all errors
         }
-    });
+    }
+    currentStep = 1; // Reset currentStep to the initial step after validation
 
-    // Validate step 5 (contact fields)
-    const step5Fields = ['contact_name', 'contact_phone'];
-    step5Fields.forEach(fieldName => {
-        const field = document.querySelector(`[name="${fieldName}"]`);
-        if (!field || !field.value.trim()) {
-            field.classList.add('is-invalid'); // Mark invalid
-            allValid = false;
-        }
-    });
-    
-    // Validate step 6 (at least one image)
+    // Ensure at least one image is uploaded
     if (uploadedImages.filter(img => img !== null).length === 0) {
+        showAlert('Please upload at least one image for your vehicle.', 'warning');
         allValid = false;
-        // Optionally, highlight the image area or show a specific message
     }
 
     return allValid;
@@ -1403,13 +1463,13 @@ function getStepForField(fieldName) {
 
 // Auto-populate title
 function autoPopulateTitle() {
-    const year = document.querySelector('[name=year]').value;
-    const make = document.querySelector('[name=make]').value;
-    const model = document.querySelector('[name=model]').value;
+    const year = document.querySelector('[name=year]');
+    const make = document.querySelector('[name=make]');
+    const model = document.querySelector('[name=model]');
     const title = document.querySelector('[name=title]');
 
-    if (year && make && model && !title.value.trim()) {
-        title.value = `${year} ${make} ${model}`;
+    if (year && make && model && title && !title.value.trim()) {
+        title.value = `${year.value} ${make.value} ${model.value}`;
     }
 }
 
@@ -1519,23 +1579,28 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Auto-save functionality
 function autoSaveFormData() {
-    if (currentStep > 1 || Object.values(uploadedImages).some(img => img !== null)) { // Only save if user has started filling the form or uploaded images
+    // Only save if the wizard is open and the user has started filling the form
+    const modalElement = document.getElementById('vehicleWizard');
+    const isModalOpen = modalElement && modalElement.classList.contains('show');
+
+    if (isModalOpen && (currentStep > 1 || Object.values(uploadedImages).some(img => img !== null))) { 
         const form = document.getElementById('vehicleWizardForm');
-        const formData = new FormData(form);
-        const savedData = {};
+        if (form) {
+            const formData = new FormData(form);
+            const savedData = {};
 
-        for (let [key, value] of formData.entries()) {
-            if (value && key !== 'csrf_token' && key !== 'images') { // Exclude CSRF and images for simple save
-                savedData[key] = value;
+            for (let [key, value] of formData.entries()) {
+                if (value && key !== 'csrf_token' && key !== 'images') { // Exclude CSRF and images for simple save
+                    savedData[key] = value;
+                }
             }
+            
+            // Save the count of uploaded images, not the files themselves
+            savedData.imageCount = uploadedImages.filter(img => img !== null).length;
+
+            localStorage.setItem('automarket_vehicle_draft', JSON.stringify(savedData));
+            console.log('Draft saved automatically.');
         }
-
-        // Saving image metadata (filenames) or count might be an option, but not the files themselves for simplicity
-        // Here we save the count of uploaded images
-        savedData.imageCount = uploadedImages.filter(img => img !== null).length;
-
-        localStorage.setItem('automarket_vehicle_draft', JSON.stringify(savedData));
-        console.log('Draft saved automatically.');
     }
 }
 
@@ -1555,11 +1620,21 @@ function loadSavedFormData() {
                         }
                     }
                 });
-                
+
                 // Restore image previews if count is > 0
                 if (data.imageCount > 0) {
-                    showAlert(`Restored ${data.imageCount} image(s) from draft. Please re-upload files if necessary.`, 'info');
+                    // This is a simplified restoration. A more robust solution would store image file references if possible.
+                    // For now, we inform the user they need to re-upload.
+                    showAlert(`Restored data from draft. Please re-upload images if needed.`, 'info');
                 }
+
+                // Update current step if draft data exists beyond the first step
+                if (data.currentStep && parseInt(data.currentStep) > 1) {
+                    currentStep = parseInt(data.currentStep);
+                } else {
+                    currentStep = 1; // Default to step 1 if no valid step data
+                }
+                updateWizardDisplay(); // Update UI based on restored data and step
 
                 showAlert('✅ Draft restored successfully!', 'success');
             } else {

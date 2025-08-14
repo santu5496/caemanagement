@@ -12,16 +12,28 @@ def allowed_file(filename):
 def save_uploaded_files(files):
     """Save uploaded files and return list of filenames (max 6 images)"""
     filenames = []
+    if not files:
+        return filenames
+    
     # Limit to maximum 6 images
-    limited_files = files[:6] if files else []
+    limited_files = files[:6] if isinstance(files, list) else [files] if files else []
 
     for file in limited_files:
-        if file and file.filename and allowed_file(file.filename):
-            # Generate unique filename
-            filename = str(uuid.uuid4()) + '_' + secure_filename(file.filename)
-            filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-            file.save(filepath)
-            filenames.append(filename)
+        if file and hasattr(file, 'filename') and file.filename and allowed_file(file.filename):
+            try:
+                # Generate unique filename
+                filename = str(uuid.uuid4()) + '_' + secure_filename(file.filename)
+                filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+                
+                # Ensure upload directory exists
+                os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+                
+                file.save(filepath)
+                filenames.append(filename)
+            except Exception as e:
+                app.logger.error(f"Error saving file {file.filename}: {e}")
+                continue
+    
     return filenames
 
 @app.route('/')
