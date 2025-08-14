@@ -1758,15 +1758,40 @@ function viewVehicle(id) {
 async function editVehicle(id) {
     console.log(`Editing vehicle with ID: ${id}`);
     
+    // Set edit mode
+    isEditMode = true;
+    editVehicleId = id;
+    
+    // Clear form first
+    document.getElementById('vehicleWizardForm').reset();
+    uploadedImages.fill(null);
+    
+    // Clear image previews
+    for(let i = 1; i <= 6; i++) {
+        const previewImage = document.getElementById(`image-preview-${i}`);
+        const removeBtn = document.querySelector(`#image-slot-${i} .image-remove-btn`);
+        const slotContent = document.querySelector(`#image-slot-${i} .slot-content`);
+        
+        if(previewImage) {
+            previewImage.src = '';
+            previewImage.style.display = 'none';
+        }
+        if(removeBtn) removeBtn.style.display = 'none';
+        if(slotContent) slotContent.style.display = 'flex';
+    }
+
+    // Clear validation states
+    document.querySelectorAll('.form-control, .form-select').forEach(field => {
+        field.classList.remove('is-invalid');
+        const feedback = field.nextElementSibling;
+        if(feedback && feedback.classList.contains('invalid-feedback')) {
+            feedback.style.display = 'none';
+            feedback.textContent = '';
+        }
+    });
+
+    // Fetch vehicle data with comprehensive error handling
     try {
-        // Set edit mode
-        isEditMode = true;
-        editVehicleId = id;
-        
-        // Reset form before loading data
-        document.getElementById('vehicleForm').reset();
-        
-        // Fetch vehicle data
         const response = await fetch(`/admin/vehicle/${id}`, {
             method: 'GET',
             credentials: 'same-origin',
@@ -1774,80 +1799,76 @@ async function editVehicle(id) {
                 'X-Requested-With': 'XMLHttpRequest'
             }
         });
-        
+
         console.log('Response status:', response.status);
         
         if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
         }
-        
+
         const data = await response.json();
         console.log('Vehicle data received:', data);
-        
+
         if (!data.success) {
-            throw new Error(data.message || 'Failed to fetch vehicle data');
+            throw new Error(data.message || 'Failed to load vehicle data');
         }
-        
-        const vehicleData = data.vehicle;
-        console.log('Populating form with data:', vehicleData);
-        
+
+        const editForm = document.getElementById('vehicleWizardForm');
+        if (!editForm) {
+            console.error("Vehicle form not found!");
+            return;
+        }
+
         // Populate form fields
-        Object.keys(vehicleData).forEach(key => {
-            const input = document.querySelector(`[name="${key}"]`);
+        const vehicleData = data.vehicle || data;
+        console.log('Populating form with data:', vehicleData);
+
+        for (const [key, value] of Object.entries(vehicleData)) {
+            const input = editForm.querySelector(`[name="${key}"]`);
             if (input) {
-                const value = vehicleData[key];
                 console.log(`Setting ${key} to:`, value);
-                
                 if (input.type === 'checkbox') {
-                    input.checked = !!value;
+                    input.checked = Boolean(value);
                 } else if (input.tagName === 'SELECT') {
-                    // Handle select dropdowns
-                    input.value = value || '';
-                } else if (key === 'images' && Array.isArray(value)) {
-                    console.log(`Setting ${key} to:`, value);
-                    // Handle image display for edit mode
-                    displayExistingImages(value);
+                    // Handle select dropdowns - ensure value exists in options
+                    const valueToSet = value || '';
+                    const optionExists = Array.from(input.options).some(option => option.value === valueToSet);
+                    if (optionExists || valueToSet === '') {
+                        input.value = valueToSet;
+                    }
+                    // Trigger change event to update display
+                    input.dispatchEvent(new Event('change'));
+                } else if (input.type === 'number') {
+                    input.value = value !== null && value !== undefined ? value : '';
                 } else {
-                    input.value = value || '';
+                    input.value = value !== null && value !== undefined ? value : '';
+                }
+                
+                // Clear any validation errors when populating
+                input.classList.remove('is-invalid');
+                const feedback = input.nextElementSibling;
+                if(feedback && feedback.classList.contains('invalid-feedback')) {
+                    feedback.style.display = 'none';
+                    feedback.textContent = '';
                 }
             } else {
                 console.log(`No input found for field: ${key}`);
             }
-        });
-        
-        // Handle existing images display
-        function displayExistingImages(images) {
-            const imagePreview = document.getElementById('imagePreview');
-            if (imagePreview && images && images.length > 0) {
-                imagePreview.innerHTML = '';
-                images.forEach((image, index) => {
-                    const imageContainer = document.createElement('div');
-                    imageContainer.className = 'col-md-3 mb-2';
-                    imageContainer.innerHTML = `
-                        <div class="position-relative">
-                            <img src="/static/uploads/${image}" class="img-thumbnail w-100" alt="Vehicle Image ${index + 1}">
-                            <div class="position-absolute top-0 end-0 p-1">
-                                <span class="badge bg-primary">Existing</span>
-                            </div>
-                        </div>
-                    `;
-                    imagePreview.appendChild(imageContainer);
-                });
-            }
         }
-        
-        // Update image slots if they exist
+
+        // Special handling for images display
         if (vehicleData.images && Array.isArray(vehicleData.images)) {
             vehicleData.images.forEach((imageName, index) => {
-                const slot = document.querySelector(`#imageSlot${index + 1}`);
-                if (slot) {
-                    const img = slot.querySelector('img');
-                    const removeBtn = slot.querySelector('.remove-image');
-                    const slotContent = slot.querySelector('.image-slot-content');
-                    
-                    if (img) {
-                        img.src = `/static/uploads/${imageName}`;
-                        img.style.display = 'block';
+                if (imageName && index < 6) { // Ensure we don't exceed 6 slots
+                    uploadedImages[index] = imageName; // Store as string for existing images
+
+                    const previewImage = document.getElementById(`image-preview-${index + 1}`);
+                    const removeBtn = document.querySelector(`#image-slot-${index + 1} .image-remove-btn`);
+                    const slotContent = document.querySelector(`#image-slot-${index + 1} .slot-content`);
+
+                    if(previewImage) {
+                        previewImage.src = `/static/uploads/${imageName}`;
+                        previewImage.style.display = 'block';
                     }
                     if(removeBtn) removeBtn.style.display = 'flex';
                     if (slotContent) slotContent.style.display = 'none';
@@ -1866,34 +1887,8 @@ async function editVehicle(id) {
         currentStep = 1;
         updateWizardDisplay(); // Refresh UI to show step 1 and correct progress
 
-        // Make modal visible - try multiple approaches
-        const modal = document.getElementById('vehicleWizard');
-        if (modal) {
-            // First try Bootstrap 5 modal
-            try {
-                const bsModal = new bootstrap.Modal(modal, {
-                    backdrop: 'static',
-                    keyboard: false
-                });
-                bsModal.show();
-            } catch (e) {
-                console.log('Bootstrap modal failed, trying jQuery:', e);
-                // Fallback to jQuery if available
-                if (typeof $ !== 'undefined') {
-                    $(modal).modal('show');
-                } else {
-                    // Manual modal display as last resort
-                    modal.style.display = 'block';
-                    modal.classList.add('show');
-                    document.body.classList.add('modal-open');
-                    
-                    // Create backdrop
-                    const backdrop = document.createElement('div');
-                    backdrop.className = 'modal-backdrop fade show';
-                    document.body.appendChild(backdrop);
-                }
-            }
-        }
+        // Make modal visible
+        new bootstrap.Modal(document.getElementById('vehicleWizard')).show();
         
     } catch (error) {
         console.error('Error fetching vehicle data:', error);
@@ -1904,7 +1899,7 @@ async function editVehicle(id) {
         isEditMode = false;
         editVehicleId = null;
     }
-} = true;
+}
     editVehicleId = id;
     
     // Clear form first
