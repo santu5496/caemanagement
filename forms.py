@@ -33,7 +33,7 @@ class VehicleForm(FlaskForm):
     
     # Engine & Performance
     fuel_type = SelectField('Fuel Type', 
-                           choices=[('', 'Select Fuel Type'), ('Gasoline', 'Gasoline'), ('Diesel', 'Diesel'), 
+                           choices=[('', 'Select Fuel Type'), ('Petrol', 'Petrol'), ('Gasoline', 'Gasoline'), ('Diesel', 'Diesel'), 
                                    ('Hybrid', 'Hybrid'), ('Electric', 'Electric'), ('CNG', 'CNG')],
                            validators=[Optional()])
     transmission = SelectField('Transmission', 

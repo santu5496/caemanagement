@@ -40,7 +40,7 @@ class Vehicle(db.Model):
     
     # Comprehensive Vehicle Details
     # Engine & Performance
-    fuel_type: Mapped[Optional[str]] = mapped_column(String(20), nullable=True)  # Gasoline, Diesel, Hybrid, Electric
+    fuel_type: Mapped[Optional[str]] = mapped_column(String(20), nullable=True)  # Petrol, Gasoline, Diesel, Hybrid, Electric
     transmission: Mapped[Optional[str]] = mapped_column(String(20), nullable=True)  # Manual, Automatic, CVT
     engine_size: Mapped[Optional[str]] = mapped_column(String(20), nullable=True)  # e.g. 2.0L, 3.5L V6
     horsepower: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
