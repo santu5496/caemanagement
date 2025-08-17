@@ -260,23 +260,27 @@
         });
 
         // Load all vehicles
-        async function loadVehicles() {
-            try {
-                const response = await fetch('/admin/api/vehicles');
-                const data = await response.json();
-
-                if (data.success) {
-                    vehicles = data.vehicles;
-                    renderVehicleTable();
-                    updateStats();
-                }
-            } catch (error) {
-                showNotification('Error loading vehicles', 'error');
-            }
+        function loadVehicles() {
+            fetch('/admin/api/vehicles')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        console.log('Loaded vehicles:', data.vehicles); // Debug log
+                        displayVehicles(data.vehicles);
+                        updateStats(data.vehicles);
+                    } else {
+                        console.error('Failed to load vehicles:', data.message);
+                        showNotification('Failed to load vehicles: ' + data.message, 'error');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading vehicles:', error);
+                    showNotification('Error loading vehicles: ' + error.message, 'error');
+                });
         }
 
         // Render vehicle table
-        function renderVehicleTable() {
+        function displayVehicles(vehicles) {
             const tbody = document.getElementById('vehicleTableBody');
 
             if (vehicles.length === 0) {
@@ -294,10 +298,9 @@
             tbody.innerHTML = vehicles.map(vehicle => `
                 <tr>
                     <td>
-                        ${
-                            vehicle.images && vehicle.images.length > 0 
+                        ${vehicle.images && Array.isArray(vehicle.images) && vehicle.images.length > 0 && vehicle.images[0]
                             ? `<div class="position-relative">
-                                 <img src="/static/uploads/${vehicle.images[0]}" class="rounded border" style="width: 80px; height: 60px; object-fit: cover;" alt="${vehicle.title}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                 <img src="/static/uploads/${vehicle.images[0]}" class="rounded border" style="width: 80px; height: 60px; object-fit: cover;" alt="${vehicle.title}" onerror="this.onerror=null; this.src='/static/default-car-icon.png'; this.nextElementSibling.style.display='flex';">
                                  <div class="bg-light rounded border d-none align-items-center justify-content-center text-muted" style="width: 80px; height: 60px;"><i class="fas fa-car"></i></div>
                                  ${vehicle.images.length > 1 ? `<span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-primary" style="font-size: 10px;">${vehicle.images.length}</span>` : ''}
                                </div>`
@@ -334,18 +337,23 @@
         }
 
         // Update stats
-        function updateStats() {
+        function updateStats(vehicles) {
             const total = vehicles.length;
             const available = vehicles.filter(v => v.status === 'available').length;
             const sold = vehicles.filter(v => v.status === 'sold').length;
-            const totalValue = vehicles
-                .filter(v => v.status === 'available')
-                .reduce((sum, v) => sum + Number(v.price), 0);
+            const totalValue = vehicles.reduce((sum, v) => sum + (v.price || 0), 0);
 
             document.getElementById('totalVehicles').textContent = total;
             document.getElementById('availableVehicles').textContent = available;
             document.getElementById('soldVehicles').textContent = sold;
             document.getElementById('inventoryValue').textContent = `₹${Math.round(totalValue/1000)}K`;
+
+            // Debug: Log vehicles with image issues
+            vehicles.forEach(vehicle => {
+                if (!vehicle.images || !Array.isArray(vehicle.images) || vehicle.images.length === 0) {
+                    console.log(`Vehicle "${vehicle.title}" has no images:`, vehicle.images);
+                }
+            });
         }
 
         // Open modal for new/edit vehicle
@@ -439,7 +447,9 @@
 
             // Add existing images
             uploadedImages.forEach(image => {
-                formData.append('existing_images', image);
+                if (image) {
+                    formData.append('existing_images', image);
+                }
             });
 
             try {
@@ -529,7 +539,13 @@
         function handleImageUpload(index, input) {
             if (input.files && input.files[0]) {
                 const file = input.files[0];
-                uploadedImages[index] = file;
+                // Check if it's a new file or an existing one being replaced
+                if (uploadedImages[index] && typeof uploadedImages[index] === 'string') {
+                    // If replacing an existing image, keep track of it
+                    uploadedImages[index] = file;
+                } else {
+                    uploadedImages[index] = file;
+                }
                 updateImagePreviews();
             }
         }
@@ -539,16 +555,17 @@
             for (let i = 0; i < 6; i++) {
                 const slot = document.getElementById(`imageSlot${i}`);
                 const image = uploadedImages[i];
+                const isHero = i === 0;
 
                 if (image) {
                     if (typeof image === 'string') {
-                        // Existing image
+                        // Existing image from server
                         slot.innerHTML = `
                             <img src="/static/uploads/${image}" class="img-fluid rounded" style="width: 100%; height: 150px; object-fit: cover;">
                             <button type="button" class="btn btn-sm btn-danger mt-2" onclick="removeImage(${i})">Remove</button>
                         `;
                     } else {
-                        // New file
+                        // New file uploaded
                         const reader = new FileReader();
                         reader.onload = function(e) {
                             slot.innerHTML = `
@@ -558,29 +575,35 @@
                         };
                         reader.readAsDataURL(image);
                     }
+                    slot.style.border = isHero ? '3px solid #007bff' : '2px dashed #dee2e6'; // Maintain border style
+                    slot.onclick = null; // Remove click handler if it has an image
                 } else {
-                    const isHero = i === 0;
+                    // No image, reset to default slot
                     slot.innerHTML = `
                         <i class="fas fa-plus fa-2x text-muted mb-2"></i>
                         <p class="mb-0 text-muted">${isHero ? 'Hero Image (Table View)' : 'Click to add image'}</p>
                         <input type="file" id="imageInput${i}" accept="image/*" style="display: none;" onchange="handleImageUpload(${i}, this)">
                     `;
                     slot.style.border = isHero ? '3px solid #007bff' : '2px dashed #dee2e6';
-                    slot.onclick = () => triggerImageUpload(i);
+                    slot.onclick = () => triggerImageUpload(i); // Re-attach click handler
                 }
             }
         }
 
         // Remove image
         function removeImage(index) {
-            uploadedImages[index] = null;
+            // If it was an existing image, we need to mark it for deletion or handle it on the backend.
+            // For now, we'll just set it to null and let the backend handle deletion if the image field is updated.
+            uploadedImages[index] = null; 
             updateImagePreviews();
         }
 
         // Close modal
         function closeModal() {
             const modal = bootstrap.Modal.getInstance(document.getElementById('vehicleModal'));
-            modal.hide();
+            if (modal) {
+                modal.hide();
+            }
         }
 
         // Show notification
