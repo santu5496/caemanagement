@@ -123,14 +123,15 @@
                                 {% for vehicle in vehicles %}
                                     <tr id="vehicle-{{ vehicle.id }}">
                                         <td>
-                                            {% if vehicle.images %}
+                                            {% if vehicle.images_list and vehicle.images_list|length > 0 %}
                                                 <div class="position-relative">
-                                                    <img src="{{ url_for('static', filename='uploads/' + vehicle.images[0]) }}" 
+                                                    <img src="{{ url_for('static', filename='uploads/' + vehicle.images_list[0]) }}" 
                                                          class="img-thumbnail" style="width: 60px; height: 45px; object-fit: cover;" 
-                                                         alt="{{ vehicle.title }}">
-                                                    {% if vehicle.images|length > 1 %}
+                                                         alt="{{ vehicle.title }}"
+                                                         onerror="this.onerror=null; this.src='{{ url_for('static', filename='placeholder.jpg') }}'; this.alt='No image available';">
+                                                    {% if vehicle.images_list|length > 1 %}
                                                         <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-primary" style="font-size: 10px;">
-                                                            {{ vehicle.images|length }}
+                                                            {{ vehicle.images_list|length }}
                                                         </span>
                                                     {% endif %}
                                                 </div>
@@ -967,6 +968,34 @@ function clearAllImageSlots() {
     uploadedImages = [];
 }
 
+// Enhanced tab navigation with null checks
+function resetToFirstTab() {
+    const firstTab = document.getElementById('basic-tab');
+    if (firstTab) {
+        firstTab.click();
+    } else {
+        console.warn('First tab element not found');
+    }
+}
+
+// Fix for the null element error
+function updateTabNavigation() {
+    const tabButtons = ['basic-tab', 'engine-tab', 'ownership-tab', 'insurance-tab', 'features-tab', 'contact-tab'];
+    
+    tabButtons.forEach((tabId, index) => {
+        const tabElement = document.getElementById(tabId);
+        if (tabElement) {
+            tabElement.addEventListener('click', function() {
+                currentTabIndex = index;
+                updateProgressIndicator(currentTabIndex);
+                updateNavigationButtons();
+            });
+        } else {
+            console.warn(`Tab element ${tabId} not found`);
+        }
+    });
+}
+
 // Fix any potential NodeList.map issues
 function safeQuerySelectorAll(selector) {
     return Array.from(document.querySelectorAll(selector));
@@ -1505,6 +1534,9 @@ document.getElementById('vehicleModal').addEventListener('shown.bs.modal', funct
 document.addEventListener('DOMContentLoaded', function() {
     console.log('Auto Dealership app loaded successfully');
     
+    // Initialize all components with null checks
+    initializeAdminInterface();
+    
     // Debug: Add explicit click handler for submit button
     const submitBtn = document.getElementById('submit-btn');
     if (submitBtn) {
@@ -1516,7 +1548,10 @@ document.addEventListener('DOMContentLoaded', function() {
             // Force form submission if needed
             if (this.type === 'button') {
                 e.preventDefault();
-                document.getElementById('vehicleForm').dispatchEvent(new Event('submit', {bubbles: true, cancelable: true}));
+                const form = document.getElementById('vehicleForm');
+                if (form) {
+                    form.dispatchEvent(new Event('submit', {bubbles: true, cancelable: true}));
+                }
             }
         });
     }
@@ -1529,7 +1564,54 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Update statistics on page load
     updateStatistics();
+    
+    // Initialize tab navigation
+    updateTabNavigation();
 });
+
+function initializeAdminInterface() {
+    try {
+        // Check if all required elements exist
+        const requiredElements = [
+            'vehicleModal',
+            'vehicleForm',
+            'vehicles-table',
+            'total-count',
+            'available-count',
+            'sold-count'
+        ];
+        
+        requiredElements.forEach(id => {
+            const element = document.getElementById(id);
+            if (!element) {
+                console.warn(`Required element ${id} not found`);
+            }
+        });
+        
+        // Initialize image slots with error handling
+        for (let i = 1; i <= 6; i++) {
+            const slot = document.getElementById(`image-slot-${i}`);
+            if (!slot) {
+                console.warn(`Image slot ${i} not found`);
+                continue;
+            }
+            
+            // Initialize slot content if empty
+            const slotContent = slot.querySelector('.slot-content');
+            if (slotContent && !slotContent.innerHTML.trim()) {
+                slotContent.innerHTML = `
+                    <i class="fas fa-cloud-upload-alt fa-3x text-primary mb-2"></i>
+                    <p class="mb-1 fw-bold">Click to upload</p>
+                    <small class="text-muted">or drag and drop image here</small>
+                    <small class="d-block text-muted mt-1">Max 5MB • JPG, PNG, GIF</small>
+                `;
+            }
+        }
+        
+    } catch (error) {
+        console.error('Error initializing admin interface:', error);
+    }
+}
 
 // Auto-format price input
 document.getElementById('modal-price').addEventListener('input', function() {
