@@ -99,7 +99,9 @@ class Vehicle(db.Model):
     @property
     def images_list(self):
         """Return images as a list"""
-        return [img.strip() for img in self.images.split(',') if img.strip()] if self.images else []
+        if not self.images or self.images == 'None':
+            return []
+        return [img.strip() for img in str(self.images).split(',') if img.strip()]
 
     @images_list.setter
     def images_list(self, value):

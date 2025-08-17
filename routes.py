@@ -158,6 +158,7 @@ def admin_api_vehicles():
                 'contact_name': vehicle.contact_name,
                 'contact_phone': vehicle.contact_phone,
                 'contact_email': vehicle.contact_email,
+                'vehicle_number': vehicle.vehicle_number,
                 'status': vehicle.status,
                 'fuel_type': vehicle.fuel_type,
                 'transmission': vehicle.transmission,
@@ -182,7 +183,7 @@ def admin_api_vehicles():
                 'features': vehicle.features,
                 'condition_rating': vehicle.condition_rating,
                 'warranty_info': vehicle.warranty_info,
-                'images': vehicle.images,
+                'images': vehicle.images_list,
                 'created_at': vehicle.created_at.isoformat() if vehicle.created_at else None,
                 'updated_at': vehicle.updated_at.isoformat() if vehicle.updated_at else None
             }
