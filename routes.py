@@ -113,7 +113,15 @@ def admin_logout():
 
 @app.route('/admin')
 def admin_dashboard():
-    """Admin Dashboard with original wizard interface"""
+    """Admin Dashboard with single-page JavaScript interface"""
+    if not session.get('admin_logged_in'):
+        return redirect(url_for('admin_login'))
+    
+    return render_template('admin_single_page.html')
+
+@app.route('/admin/wizard')
+def admin_wizard():
+    """Admin Dashboard with original wizard interface (legacy)"""
     if not session.get('admin_logged_in'):
         return redirect(url_for('admin_login'))
     
@@ -126,8 +134,8 @@ def admin_dashboard():
         flash('Error loading dashboard. Please try again.', 'error')
         return redirect(url_for('admin_login'))
 
-@app.route('/api/vehicles')
-def api_vehicles():
+@app.route('/admin/api/vehicles')
+def admin_api_vehicles():
     """API endpoint to get all vehicles as JSON"""
     if not session.get('admin_logged_in'):
         return jsonify({'success': False, 'message': 'Unauthorized'}), 401
@@ -564,6 +572,145 @@ def toggle_vehicle_status(vehicle_id):
         db.session.rollback()
         app.logger.error(f"Error toggling vehicle status {vehicle_id}: {str(e)}")
         return jsonify({'success': False, 'message': 'Error updating vehicle status'}), 500
+
+# Single-page CRUD API endpoints for JavaScript frontend
+@app.route('/admin/api/vehicles', methods=['POST'])
+def admin_api_create_vehicle():
+    """API endpoint to create a new vehicle"""
+    if not session.get('admin_logged_in'):
+        return jsonify({'success': False, 'message': 'Unauthorized'}), 401
+    
+    try:
+        form_data = request.form.to_dict()
+        
+        # Handle file uploads
+        files = request.files.getlist('images[]') if 'images[]' in request.files else []
+        existing_images = request.form.getlist('existing_images')
+        
+        # Save uploaded files
+        new_images = save_uploaded_files(files)
+        all_images = existing_images + new_images
+        
+        # Create vehicle data
+        vehicle_data = {
+            'title': form_data.get('title', ''),
+            'category': form_data.get('category', ''),
+            'make': form_data.get('make', ''),
+            'model': form_data.get('model', ''),
+            'year': int(form_data.get('year', 2024)),
+            'price': float(form_data.get('price', 0)),
+            'mileage': int(form_data.get('mileage', 0)),
+            'description': form_data.get('description', ''),
+            'contact_name': form_data.get('contact_name', ''),
+            'contact_phone': form_data.get('contact_phone', ''),
+            'contact_email': form_data.get('contact_email', ''),
+            'status': form_data.get('status', 'available'),
+            'fuel_type': form_data.get('fuel_type'),
+            'images': all_images
+        }
+        
+        # Add the vehicle
+        vehicle = add_vehicle(**vehicle_data)
+        
+        return jsonify({
+            'success': True, 
+            'message': 'Vehicle added successfully',
+            'vehicle': {
+                'id': vehicle.id,
+                'title': vehicle.title,
+                'category': vehicle.category,
+                'make': vehicle.make,
+                'model': vehicle.model,
+                'year': vehicle.year,
+                'price': float(vehicle.price),
+                'mileage': vehicle.mileage,
+                'status': vehicle.status,
+                'images': vehicle.images
+            }
+        })
+        
+    except Exception as e:
+        app.logger.error(f"Error creating vehicle: {e}")
+        return jsonify({'success': False, 'message': 'Error creating vehicle'}), 500
+
+@app.route('/admin/api/vehicles/<vehicle_id>', methods=['PUT'])
+def admin_api_update_vehicle(vehicle_id):
+    """API endpoint to update a vehicle"""
+    if not session.get('admin_logged_in'):
+        return jsonify({'success': False, 'message': 'Unauthorized'}), 401
+    
+    try:
+        vehicle = get_vehicle(vehicle_id)
+        if not vehicle:
+            return jsonify({'success': False, 'message': 'Vehicle not found'}), 404
+        
+        form_data = request.form.to_dict()
+        
+        # Handle file uploads
+        files = request.files.getlist('images[]') if 'images[]' in request.files else []
+        existing_images = request.form.getlist('existing_images')
+        
+        # Save uploaded files
+        new_images = save_uploaded_files(files)
+        all_images = existing_images + new_images
+        
+        # Update vehicle fields
+        vehicle.title = form_data.get('title', vehicle.title)
+        vehicle.category = form_data.get('category', vehicle.category)
+        vehicle.make = form_data.get('make', vehicle.make)
+        vehicle.model = form_data.get('model', vehicle.model)
+        vehicle.year = int(form_data.get('year', vehicle.year))
+        vehicle.price = float(form_data.get('price', vehicle.price))
+        vehicle.mileage = int(form_data.get('mileage', vehicle.mileage))
+        vehicle.description = form_data.get('description', vehicle.description)
+        vehicle.contact_name = form_data.get('contact_name', vehicle.contact_name)
+        vehicle.contact_phone = form_data.get('contact_phone', vehicle.contact_phone)
+        vehicle.contact_email = form_data.get('contact_email', vehicle.contact_email)
+        vehicle.status = form_data.get('status', vehicle.status)
+        vehicle.fuel_type = form_data.get('fuel_type', vehicle.fuel_type)
+        
+        if all_images:
+            vehicle.images = all_images
+        
+        # Save to database
+        db.session.commit()
+        
+        return jsonify({
+            'success': True, 
+            'message': 'Vehicle updated successfully',
+            'vehicle': {
+                'id': vehicle.id,
+                'title': vehicle.title,
+                'category': vehicle.category,
+                'make': vehicle.make,
+                'model': vehicle.model,
+                'year': vehicle.year,
+                'price': float(vehicle.price),
+                'mileage': vehicle.mileage,
+                'status': vehicle.status,
+                'images': vehicle.images
+            }
+        })
+        
+    except Exception as e:
+        app.logger.error(f"Error updating vehicle: {e}")
+        return jsonify({'success': False, 'message': 'Error updating vehicle'}), 500
+
+@app.route('/admin/api/vehicles/<vehicle_id>', methods=['DELETE'])
+def admin_api_delete_vehicle(vehicle_id):
+    """API endpoint to delete a vehicle"""
+    if not session.get('admin_logged_in'):
+        return jsonify({'success': False, 'message': 'Unauthorized'}), 401
+    
+    try:
+        if delete_vehicle(vehicle_id):
+            return jsonify({'success': True, 'message': 'Vehicle deleted successfully'})
+        else:
+            return jsonify({'success': False, 'message': 'Vehicle not found'}), 404
+            
+    except Exception as e:
+        app.logger.error(f"Error deleting vehicle: {e}")
+        return jsonify({'success': False, 'message': 'Error deleting vehicle'}), 500
 
 # Error handlers
 @app.errorhandler(404)
