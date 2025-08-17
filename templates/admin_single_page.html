@@ -264,7 +264,7 @@
             try {
                 const response = await fetch('/admin/api/vehicles');
                 const data = await response.json();
-                
+
                 if (data.success) {
                     vehicles = data.vehicles;
                     renderVehicleTable();
@@ -278,7 +278,7 @@
         // Render vehicle table
         function renderVehicleTable() {
             const tbody = document.getElementById('vehicleTableBody');
-            
+
             if (vehicles.length === 0) {
                 tbody.innerHTML = `
                     <tr>
@@ -294,9 +294,14 @@
             tbody.innerHTML = vehicles.map(vehicle => `
                 <tr>
                     <td>
-                        ${vehicle.images && vehicle.images.length > 0 
-                            ? `<img src="/static/uploads/${vehicle.images[0]}" class="image-preview" alt="${vehicle.title}">`
-                            : '<div class="bg-light rounded d-flex align-items-center justify-content-center text-muted" style="width: 80px; height: 60px;"><i class="fas fa-car"></i></div>'
+                        ${
+                            vehicle.images && vehicle.images.length > 0 
+                            ? `<div class="position-relative">
+                                 <img src="/static/uploads/${vehicle.images[0]}" class="rounded border" style="width: 80px; height: 60px; object-fit: cover;" alt="${vehicle.title}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                 <div class="bg-light rounded border d-none align-items-center justify-content-center text-muted" style="width: 80px; height: 60px;"><i class="fas fa-car"></i></div>
+                                 ${vehicle.images.length > 1 ? `<span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-primary" style="font-size: 10px;">${vehicle.images.length}</span>` : ''}
+                               </div>`
+                            : '<div class="bg-light rounded border d-flex align-items-center justify-content-center text-muted" style="width: 80px; height: 60px;"><i class="fas fa-car"></i></div>'
                         }
                     </td>
                     <td>
@@ -347,10 +352,10 @@
         function openVehicleModal(vehicleId = null) {
             isEditMode = !!vehicleId;
             currentVehicleId = vehicleId;
-            
+
             const modal = new bootstrap.Modal(document.getElementById('vehicleModal'));
             const modalTitle = document.getElementById('modalTitle');
-            
+
             if (isEditMode) {
                 modalTitle.innerHTML = '<i class="fas fa-edit me-2"></i>Edit Vehicle';
                 loadVehicleData(vehicleId);
@@ -358,7 +363,7 @@
                 modalTitle.innerHTML = '<i class="fas fa-plus me-2"></i>Add New Vehicle';
                 clearForm();
             }
-            
+
             modal.show();
         }
 
@@ -367,7 +372,7 @@
             try {
                 const response = await fetch(`/admin/vehicle/${vehicleId}`);
                 const data = await response.json();
-                
+
                 if (data.success) {
                     populateForm(data.vehicle);
                 } else {
@@ -396,7 +401,7 @@
             document.getElementById('contact_email').value = vehicle.contact_email || '';
             document.getElementById('vehicle_number').value = vehicle.vehicle_number || '';
             document.getElementById('previous_owner_phone').value = vehicle.previous_owner_phone || '';
-            
+
             // Handle images
             if (vehicle.images && vehicle.images.length > 0) {
                 uploadedImages = vehicle.images.slice();
@@ -414,7 +419,7 @@
         // Save vehicle
         async function saveVehicle() {
             const formData = new FormData();
-            
+
             // Basic fields
             formData.append('title', document.getElementById('title').value);
             formData.append('category', document.getElementById('category').value);
@@ -431,7 +436,7 @@
             formData.append('contact_email', document.getElementById('contact_email').value);
             formData.append('vehicle_number', document.getElementById('vehicle_number').value);
             formData.append('previous_owner_phone', document.getElementById('previous_owner_phone').value);
-            
+
             // Add existing images
             uploadedImages.forEach(image => {
                 formData.append('existing_images', image);
@@ -442,14 +447,14 @@
                     ? `/admin/api/vehicles/${currentVehicleId}` 
                     : '/admin/api/vehicles';
                 const method = isEditMode ? 'PUT' : 'POST';
-                
+
                 const response = await fetch(url, {
                     method: method,
                     body: formData
                 });
-                
+
                 const data = await response.json();
-                
+
                 if (data.success) {
                     showNotification(
                         isEditMode ? 'Vehicle updated successfully' : 'Vehicle added successfully', 
@@ -473,14 +478,14 @@
         // Delete vehicle
         async function deleteVehicle(vehicleId) {
             if (!confirm('Are you sure you want to delete this vehicle?')) return;
-            
+
             try {
                 const response = await fetch(`/admin/api/vehicles/${vehicleId}`, {
                     method: 'DELETE'
                 });
-                
+
                 const data = await response.json();
-                
+
                 if (data.success) {
                     showNotification('Vehicle deleted successfully', 'success');
                     loadVehicles();
@@ -496,7 +501,7 @@
         function generateImageSlots() {
             const container = document.getElementById('imageSlots');
             container.innerHTML = '';
-            
+
             for (let i = 0; i < 6; i++) {
                 const isHero = i === 0;
                 const slotHtml = `
@@ -534,7 +539,7 @@
             for (let i = 0; i < 6; i++) {
                 const slot = document.getElementById(`imageSlot${i}`);
                 const image = uploadedImages[i];
-                
+
                 if (image) {
                     if (typeof image === 'string') {
                         // Existing image
@@ -583,16 +588,16 @@
             const container = document.getElementById('notificationContainer');
             const alertClass = type === 'error' ? 'alert-danger' : 
                               type === 'success' ? 'alert-success' : 'alert-info';
-            
+
             const notification = document.createElement('div');
             notification.className = `alert ${alertClass} alert-dismissible fade show`;
             notification.innerHTML = `
                 ${message}
                 <button type="button" class="btn-close" onclick="this.parentElement.remove()"></button>
             `;
-            
+
             container.appendChild(notification);
-            
+
             setTimeout(() => {
                 notification.remove();
             }, 5000);

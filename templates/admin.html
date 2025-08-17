@@ -126,9 +126,13 @@
                                             {% if vehicle.images_list and vehicle.images_list|length > 0 %}
                                                 <div class="position-relative">
                                                     <img src="{{ url_for('static', filename='uploads/' + vehicle.images_list[0]) }}" 
-                                                         class="img-thumbnail" style="width: 60px; height: 45px; object-fit: cover;" 
+                                                         class="img-thumbnail" style="width: 60px; height: 45px; object-fit: cover; border-radius: 6px;" 
                                                          alt="{{ vehicle.title }}"
-                                                         onerror="this.onerror=null; this.src='{{ url_for('static', filename='placeholder.jpg') }}'; this.alt='No image available';">
+                                                         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                                    <div class="bg-light border d-none align-items-center justify-content-center" 
+                                                         style="width: 60px; height: 45px; border-radius: 6px;">
+                                                        <i class="fas fa-car text-muted"></i>
+                                                    </div>
                                                     {% if vehicle.images_list|length > 1 %}
                                                         <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-primary" style="font-size: 10px;">
                                                             {{ vehicle.images_list|length }}
@@ -136,8 +140,8 @@
                                                     {% endif %}
                                                 </div>
                                             {% else %}
-                                                <div class="bg-secondary d-flex align-items-center justify-content-center" 
-                                                     style="width: 60px; height: 45px;">
+                                                <div class="bg-light border d-flex align-items-center justify-content-center" 
+                                                     style="width: 60px; height: 45px; border-radius: 6px;">
                                                     <i class="fas fa-car text-muted"></i>
                                                 </div>
                                             {% endif %}
