@@ -1,0 +1,117 @@
+
+AutoMarket Admin
+19
+Total Vehicles
+19
+Available
+0
+Sold
+₹37940K
+Inventory Value
+Vehicle Inventory
+Image 	Vehicle Details 	Vehicle Number 	Price 	Mileage 	Previous Owner Mobile 	Status 	Actions
+2022 BMW 330i xDrive Sport Package 	
+2022 BMW 330i xDrive Sport Package
+2022 • BMW 330i
+	Not Set 	₹34,50,000 	18,500 mi 	Not Available 	Available 	
+2023 Mercedes-Benz C300 4MATIC 	
+2023 Mercedes-Benz C300 4MATIC
+2023 • Mercedes-Benz C300
+	Not Set 	₹42,50,000 	8,200 mi 	Not Available 	Available 	
+2021 Audi A4 Prestige Quattro 	
+2021 Audi A4 Prestige Quattro
+2021 • Audi A4
+	Not Set 	₹37,80,000 	22,100 mi 	Not Available 	Available 	
+2020 Hyundai Creta SX Turbo 	
+2020 Hyundai Creta SX Turbo
+2020 • Hyundai Creta
+	Not Set 	₹16,80,000 	35,000 mi 	Not Available 	Available 	
+2021 Mahindra Bolero Pickup Extra Strong 	
+2021 Mahindra Bolero Pickup Extra Strong
+2021 • Mahindra Bolero Pickup
+	Not Set 	₹9,80,000 	42,000 mi 	Not Available 	Available 	
+2020 Isuzu D-Max V-Cross Z 	
+2020 Isuzu D-Max V-Cross Z
+2020 • Isuzu D-Max
+	Not Set 	₹18,90,000 	38,000 mi 	Not Available 	Available 	
+2019 Tata 407 Gold SFC 	
+2019 Tata 407 Gold SFC
+2019 • Tata 407 Gold
+	Not Set 	₹12,50,000 	85,000 mi 	Not Available 	Available 	
+2020 Ashok Leyland Dost Express 	
+2020 Ashok Leyland Dost Express
+2020 • Ashok Leyland Dost
+	Not Set 	₹8,90,000 	55,000 mi 	Not Available 	Available 	
+2021 Mahindra Supro Profit Truck 	
+2021 Mahindra Supro Profit Truck
+2021 • Mahindra Supro
+	Not Set 	₹7,50,000 	48,000 mi 	Not Available 	Available 	
+2022 Tata Ace Gold Petrol 	
+2022 Tata Ace Gold Petrol
+2022 • Tata Ace Gold
+	Not Set 	₹6,80,000 	25,000 mi 	Not Available 	Available 	
+2023 Toyota Fortuner Legender 4x4 	
+2023 Toyota Fortuner Legender 4x4
+2023 • Toyota Fortuner
+	Not Set 	₹48,50,000 	15,000 mi 	Not Available 	Available 	
+	
+2019 Ford F-150 XLT
+2019 • Ford F-150
+	Not Set 	₹27,50,000 	68,000 mi 	Not Available 	Available 	
+2022 Maruti Suzuki Swift ZXi+ 	
+2022 Maruti Suzuki Swift ZXi+
+2022 • Maruti Suzuki Swift
+	Not Set 	₹8,50,000 	18,000 mi 	Not Available 	Available 	
+	
+2021 Toyota Camry LE
+2021 • Toyota Camry
+	Not Set 	₹20,80,000 	28,000 mi 	Not Available 	Available 	
+	
+2020 Honda Civic LX
+2020 • Honda Civic
+	Not Set 	₹15,50,000 	45,000 mi 	Not Available 	Available 	
+2021 Mahindra Thar LX Hard Top 	
+2021 Mahindra Thar LX Hard Top
+2021 • Mahindra Thar
+	Not Set 	₹16,80,000 	28,000 mi 	Not Available 	Available 	
+2020 Ashok Leyland Ecomet 1415 Tipper 	
+2020 Ashok Leyland Ecomet 1415 Tipper
+2020 • Ashok Leyland Ecomet 1415
+	Not Set 	₹18,50,000 	95,000 mi 	Not Available 	Available 	
+2022 Maruti Suzuki Brezza ZXi+ 	
+2022 Maruti Suzuki Brezza ZXi+
+2022 • Maruti Suzuki Brezza
+	Not Set 	₹12,80,000 	22,000 mi 	Not Available 	Available 	
+2020 Force Traveller 3350 School Bus 	
+2020 Force Traveller 3350 School Bus
+2020 • Force Traveller
+	Not Set 	₹14,50,000 	78,000 mi 	Not Available 	Available 	
+Edit Vehicle
+Basic Information
+Title *
+Category *
+Status
+Make *
+Model *
+Year *
+Price (₹) *
+Mileage *
+Fuel Type
+Description *
+Contact Information
+Contact Name *
+Contact Phone *
+Contact Email
+Vehicle Number
+Previous Owner Mobile
+Vehicle Images
+
+Click to add image
+
+Click to add image
+
+Click to add image
+
+Click to add image
+
+Click to add image
