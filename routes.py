@@ -39,6 +39,11 @@ def save_uploaded_files(files):
 
 @app.route('/')
 def index():
+    """Landing page redirects to admin login"""
+    return redirect(url_for('admin_login'))
+
+@app.route('/marketplace')
+def marketplace():
     """Customer-facing catalog page"""
     category = request.args.get('category', 'all')
     search = request.args.get('search', '')
@@ -66,7 +71,7 @@ def vehicle_detail(vehicle_id):
     vehicle = get_vehicle(vehicle_id)
     if not vehicle:
         flash('Vehicle not found', 'error')
-        return redirect(url_for('index'))
+        return redirect(url_for('marketplace'))
     return render_template('vehicle_detail.html', vehicle=vehicle)
 
 @app.route('/secret-admin-access-2025', methods=['GET', 'POST'])
@@ -104,7 +109,7 @@ def admin_logout():
     session.pop('admin_logged_in', None)
     session.pop('admin_username', None)
     flash('Logged out successfully', 'success')
-    return redirect(url_for('index'))
+    return redirect(url_for('admin_login'))
 
 @app.route('/admin')
 def admin_dashboard():
