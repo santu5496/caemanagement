@@ -647,7 +647,9 @@ def get_vehicles_by_category(category):
 def get_available_vehicles():
     return Vehicle.query.filter_by(status='available').all()
 
-def add_vehicle(vehicle):
+def add_vehicle(**vehicle_data):
+    """Create and add a new vehicle to the database"""
+    vehicle = Vehicle(**vehicle_data)
     db.session.add(vehicle)
     db.session.commit()
     return vehicle

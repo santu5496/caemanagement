@@ -615,8 +615,12 @@ def admin_api_create_vehicle():
             'images': all_images
         }
         
-        # Add the vehicle
-        vehicle = add_vehicle(**vehicle_data)
+        # Create vehicle object
+        vehicle = Vehicle(**vehicle_data)
+        
+        # Add the vehicle to database
+        db.session.add(vehicle)
+        db.session.commit()
         
         return jsonify({
             'success': True, 
@@ -663,24 +667,28 @@ def admin_api_update_vehicle(vehicle_id):
         all_images = existing_images + new_images
         
         # Update vehicle fields
-        vehicle.title = form_data.get('title', vehicle.title)
-        vehicle.category = form_data.get('category', vehicle.category)
-        vehicle.make = form_data.get('make', vehicle.make)
-        vehicle.model = form_data.get('model', vehicle.model)
-        vehicle.year = int(form_data.get('year', vehicle.year))
-        vehicle.price = float(form_data.get('price', vehicle.price))
-        vehicle.mileage = int(form_data.get('mileage', vehicle.mileage))
-        vehicle.description = form_data.get('description', vehicle.description)
-        vehicle.contact_name = form_data.get('contact_name', vehicle.contact_name)
-        vehicle.contact_phone = form_data.get('contact_phone', vehicle.contact_phone)
-        vehicle.contact_email = form_data.get('contact_email', vehicle.contact_email)
-        vehicle.status = form_data.get('status', vehicle.status)
-        vehicle.fuel_type = form_data.get('fuel_type', vehicle.fuel_type)
-        vehicle.vehicle_number = form_data.get('vehicle_number', vehicle.vehicle_number)
-        vehicle.previous_owner_phone = form_data.get('previous_owner_phone', vehicle.previous_owner_phone)
+        update_data = {
+            'title': form_data.get('title', vehicle.title),
+            'category': form_data.get('category', vehicle.category),
+            'make': form_data.get('make', vehicle.make),
+            'model': form_data.get('model', vehicle.model),
+            'year': int(form_data.get('year', vehicle.year)),
+            'price': float(form_data.get('price', vehicle.price)),
+            'mileage': int(form_data.get('mileage', vehicle.mileage)),
+            'description': form_data.get('description', vehicle.description),
+            'contact_name': form_data.get('contact_name', vehicle.contact_name),
+            'contact_phone': form_data.get('contact_phone', vehicle.contact_phone),
+            'contact_email': form_data.get('contact_email', vehicle.contact_email),
+            'status': form_data.get('status', vehicle.status),
+            'fuel_type': form_data.get('fuel_type', vehicle.fuel_type),
+            'vehicle_number': form_data.get('vehicle_number', vehicle.vehicle_number),
+            'previous_owner_phone': form_data.get('previous_owner_phone', vehicle.previous_owner_phone)
+        }
         
         if all_images:
-            vehicle.images_list = all_images
+            update_data['images'] = all_images
+            
+        vehicle.update_from_dict(**update_data)
         
         # Save to database
         db.session.commit()
