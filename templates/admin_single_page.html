@@ -102,8 +102,10 @@
                         <tr>
                             <th>Image</th>
                             <th>Vehicle Details</th>
+                            <th>Vehicle Number</th>
                             <th>Price</th>
                             <th>Mileage</th>
+                            <th>Previous Owner Mobile</th>
                             <th>Status</th>
                             <th>Actions</th>
                         </tr>
@@ -210,6 +212,14 @@
                                 <label class="form-label">Contact Email</label>
                                 <input type="email" class="form-control" id="contact_email">
                             </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Vehicle Number</label>
+                                <input type="text" class="form-control" id="vehicle_number" placeholder="Internal vehicle tracking number">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Previous Owner Mobile</label>
+                                <input type="tel" class="form-control" id="previous_owner_phone" placeholder="Previous owner mobile number">
+                            </div>
 
                             <!-- Images Upload -->
                             <div class="col-12">
@@ -272,7 +282,7 @@
             if (vehicles.length === 0) {
                 tbody.innerHTML = `
                     <tr>
-                        <td colspan="6" class="text-center py-4 text-muted">
+                        <td colspan="8" class="text-center py-4 text-muted">
                             <i class="fas fa-car fa-2x mb-2"></i><br>
                             No vehicles found. Click "Add Vehicle" to get started.
                         </td>
@@ -295,8 +305,10 @@
                             <small class="text-muted">${vehicle.year} • ${vehicle.make} ${vehicle.model}</small>
                         </div>
                     </td>
+                    <td><span class="text-muted">${vehicle.vehicle_number || 'Not Set'}</span></td>
                     <td><strong class="text-success">₹${Number(vehicle.price).toLocaleString()}</strong></td>
                     <td>${Number(vehicle.mileage).toLocaleString()} mi</td>
+                    <td><span class="text-muted">${vehicle.previous_owner_phone || 'Not Available'}</span></td>
                     <td>
                         <span class="badge ${vehicle.status === 'available' ? 'bg-success' : 'bg-secondary'}">
                             ${vehicle.status === 'available' ? 'Available' : 'Sold'}
@@ -382,6 +394,8 @@
             document.getElementById('contact_name').value = vehicle.contact_name || '';
             document.getElementById('contact_phone').value = vehicle.contact_phone || '';
             document.getElementById('contact_email').value = vehicle.contact_email || '';
+            document.getElementById('vehicle_number').value = vehicle.vehicle_number || '';
+            document.getElementById('previous_owner_phone').value = vehicle.previous_owner_phone || '';
             
             // Handle images
             if (vehicle.images && vehicle.images.length > 0) {
@@ -415,6 +429,8 @@
             formData.append('contact_name', document.getElementById('contact_name').value);
             formData.append('contact_phone', document.getElementById('contact_phone').value);
             formData.append('contact_email', document.getElementById('contact_email').value);
+            formData.append('vehicle_number', document.getElementById('vehicle_number').value);
+            formData.append('previous_owner_phone', document.getElementById('previous_owner_phone').value);
             
             // Add existing images
             uploadedImages.forEach(image => {

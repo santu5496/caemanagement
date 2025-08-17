@@ -35,6 +35,7 @@ class Vehicle(db.Model):
     contact_name: Mapped[str] = mapped_column(String(100), nullable=False)
     contact_phone: Mapped[str] = mapped_column(String(20), nullable=False)
     contact_email: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
+    vehicle_number: Mapped[Optional[str]] = mapped_column(String(50), nullable=True)  # Vehicle identification number for internal tracking
     images: Mapped[str] = mapped_column(Text)  # JSON string of image filenames
     status: Mapped[str] = mapped_column(String(20), default='available')  # available, sold
     
@@ -119,6 +120,7 @@ class Vehicle(db.Model):
             'contact_name': self.contact_name,
             'contact_phone': self.contact_phone,
             'contact_email': self.contact_email,
+            'vehicle_number': self.vehicle_number,
             'images': self.images_list,
             'status': self.status,
             

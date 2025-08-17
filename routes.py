@@ -294,6 +294,7 @@ def add_vehicle_route():
                 contact_name=form.contact_name.data,
                 contact_phone=form.contact_phone.data,
                 contact_email=form.contact_email.data or None,
+                vehicle_number=form.vehicle_number.data or None,
                 images=image_filenames,
                 # Engine & Performance
                 fuel_type=form.fuel_type.data or None,
@@ -383,6 +384,7 @@ def get_vehicle_for_edit(vehicle_id):
             'contact_name': vehicle_data.get('contact_name', ''),
             'contact_phone': vehicle_data.get('contact_phone', ''),
             'contact_email': vehicle_data.get('contact_email', ''),
+            'vehicle_number': vehicle_data.get('vehicle_number', ''),
             'status': vehicle_data.get('status', 'available'),
             'fuel_type': vehicle_data.get('fuel_type', ''),
             'transmission': vehicle_data.get('transmission', ''),
@@ -468,6 +470,7 @@ def edit_vehicle(vehicle_id):
                 'contact_name': form.contact_name.data,
                 'contact_phone': form.contact_phone.data,
                 'contact_email': form.contact_email.data or None,
+                'vehicle_number': form.vehicle_number.data or None,
                 'status': form.status.data,
                 # Engine & Performance
                 'fuel_type': form.fuel_type.data or None,
