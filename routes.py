@@ -670,7 +670,7 @@ def admin_api_update_vehicle(vehicle_id):
         vehicle.fuel_type = form_data.get('fuel_type', vehicle.fuel_type)
         
         if all_images:
-            vehicle.images = all_images
+            vehicle.images_list = all_images
         
         # Save to database
         db.session.commit()
