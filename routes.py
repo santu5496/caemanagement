@@ -113,11 +113,18 @@ def admin_logout():
 
 @app.route('/admin')
 def admin_dashboard():
-    """Single Page Admin Dashboard"""
+    """Admin Dashboard with original wizard interface"""
     if not session.get('admin_logged_in'):
         return redirect(url_for('admin_login'))
     
-    return render_template('admin_spa.html')
+    try:
+        vehicles = get_all_vehicles()
+        form = VehicleForm()
+        return render_template('wizard_admin.html', vehicles=vehicles, form=form)
+    except Exception as e:
+        app.logger.error(f"Error loading admin dashboard: {e}")
+        flash('Error loading dashboard. Please try again.', 'error')
+        return redirect(url_for('admin_login'))
 
 @app.route('/api/vehicles')
 def api_vehicles():
@@ -181,6 +188,14 @@ def api_vehicles():
     except Exception as e:
         app.logger.error(f"Error fetching vehicles API: {e}")
         return jsonify({'success': False, 'message': 'Failed to fetch vehicles'}), 500
+
+@app.route('/admin/spa')
+def admin_dashboard_spa():
+    """Single Page Admin Dashboard (Alternative)"""
+    if not session.get('admin_logged_in'):
+        return redirect(url_for('admin_login'))
+    
+    return render_template('admin_spa.html')
 
 @app.route('/admin/old')
 def admin_dashboard_old():
