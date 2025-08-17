@@ -498,11 +498,12 @@
             container.innerHTML = '';
             
             for (let i = 0; i < 6; i++) {
+                const isHero = i === 0;
                 const slotHtml = `
                     <div class="col-md-4">
-                        <div class="upload-slot" onclick="triggerImageUpload(${i})" id="imageSlot${i}">
+                        <div class="upload-slot" onclick="triggerImageUpload(${i})" id="imageSlot${i}" style="border: ${isHero ? '3px solid #007bff' : '2px dashed #dee2e6'}; min-height: 150px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; border-radius: 8px; padding: 20px;">
                             <i class="fas fa-plus fa-2x text-muted mb-2"></i>
-                            <p class="mb-0 text-muted">Click to add image</p>
+                            <p class="mb-0 text-muted">${isHero ? 'Hero Image (Table View)' : 'Click to add image'}</p>
                             <input type="file" id="imageInput${i}" accept="image/*" style="display: none;" onchange="handleImageUpload(${i}, this)">
                         </div>
                     </div>
@@ -513,7 +514,10 @@
 
         // Trigger image upload
         function triggerImageUpload(index) {
-            document.getElementById(`imageInput${index}`).click();
+            const input = document.getElementById(`imageInput${index}`);
+            if (input) {
+                input.click();
+            }
         }
 
         // Handle image upload
@@ -550,11 +554,13 @@
                         reader.readAsDataURL(image);
                     }
                 } else {
+                    const isHero = i === 0;
                     slot.innerHTML = `
                         <i class="fas fa-plus fa-2x text-muted mb-2"></i>
-                        <p class="mb-0 text-muted">Click to add image</p>
+                        <p class="mb-0 text-muted">${isHero ? 'Hero Image (Table View)' : 'Click to add image'}</p>
                         <input type="file" id="imageInput${i}" accept="image/*" style="display: none;" onchange="handleImageUpload(${i}, this)">
                     `;
+                    slot.style.border = isHero ? '3px solid #007bff' : '2px dashed #dee2e6';
                     slot.onclick = () => triggerImageUpload(i);
                 }
             }
