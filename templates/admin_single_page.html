@@ -353,13 +353,16 @@
         // Load vehicle data for editing
         async function loadVehicleData(vehicleId) {
             try {
-                const response = await fetch(`/admin/api/vehicles/${vehicleId}`);
+                const response = await fetch(`/admin/vehicle/${vehicleId}`);
                 const data = await response.json();
                 
                 if (data.success) {
                     populateForm(data.vehicle);
+                } else {
+                    showNotification(data.message || 'Error loading vehicle data', 'error');
                 }
             } catch (error) {
+                console.error('Error loading vehicle data:', error);
                 showNotification('Error loading vehicle data', 'error');
             }
         }
