@@ -116,75 +116,121 @@
     </nav>
 
     <div class="container-fluid py-4">
-        <!-- Header with Stats and Add Button -->
+        <!-- Modern Dashboard Header -->
         <div class="row mb-4">
-            <div class="col-md-8">
-                <h2><i class="fas fa-cars me-2"></i>Vehicle Management</h2>
-                <div class="row">
-                    <div class="col-md-3">
-                        <div class="card bg-primary text-white">
-                            <div class="card-body">
-                                <h5 id="totalVehicles">0</h5>
-                                <small>Total Vehicles</small>
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h1 class="display-6 mb-0">Vehicle Inventory</h1>
+                        <p class="text-muted mb-0">Manage your automotive marketplace</p>
+                    </div>
+                    <button class="btn btn-primary btn-lg px-4" onclick="openAddModal()">
+                        <i class="fas fa-plus-circle me-2"></i>New Vehicle
+                    </button>
+                </div>
+                
+                <!-- Statistics Cards -->
+                <div class="row g-3 mb-4">
+                    <div class="col-xl-3 col-md-6">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-body p-4">
+                                <div class="d-flex align-items-center">
+                                    <div class="flex-shrink-0">
+                                        <div class="bg-primary bg-opacity-10 p-3 rounded">
+                                            <i class="fas fa-car text-primary fa-2x"></i>
+                                        </div>
+                                    </div>
+                                    <div class="flex-grow-1 ms-3">
+                                        <h3 class="mb-0" id="totalVehicles">0</h3>
+                                        <p class="text-muted mb-0">Total Inventory</p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-3">
-                        <div class="card bg-success text-white">
-                            <div class="card-body">
-                                <h5 id="availableVehicles">0</h5>
-                                <small>Available</small>
+                    <div class="col-xl-3 col-md-6">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-body p-4">
+                                <div class="d-flex align-items-center">
+                                    <div class="flex-shrink-0">
+                                        <div class="bg-success bg-opacity-10 p-3 rounded">
+                                            <i class="fas fa-check-circle text-success fa-2x"></i>
+                                        </div>
+                                    </div>
+                                    <div class="flex-grow-1 ms-3">
+                                        <h3 class="mb-0" id="availableVehicles">0</h3>
+                                        <p class="text-muted mb-0">Available Now</p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-3">
-                        <div class="card bg-warning text-white">
-                            <div class="card-body">
-                                <h5 id="soldVehicles">0</h5>
-                                <small>Sold</small>
+                    <div class="col-xl-3 col-md-6">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-body p-4">
+                                <div class="d-flex align-items-center">
+                                    <div class="flex-shrink-0">
+                                        <div class="bg-warning bg-opacity-10 p-3 rounded">
+                                            <i class="fas fa-handshake text-warning fa-2x"></i>
+                                        </div>
+                                    </div>
+                                    <div class="flex-grow-1 ms-3">
+                                        <h3 class="mb-0" id="soldVehicles">0</h3>
+                                        <p class="text-muted mb-0">Sold Units</p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-3">
-                        <div class="card bg-info text-white">
-                            <div class="card-body">
-                                <h5 id="totalValue">₹0</h5>
-                                <small>Total Value</small>
+                    <div class="col-xl-3 col-md-6">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-body p-4">
+                                <div class="d-flex align-items-center">
+                                    <div class="flex-shrink-0">
+                                        <div class="bg-info bg-opacity-10 p-3 rounded">
+                                            <i class="fas fa-rupee-sign text-info fa-2x"></i>
+                                        </div>
+                                    </div>
+                                    <div class="flex-grow-1 ms-3">
+                                        <h3 class="mb-0" id="totalValue">₹0</h3>
+                                        <p class="text-muted mb-0">Total Value</p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-md-4 text-end">
-                <button class="btn btn-success btn-lg" onclick="openAddModal()">
-                    <i class="fas fa-plus me-2"></i>Add New Vehicle
-                </button>
-            </div>
         </div>
 
-        <!-- Filters -->
-        <div class="row mb-4">
-            <div class="col-md-3">
-                <select class="form-select" id="categoryFilter" onchange="applyFilters()">
-                    <option value="">All Categories</option>
-                    <option value="Cars">Cars</option>
-                    <option value="Trucks">Trucks</option>
-                    <option value="Commercial Vehicles">Commercial Vehicles</option>
-                </select>
-            </div>
-            <div class="col-md-3">
-                <select class="form-select" id="statusFilter" onchange="applyFilters()">
-                    <option value="">All Status</option>
-                    <option value="available">Available</option>
-                    <option value="sold">Sold</option>
-                </select>
-            </div>
-            <div class="col-md-6">
-                <div class="input-group">
-                    <input type="text" class="form-control" id="searchInput" placeholder="Search vehicles..." oninput="applyFilters()">
-                    <button class="btn btn-outline-secondary" type="button">
-                        <i class="fas fa-search"></i>
-                    </button>
+        <!-- Advanced Search & Filter Panel -->
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-body p-4">
+                <div class="row align-items-center">
+                    <div class="col-md-6">
+                        <div class="input-group input-group-lg">
+                            <span class="input-group-text bg-light border-end-0">
+                                <i class="fas fa-search text-muted"></i>
+                            </span>
+                            <input type="text" class="form-control border-start-0 ps-0" id="searchInput" 
+                                   placeholder="Search by title, make, model..." oninput="applyFilters()">
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <select class="form-select form-select-lg" id="categoryFilter" onchange="applyFilters()">
+                            <option value="">All Categories</option>
+                            <option value="Cars">🚗 Cars</option>
+                            <option value="Trucks">🚛 Trucks</option>
+                            <option value="Commercial Vehicles">🚐 Commercial</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <select class="form-select form-select-lg" id="statusFilter" onchange="applyFilters()">
+                            <option value="">All Status</option>
+                            <option value="available">✅ Available</option>
+                            <option value="sold">💰 Sold</option>
+                        </select>
+                    </div>
                 </div>
             </div>
         </div>
