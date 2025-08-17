@@ -1362,36 +1362,69 @@ function handleImageUpload(slotIndex, input) {
 }
 
 function removeImage(slotIndex) {
+    const currentImage = uploadedImages[slotIndex - 1];
+    console.log(`Removing image from slot ${slotIndex}:`, currentImage);
+    
     uploadedImages[slotIndex - 1] = null; // Clear the image from array
 
     const previewImage = document.getElementById(`image-preview-${slotIndex}`);
     const removeBtn = document.querySelector(`#image-slot-${slotIndex} .image-remove-btn`);
+    const input = document.getElementById(`image-input-${slotIndex}`);
 
-    previewImage.src = '';
-    previewImage.style.display = 'none';
-    if(removeBtn) removeBtn.style.display = 'none';
-
+    if (previewImage) {
+        previewImage.src = '';
+        previewImage.style.display = 'none';
+        previewImage.onerror = null; // Clear error handler
+    }
+    
+    if (removeBtn) removeBtn.style.display = 'none';
+    
+    if (input) input.value = ''; // Clear the file input
 
     // Show slot content again
     const slotContent = document.querySelector(`#image-slot-${slotIndex} .slot-content`);
     if (slotContent) slotContent.style.display = 'flex';
 
+    // Reset slot styling
+    const uploadSlot = document.querySelector(`#image-slot-${slotIndex} .image-upload-slot`);
+    if (uploadSlot) {
+        uploadSlot.style.border = '2px dashed #007bff';
+        uploadSlot.style.background = 'linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)';
+    }
+
     updateHiddenFileInput();
+    
+    // Show confirmation
+    if (typeof currentImage === 'string') {
+        showAlert('Existing image marked for removal. Save to apply changes.', 'info');
+    } else {
+        showAlert('Image removed from upload queue.', 'info');
+    }
 }
 
 // Function to update the hidden file input with all selected files
 function updateHiddenFileInput() {
     const actualInput = document.querySelector('input[name="images"]');
+    if (!actualInput) {
+        console.warn('Hidden images input not found');
+        return;
+    }
+
     const dataTransfer = new DataTransfer();
 
-    uploadedImages.forEach(file => {
+    uploadedImages.forEach((file, index) => {
         if (file instanceof File) {
             dataTransfer.items.add(file);
+            console.log(`Added new file to slot ${index + 1}:`, file.name);
+        } else if (typeof file === 'string' && file.length > 0) {
+            console.log(`Existing image in slot ${index + 1}:`, file);
+            // For existing images (strings), we don't add them to the file input
+            // They are preserved on the server side during edit operations
         }
-        // For existing images (strings), we don't add them to the file input
-        // They are preserved on the server side during edit operations
     });
+    
     actualInput.files = dataTransfer.files;
+    console.log(`Updated hidden input with ${dataTransfer.files.length} new files`);
 }
 
 // Submit vehicle form function
@@ -1525,27 +1558,39 @@ function submitVehicleForm() {
 
 function validateAllSteps() {
     let allValid = true;
+    const originalCurrentStep = currentStep;
 
     // Temporarily set currentStep to each step to trigger validation logic
     for (let step = 1; step <= totalSteps; step++) {
-        const originalCurrentStep = currentStep;
         currentStep = step; 
         if (!validateCurrentStep()) {
             allValid = false;
+            // Don't break here, continue to validate all steps for comprehensive error reporting
         }
-        currentStep = originalCurrentStep; // Restore currentStep
     }
     
-    // Reset currentStep to the actual current step after checking all
-    currentStep = document.getElementById('currentStepNum').textContent ? parseInt(document.getElementById('currentStepNum').textContent) : 1;
+    // Reset currentStep to the original value
+    currentStep = originalCurrentStep;
     
     // Check image requirements - more flexible for editing
-    const hasFiles = uploadedImages.some(img => img instanceof File);
+    const hasNewFiles = uploadedImages.some(img => img instanceof File);
     const hasExistingImages = uploadedImages.some(img => typeof img === 'string' && img.length > 0);
+    const totalImages = uploadedImages.filter(img => img !== null).length;
     
-    if (!hasFiles && !hasExistingImages) {
+    console.log(`Image validation: ${hasNewFiles ? 'Has new files' : 'No new files'}, ${hasExistingImages ? 'Has existing images' : 'No existing images'}, Total: ${totalImages}`);
+    
+    if (totalImages === 0) {
         showAlert('Please upload at least one image for your vehicle.', 'warning');
         allValid = false;
+        // Navigate to the images step
+        currentStep = 6;
+        updateWizardDisplay();
+    }
+
+    if (allValid) {
+        console.log('All validation checks passed');
+    } else {
+        console.log('Validation failed - please review form fields and images');
     }
 
     return allValid;
@@ -1783,7 +1828,7 @@ window.editVehicle = async function(id) {
 
     // Clear validation states
     document.querySelectorAll('.form-control, .form-select').forEach(field => {
-        field.classList.remove('is-invalid');
+        field.classList.remove('is-invalid', 'is-valid');
         const feedback = field.nextElementSibling;
         if(feedback && feedback.classList.contains('invalid-feedback')) {
             feedback.style.display = 'none';
@@ -1797,14 +1842,21 @@ window.editVehicle = async function(id) {
             method: 'GET',
             credentials: 'same-origin',
             headers: {
-                'X-Requested-With': 'XMLHttpRequest'
+                'X-Requested-With': 'XMLHttpRequest',
+                'Content-Type': 'application/json'
             }
         });
 
         console.log('Response status:', response.status);
         
         if (!response.ok) {
-            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            if (response.status === 401) {
+                throw new Error('Authentication required. Please log in again.');
+            } else if (response.status === 404) {
+                throw new Error('Vehicle not found.');
+            } else {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
         }
 
         const data = await response.json();
@@ -1816,49 +1868,73 @@ window.editVehicle = async function(id) {
 
         const editForm = document.getElementById('vehicleWizardForm');
         if (!editForm) {
-            console.error("Vehicle form not found!");
-            return;
+            throw new Error("Vehicle form not found!");
         }
 
-        // Populate form fields
+        // Populate form fields with proper null handling
         const vehicleData = data.vehicle || data;
         console.log('Populating form with data:', vehicleData);
 
+        // Define fields that should not be populated (system fields)
+        const excludeFields = ['id', 'created_at', 'updated_at'];
+
         for (const [key, value] of Object.entries(vehicleData)) {
+            if (excludeFields.includes(key)) {
+                console.log(`Skipping system field: ${key}`);
+                continue;
+            }
+
             const input = editForm.querySelector(`[name="${key}"]`);
             if (input) {
                 console.log(`Setting ${key} to:`, value);
+                
+                // Handle different input types properly
                 if (input.type === 'checkbox') {
                     input.checked = Boolean(value);
                 } else if (input.tagName === 'SELECT') {
-                    // Handle select dropdowns - ensure value exists in options
-                    const valueToSet = value || '';
+                    // Handle select dropdowns with proper validation
+                    const valueToSet = value && value !== 'null' ? value.toString() : '';
                     const optionExists = Array.from(input.options).some(option => option.value === valueToSet);
-                    if (optionExists || valueToSet === '') {
+                    
+                    if (optionExists) {
                         input.value = valueToSet;
+                    } else if (valueToSet === '') {
+                        input.value = '';
+                    } else {
+                        console.warn(`Option "${valueToSet}" not found in select ${key}, setting to empty`);
+                        input.value = '';
                     }
+                    
                     // Trigger change event to update display
-                    input.dispatchEvent(new Event('change'));
+                    input.dispatchEvent(new Event('change', { bubbles: true }));
                 } else if (input.type === 'number') {
-                    input.value = value !== null && value !== undefined ? value : '';
+                    // Handle numbers with validation
+                    const numValue = value !== null && value !== undefined && value !== 'null' ? Number(value) : '';
+                    input.value = !isNaN(numValue) && numValue !== '' ? numValue : '';
+                } else if (input.type === 'text' || input.type === 'email' || input.type === 'tel' || input.tagName === 'TEXTAREA') {
+                    // Handle text fields with null safety
+                    input.value = value !== null && value !== undefined && value !== 'null' ? value.toString() : '';
                 } else {
-                    input.value = value !== null && value !== undefined ? value : '';
+                    // Default handling for other input types
+                    input.value = value !== null && value !== undefined && value !== 'null' ? value.toString() : '';
                 }
                 
                 // Clear any validation errors when populating
-                input.classList.remove('is-invalid');
+                input.classList.remove('is-invalid', 'is-valid');
                 const feedback = input.nextElementSibling;
                 if(feedback && feedback.classList.contains('invalid-feedback')) {
                     feedback.style.display = 'none';
                     feedback.textContent = '';
                 }
-            } else {
+            } else if (key !== 'images') {
                 console.log(`No input found for field: ${key}`);
             }
         }
 
-        // Special handling for images display
+        // Special handling for images display with error checking
         if (vehicleData.images && Array.isArray(vehicleData.images)) {
+            console.log(`Loading ${vehicleData.images.length} existing images`);
+            
             vehicleData.images.forEach((imageName, index) => {
                 if (imageName && index < 6) { // Ensure we don't exceed 6 slots
                     uploadedImages[index] = imageName; // Store as string for existing images
@@ -1870,12 +1946,23 @@ window.editVehicle = async function(id) {
                     if(previewImage) {
                         previewImage.src = `/static/uploads/${imageName}`;
                         previewImage.style.display = 'block';
+                        
+                        // Add error handling for image loading
+                        previewImage.onerror = function() {
+                            console.warn(`Failed to load image: ${imageName}`);
+                            this.style.display = 'none';
+                            if (slotContent) slotContent.style.display = 'flex';
+                            uploadedImages[index] = null; // Remove from array if failed to load
+                        };
                     }
+                    
                     if(removeBtn) removeBtn.style.display = 'flex';
                     if (slotContent) slotContent.style.display = 'none';
                 }
             });
             updateHiddenFileInput(); // Update the hidden input
+        } else {
+            console.log('No images found for this vehicle');
         }
 
         // Update modal title for edit mode
@@ -1887,6 +1974,9 @@ window.editVehicle = async function(id) {
         // Update current step to the first step for editing flow
         currentStep = 1;
         updateWizardDisplay(); // Refresh UI to show step 1 and correct progress
+
+        // Show success message
+        showAlert('✅ Vehicle data loaded successfully for editing', 'success');
 
         // Make modal visible
         new bootstrap.Modal(document.getElementById('vehicleWizard')).show();
