@@ -113,6 +113,77 @@ def admin_logout():
 
 @app.route('/admin')
 def admin_dashboard():
+    """Single Page Admin Dashboard"""
+    if not session.get('admin_logged_in'):
+        return redirect(url_for('admin_login'))
+    
+    return render_template('admin_spa.html')
+
+@app.route('/api/vehicles')
+def api_vehicles():
+    """API endpoint to get all vehicles as JSON"""
+    if not session.get('admin_logged_in'):
+        return jsonify({'success': False, 'message': 'Unauthorized'}), 401
+    
+    try:
+        vehicles = get_all_vehicles()
+        vehicles_data = []
+        
+        for vehicle in vehicles:
+            vehicle_dict = {
+                'id': vehicle.id,
+                'title': vehicle.title,
+                'category': vehicle.category,
+                'make': vehicle.make,
+                'model': vehicle.model,
+                'year': vehicle.year,
+                'price': float(vehicle.price),
+                'mileage': vehicle.mileage,
+                'description': vehicle.description,
+                'contact_name': vehicle.contact_name,
+                'contact_phone': vehicle.contact_phone,
+                'contact_email': vehicle.contact_email,
+                'status': vehicle.status,
+                'fuel_type': vehicle.fuel_type,
+                'transmission': vehicle.transmission,
+                'engine_size': vehicle.engine_size,
+                'horsepower': vehicle.horsepower,
+                'fuel_economy': vehicle.fuel_economy,
+                'drivetrain': vehicle.drivetrain,
+                'number_of_owners': vehicle.number_of_owners,
+                'previous_owner_name': vehicle.previous_owner_name,
+                'previous_owner_phone': vehicle.previous_owner_phone,
+                'previous_owner_email': vehicle.previous_owner_email,
+                'odometer_reading': vehicle.odometer_reading,
+                'accident_history': vehicle.accident_history,
+                'service_records': vehicle.service_records,
+                'insurance_company': vehicle.insurance_company,
+                'insurance_policy_number': vehicle.insurance_policy_number,
+                'insurance_expiry': vehicle.insurance_expiry,
+                'registration_number': vehicle.registration_number,
+                'vin_number': vehicle.vin_number,
+                'exterior_color': vehicle.exterior_color,
+                'interior_color': vehicle.interior_color,
+                'features': vehicle.features,
+                'condition_rating': vehicle.condition_rating,
+                'warranty_info': vehicle.warranty_info,
+                'images': vehicle.images,
+                'created_at': vehicle.created_at.isoformat() if vehicle.created_at else None,
+                'updated_at': vehicle.updated_at.isoformat() if vehicle.updated_at else None
+            }
+            vehicles_data.append(vehicle_dict)
+        
+        return jsonify({
+            'success': True,
+            'vehicles': vehicles_data,
+            'total': len(vehicles_data)
+        })
+    except Exception as e:
+        app.logger.error(f"Error fetching vehicles API: {e}")
+        return jsonify({'success': False, 'message': 'Failed to fetch vehicles'}), 500
+
+@app.route('/admin/old')
+def admin_dashboard_old():
     """Professional admin dashboard with enhanced features"""
     # Check authentication
     if not session.get('admin_logged_in'):
