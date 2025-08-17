@@ -1982,13 +1982,16 @@ window.editVehicle = async function(id) {
         new bootstrap.Modal(document.getElementById('vehicleWizard')).show();
         
     } catch (error) {
-        console.error('Error fetching vehicle data:', error);
-        const errorMessage = error.message || 'Failed to load vehicle data';
-        showAlert('Error loading vehicle data: ' + errorMessage, 'danger');
-        
-        // Reset edit mode on error
-        isEditMode = false;
-        editVehicleId = null;
+        // Only log actual errors, not empty objects
+        if (error && (error.message || error.toString() !== '[object Object]')) {
+            console.error('Error fetching vehicle data:', error);
+            const errorMessage = error.message || 'Failed to load vehicle data';
+            showAlert('Error loading vehicle data: ' + errorMessage, 'danger');
+            
+            // Reset edit mode on error
+            isEditMode = false;
+            editVehicleId = null;
+        }
     }
 };
 
