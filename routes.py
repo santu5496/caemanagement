@@ -610,6 +610,8 @@ def admin_api_create_vehicle():
             'contact_email': form_data.get('contact_email', ''),
             'status': form_data.get('status', 'available'),
             'fuel_type': form_data.get('fuel_type'),
+            'vehicle_number': form_data.get('vehicle_number'),
+            'previous_owner_phone': form_data.get('previous_owner_phone'),
             'images': all_images
         }
         
@@ -629,7 +631,9 @@ def admin_api_create_vehicle():
                 'price': float(vehicle.price),
                 'mileage': vehicle.mileage,
                 'status': vehicle.status,
-                'images': vehicle.images
+                'vehicle_number': vehicle.vehicle_number,
+                'previous_owner_phone': vehicle.previous_owner_phone,
+                'images': vehicle.images_list
             }
         })
         
@@ -672,6 +676,8 @@ def admin_api_update_vehicle(vehicle_id):
         vehicle.contact_email = form_data.get('contact_email', vehicle.contact_email)
         vehicle.status = form_data.get('status', vehicle.status)
         vehicle.fuel_type = form_data.get('fuel_type', vehicle.fuel_type)
+        vehicle.vehicle_number = form_data.get('vehicle_number', vehicle.vehicle_number)
+        vehicle.previous_owner_phone = form_data.get('previous_owner_phone', vehicle.previous_owner_phone)
         
         if all_images:
             vehicle.images_list = all_images
@@ -692,7 +698,9 @@ def admin_api_update_vehicle(vehicle_id):
                 'price': float(vehicle.price),
                 'mileage': vehicle.mileage,
                 'status': vehicle.status,
-                'images': vehicle.images
+                'vehicle_number': vehicle.vehicle_number,
+                'previous_owner_phone': vehicle.previous_owner_phone,
+                'images': vehicle.images_list
             }
         })
         
