@@ -69,8 +69,8 @@ class VehicleForm(FlaskForm):
     interior_color = StringField('Interior Color (Optional)', validators=[Optional(), Length(max=30)])
     features = TextAreaField('Features (Optional - comma-separated)', validators=[Optional(), Length(max=1000)])
     condition_rating = SelectField('Condition Rating (Optional)',
-                                  choices=[('', 'Select Condition'), ('Excellent', 'Excellent'), ('Good', 'Good'),
-                                          ('Fair', 'Fair'), ('Poor', 'Poor')],
+                                  choices=[('', 'Select Condition'), ('Excellent', 'Excellent'), ('Very Good', 'Very Good'), 
+                                          ('Good', 'Good'), ('Fair', 'Fair'), ('Poor', 'Poor')],
                                   validators=[Optional()])
     warranty_info = TextAreaField('Warranty Information (Optional)', validators=[Optional(), Length(max=500)])
 
