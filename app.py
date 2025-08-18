@@ -17,7 +17,7 @@ db = SQLAlchemy(model_class=Base)
 
 # create the app
 app = Flask(__name__)
-app.secret_key = os.environ.get("SESSION_SECRET")
+app.secret_key = os.environ.get("SESSION_SECRET", "replit-automarket-secret-key-2025")
 app.config['WTF_CSRF_ENABLED'] = False
 
 # Initialize CSRF protection  
