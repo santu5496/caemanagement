@@ -17,7 +17,7 @@ db = SQLAlchemy(model_class=Base)
 
 # create the app
 app = Flask(__name__)
-app.secret_key = os.environ.get("SESSION_SECRET", "dev-secret-key-for-session-management")
+app.secret_key = os.environ.get("SESSION_SECRET")
 app.config['WTF_CSRF_ENABLED'] = False
 
 # Initialize CSRF protection  
@@ -35,16 +35,6 @@ if database_url:
     }
 else:
     app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///automarket.db"
-    app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
-        'pool_pre_ping': True,
-        'pool_recycle': 300,
-        'pool_timeout': 20,
-        'max_overflow': 0,
-        'connect_args': {
-            'check_same_thread': False,
-            'timeout': 30
-        }
-    }
 
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
