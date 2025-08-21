@@ -123,12 +123,12 @@
                                 {% for vehicle in vehicles %}
                                     <tr id="vehicle-{{ vehicle.id }}">
                                         <td>
-                                            {% if vehicle.images_list and vehicle.images_list|length > 0 %}
+                                            {% if vehicle.images_list and vehicle.images_list|length > 0 and vehicle.images_list[0] and vehicle.images_list[0] != '' %}
                                                 <div class="position-relative">
                                                     <img src="{{ url_for('static', filename='uploads/' + vehicle.images_list[0]) }}"
                                                          class="img-thumbnail" style="width: 60px; height: 45px; object-fit: cover; border-radius: 6px;"
                                                          alt="{{ vehicle.title }}"
-                                                         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                                         onerror="console.log('Image failed to load:', this.src); this.style.display='none'; this.nextElementSibling.style.display='flex';">
                                                     <div class="bg-light border d-none align-items-center justify-content-center"
                                                          style="width: 60px; height: 45px; border-radius: 6px;">
                                                         <i class="fas fa-car text-muted"></i>
