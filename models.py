@@ -192,7 +192,10 @@ def initialize_sample_data():
                 mileage=45000,
                 description="Excellent condition, one owner, clean carfax. Great fuel economy and reliability.",
                 contact_name="Friendscars",
-                contact_phone="(555) 123-4567"
+                contact_phone="(555) 123-4567",
+                images=["bmw_330i_front.jpg", "bmw_330i_interior.jpg"],
+                fuel_type="Gasoline",
+                transmission="Automatic"
             ),
             Vehicle(
                 title="2019 Ford F-150 XLT",
@@ -204,7 +207,11 @@ def initialize_sample_data():
                 mileage=68000,
                 description="4WD, crew cab, powerful V6 engine. Perfect for work and family use.",
                 contact_name="Friendscars", 
-                contact_phone="(555) 123-4567"
+                contact_phone="(555) 123-4567",
+                images=["mercedes_c300_front.jpg", "mercedes_c300_interior.jpg"],
+                fuel_type="Gasoline",
+                transmission="Automatic",
+                drivetrain="4WD"
             ),
             Vehicle(
                 title="2021 Toyota Camry LE",
@@ -216,7 +223,10 @@ def initialize_sample_data():
                 mileage=28000,
                 description="Low mileage, excellent condition. Advanced safety features included.",
                 contact_name="Friendscars",
-                contact_phone="(555) 123-4567"
+                contact_phone="(555) 123-4567",
+                images=["audi_a4_front.jpg", "audi_a4_interior.jpg"],
+                fuel_type="Gasoline",
+                transmission="Automatic"
             ),
             Vehicle(
                 title="2022 BMW 330i xDrive Sport Package",
