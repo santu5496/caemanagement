@@ -99,9 +99,12 @@ class Vehicle(db.Model):
     @property
     def images_list(self):
         """Return images as a list"""
-        if not self.images or self.images == 'None':
+        if not self.images or self.images == 'None' or self.images == '':
             return []
-        return [img.strip() for img in str(self.images).split(',') if img.strip()]
+        # Handle both comma-separated strings and proper list conversion
+        if isinstance(self.images, str):
+            return [img.strip() for img in self.images.split(',') if img.strip() and img.strip() != 'None']
+        return self.images if isinstance(self.images, list) else []
 
     @images_list.setter
     def images_list(self, value):

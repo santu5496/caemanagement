@@ -125,11 +125,11 @@
                                         <td>
                                             {% if vehicle.images_list and vehicle.images_list|length > 0 %}
                                                 <div class="position-relative">
-                                                    <img src="{{ url_for('static', filename='uploads/' + vehicle.images_list[0]) }}" 
-                                                         class="img-thumbnail" style="width: 60px; height: 45px; object-fit: cover; border-radius: 6px;" 
+                                                    <img src="{{ url_for('static', filename='uploads/' + vehicle.images_list[0]) }}"
+                                                         class="img-thumbnail" style="width: 60px; height: 45px; object-fit: cover; border-radius: 6px;"
                                                          alt="{{ vehicle.title }}"
                                                          onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                                                    <div class="bg-light border d-none align-items-center justify-content-center" 
+                                                    <div class="bg-light border d-none align-items-center justify-content-center"
                                                          style="width: 60px; height: 45px; border-radius: 6px;">
                                                         <i class="fas fa-car text-muted"></i>
                                                     </div>
@@ -140,7 +140,7 @@
                                                     {% endif %}
                                                 </div>
                                             {% else %}
-                                                <div class="bg-light border d-flex align-items-center justify-content-center" 
+                                                <div class="bg-light border d-flex align-items-center justify-content-center"
                                                      style="width: 60px; height: 45px; border-radius: 6px;">
                                                     <i class="fas fa-car text-muted"></i>
                                                 </div>
@@ -167,7 +167,7 @@
                                         </td>
                                         <td>
                                             <div class="btn-group btn-group-sm" role="group">
-                                                <a href="{{ url_for('vehicle_detail', vehicle_id=vehicle.id) }}" 
+                                                <a href="{{ url_for('vehicle_detail', vehicle_id=vehicle.id) }}"
                                                    class="btn btn-outline-info" title="View">
                                                     <i class="fas fa-eye"></i>
                                                 </a>
@@ -226,60 +226,60 @@
                             <!-- Progress Line -->
                             <div class="position-absolute w-100" style="top: 20px; height: 2px; background-color: #e9ecef; z-index: 0;"></div>
                             <div class="position-absolute" id="progress-line" style="top: 20px; height: 2px; background-color: #007bff; z-index: 1; width: 0%; transition: width 0.3s ease;"></div>
-                            
+
                             <!-- Step 1: Basic Info -->
                             <div class="text-center position-relative" style="z-index: 2;">
-                                <div class="step-indicator bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center" 
+                                <div class="step-indicator bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center"
                                      style="width: 40px; height: 40px; border: 3px solid white; box-shadow: 0 2px 8px rgba(0,123,255,0.3);">
                                     <i class="fas fa-info-circle"></i>
                                 </div>
                                 <div class="mt-2 small fw-bold text-primary">Step 1</div>
                                 <div class="small text-muted">Basic Info</div>
                             </div>
-                            
+
                             <!-- Step 2: Engine -->
                             <div class="text-center position-relative" style="z-index: 2;">
-                                <div class="step-indicator bg-light text-muted rounded-circle d-inline-flex align-items-center justify-content-center" 
+                                <div class="step-indicator bg-light text-muted rounded-circle d-inline-flex align-items-center justify-content-center"
                                      style="width: 40px; height: 40px; border: 3px solid white;">
                                     <i class="fas fa-cog"></i>
                                 </div>
                                 <div class="mt-2 small text-muted">Step 2</div>
                                 <div class="small text-muted">Engine</div>
                             </div>
-                            
+
                             <!-- Step 3: History -->
                             <div class="text-center position-relative" style="z-index: 2;">
-                                <div class="step-indicator bg-light text-muted rounded-circle d-inline-flex align-items-center justify-content-center" 
+                                <div class="step-indicator bg-light text-muted rounded-circle d-inline-flex align-items-center justify-content-center"
                                      style="width: 40px; height: 40px; border: 3px solid white;">
                                     <i class="fas fa-history"></i>
                                 </div>
                                 <div class="mt-2 small text-muted">Step 3</div>
                                 <div class="small text-muted">History</div>
                             </div>
-                            
+
                             <!-- Step 4: Insurance -->
                             <div class="text-center position-relative" style="z-index: 2;">
-                                <div class="step-indicator bg-light text-muted rounded-circle d-inline-flex align-items-center justify-content-center" 
+                                <div class="step-indicator bg-light text-muted rounded-circle d-inline-flex align-items-center justify-content-center"
                                      style="width: 40px; height: 40px; border: 3px solid white;">
                                     <i class="fas fa-shield-alt"></i>
                                 </div>
                                 <div class="mt-2 small text-muted">Step 4</div>
                                 <div class="small text-muted">Insurance</div>
                             </div>
-                            
+
                             <!-- Step 5: Features -->
                             <div class="text-center position-relative" style="z-index: 2;">
-                                <div class="step-indicator bg-light text-muted rounded-circle d-inline-flex align-items-center justify-content-center" 
+                                <div class="step-indicator bg-light text-muted rounded-circle d-inline-flex align-items-center justify-content-center"
                                      style="width: 40px; height: 40px; border: 3px solid white;">
                                     <i class="fas fa-star"></i>
                                 </div>
                                 <div class="mt-2 small text-muted">Step 5</div>
                                 <div class="small text-muted">Features</div>
                             </div>
-                            
+
                             <!-- Step 6: Images & Save -->
                             <div class="text-center position-relative" style="z-index: 2;">
-                                <div class="step-indicator bg-light text-muted rounded-circle d-inline-flex align-items-center justify-content-center" 
+                                <div class="step-indicator bg-light text-muted rounded-circle d-inline-flex align-items-center justify-content-center"
                                      style="width: 40px; height: 40px; border: 3px solid white;">
                                     <i class="fas fa-check"></i>
                                 </div>
@@ -318,7 +318,7 @@
                             <div class="card border-0 rounded-3 p-4 mb-4" style="background: linear-gradient(135deg, #f8f9fa 0%, #e3f2fd 100%); border: 1px solid #dee2e6 !important;">
                                 <h6 class="text-primary mb-3"><i class="fas fa-info-circle me-2"></i>Essential Vehicle Information</h6>
                                 <p class="text-dark mb-3">Please provide the basic details about the vehicle. All fields marked with <span class="text-danger">*</span> are required.</p>
-                                
+
                                 <div class="row mb-3">
                                     <div class="col-md-8">
                                         <label class="form-label fw-bold text-dark">{{ form.title.label.text }} <span class="text-danger">*</span></label>
@@ -569,10 +569,10 @@
                                 <!-- 6 Image Upload Slots -->
                                 <div class="row g-4">
                                     <div class="col-md-4" id="image-slot-1">
-                                        <div class="image-upload-slot border rounded-3 p-4 text-center position-relative" 
-                                             style="min-height: 200px; cursor: pointer; border: 2px dashed #007bff !important; 
+                                        <div class="image-upload-slot border rounded-3 p-4 text-center position-relative"
+                                             style="min-height: 200px; cursor: pointer; border: 2px dashed #007bff !important;
                                                     background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-                                                    transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(0,123,255,0.1);" 
+                                                    transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(0,123,255,0.1);"
                                              onclick="triggerImageUpload(1)"
                                              onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 15px rgba(0,123,255,0.2)';"
                                              onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(0,123,255,0.1)';">
@@ -582,10 +582,10 @@
                                         </div>
                                     </div>
                                     <div class="col-md-4" id="image-slot-2">
-                                        <div class="image-upload-slot border rounded-3 p-4 text-center position-relative" 
-                                             style="min-height: 200px; cursor: pointer; border: 2px dashed #007bff !important; 
+                                        <div class="image-upload-slot border rounded-3 p-4 text-center position-relative"
+                                             style="min-height: 200px; cursor: pointer; border: 2px dashed #007bff !important;
                                                     background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-                                                    transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(0,123,255,0.1);" 
+                                                    transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(0,123,255,0.1);"
                                              onclick="triggerImageUpload(2)"
                                              onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 15px rgba(0,123,255,0.2)';"
                                              onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(0,123,255,0.1)';">
@@ -595,10 +595,10 @@
                                         </div>
                                     </div>
                                     <div class="col-md-4" id="image-slot-3">
-                                        <div class="image-upload-slot border rounded-3 p-4 text-center position-relative" 
-                                             style="min-height: 200px; cursor: pointer; border: 2px dashed #007bff !important; 
+                                        <div class="image-upload-slot border rounded-3 p-4 text-center position-relative"
+                                             style="min-height: 200px; cursor: pointer; border: 2px dashed #007bff !important;
                                                     background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-                                                    transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(0,123,255,0.1);" 
+                                                    transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(0,123,255,0.1);"
                                              onclick="triggerImageUpload(3)"
                                              onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 15px rgba(0,123,255,0.2)';"
                                              onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(0,123,255,0.1)';">
@@ -608,10 +608,10 @@
                                         </div>
                                     </div>
                                     <div class="col-md-4" id="image-slot-4">
-                                        <div class="image-upload-slot border rounded-3 p-4 text-center position-relative" 
-                                             style="min-height: 200px; cursor: pointer; border: 2px dashed #007bff !important; 
+                                        <div class="image-upload-slot border rounded-3 p-4 text-center position-relative"
+                                             style="min-height: 200px; cursor: pointer; border: 2px dashed #007bff !important;
                                                     background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-                                                    transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(0,123,255,0.1);" 
+                                                    transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(0,123,255,0.1);"
                                              onclick="triggerImageUpload(4)"
                                              onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 15px rgba(0,123,255,0.2)';"
                                              onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(0,123,255,0.1)';">
@@ -621,10 +621,10 @@
                                         </div>
                                     </div>
                                     <div class="col-md-4" id="image-slot-5">
-                                        <div class="image-upload-slot border rounded-3 p-4 text-center position-relative" 
-                                             style="min-height: 200px; cursor: pointer; border: 2px dashed #007bff !important; 
+                                        <div class="image-upload-slot border rounded-3 p-4 text-center position-relative"
+                                             style="min-height: 200px; cursor: pointer; border: 2px dashed #007bff !important;
                                                     background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-                                                    transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(0,123,255,0.1);" 
+                                                    transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(0,123,255,0.1);"
                                              onclick="triggerImageUpload(5)"
                                              onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 15px rgba(0,123,255,0.2)';"
                                              onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(0,123,255,0.1)';">
@@ -634,10 +634,10 @@
                                         </div>
                                     </div>
                                     <div class="col-md-4" id="image-slot-6">
-                                        <div class="image-upload-slot border rounded-3 p-4 text-center position-relative" 
-                                             style="min-height: 200px; cursor: pointer; border: 2px dashed #007bff !important; 
+                                        <div class="image-upload-slot border rounded-3 p-4 text-center position-relative"
+                                             style="min-height: 200px; cursor: pointer; border: 2px dashed #007bff !important;
                                                     background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-                                                    transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(0,123,255,0.1);" 
+                                                    transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(0,123,255,0.1);"
                                              onclick="triggerImageUpload(6)"
                                              onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 15px rgba(0,123,255,0.2)';"
                                              onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(0,123,255,0.1)';">
@@ -668,11 +668,11 @@
                             <i class="fas fa-arrow-left me-1"></i>Previous Step
                         </button>
                     </div>
-                    
+
                     <div class="text-center">
                         <span class="badge bg-primary px-3 py-2" id="step-counter">Step 1 of 6</span>
                     </div>
-                    
+
                     <div>
                         <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">
                             <i class="fas fa-times me-1"></i>Cancel
@@ -702,6 +702,7 @@
 <script>
 let currentVehicleId = null;
 let isEditMode = false;
+let currentTabIndex = 0; // Initialize currentTabIndex
 
 function openAddModal() {
     currentVehicleId = null;
@@ -713,10 +714,10 @@ function openAddModal() {
     document.getElementById('vehicleForm').reset();
     clearFormErrors();
     clearImagePreviews();
-    
+
     // Reset to first tab
     resetToFirstTab();
-    updateProgressIndicator(0);
+    updateProgressIndicator(0); // Explicitly set to 0 for new modal
     updateNavigationButtons();
 }
 
@@ -746,6 +747,10 @@ function openEditModal(vehicleId) {
                 populateForm(data.vehicle);
                 const modal = new bootstrap.Modal(document.getElementById('vehicleModal'));
                 modal.show();
+                // After populating and showing, update tab UI
+                currentTabIndex = 0; // Ensure it's reset to the first tab for UI update
+                updateProgressIndicator(currentTabIndex);
+                updateNavigationButtons();
             } else {
                 showToast(data.message, 'danger');
             }
@@ -972,20 +977,10 @@ function clearAllImageSlots() {
     uploadedImages = [];
 }
 
-// Enhanced tab navigation with null checks
-function resetToFirstTab() {
-    const firstTab = document.getElementById('basic-tab');
-    if (firstTab) {
-        firstTab.click();
-    } else {
-        console.warn('First tab element not found');
-    }
-}
-
 // Fix for the null element error
 function updateTabNavigation() {
     const tabButtons = ['basic-tab', 'engine-tab', 'ownership-tab', 'insurance-tab', 'features-tab', 'contact-tab'];
-    
+
     tabButtons.forEach((tabId, index) => {
         const tabElement = document.getElementById(tabId);
         if (tabElement) {
@@ -1008,11 +1003,11 @@ function safeQuerySelectorAll(selector) {
 function clearFormErrors() {
     const formErrors = document.getElementById('form-errors');
     if (formErrors) formErrors.style.display = 'none';
-    
+
     Array.from(document.querySelectorAll('.is-invalid')).forEach(el => {
         if (el) el.classList.remove('is-invalid');
     });
-    
+
     Array.from(document.querySelectorAll('.invalid-feedback')).forEach(el => {
         if (el) el.textContent = '';
     });
@@ -1023,7 +1018,7 @@ function showFormErrors(errors) {
 
     let errorMessages = [];
     let missingFields = [];
-    
+
     for (const [field, messages] of Object.entries(errors)) {
         const input = document.getElementById(`modal-${field.replace('_', '-')}`);
         if (input) {
@@ -1033,7 +1028,7 @@ function showFormErrors(errors) {
                 feedback.textContent = messages[0];
             }
         }
-        
+
         // Collect field names for user-friendly message
         const fieldNames = {
             'title': 'Vehicle Title',
@@ -1045,7 +1040,7 @@ function showFormErrors(errors) {
             'contact_name': 'Contact Name',
             'contact_phone': 'Contact Phone'
         };
-        
+
         if (fieldNames[field]) {
             missingFields.push(fieldNames[field]);
         }
@@ -1054,7 +1049,7 @@ function showFormErrors(errors) {
     if (missingFields.length > 0) {
         const fieldsText = missingFields.join(', ');
         showToast(`Please fill in the following required fields: ${fieldsText}`, 'danger');
-        
+
         const errorDiv = document.getElementById('form-errors');
         if (errorDiv) {
             errorDiv.innerHTML = `<strong>Missing required fields:</strong> ${fieldsText}`;
@@ -1157,7 +1152,7 @@ function updateStatistics() {
     const totalCount = document.getElementById('total-count');
     const availableCount = document.getElementById('available-count');
     const soldCount = document.getElementById('sold-count');
-    
+
     if (totalCount) totalCount.textContent = total;
     if (availableCount) availableCount.textContent = available;
     if (soldCount) soldCount.textContent = sold;
@@ -1242,9 +1237,10 @@ document.getElementById('vehicleForm').addEventListener('submit', function(e) {
             const modal = bootstrap.Modal.getInstance(document.getElementById('vehicleModal'));
             modal.hide();
 
-            // Reload page to refresh data
+            // Reload page to refresh data and clear cache
             setTimeout(() => {
-                window.location.reload();
+                // Add cache busting parameter
+                window.location.href = window.location.href.split('?')[0] + '?refresh=' + Date.now();
             }, 1000);
         } else {
             if (data.errors) {
@@ -1263,35 +1259,39 @@ document.getElementById('vehicleForm').addEventListener('submit', function(e) {
 });
 
 // Enhanced Tab Navigation
-let currentTabIndex = 0;
 const tabs = ['basic', 'engine', 'ownership', 'insurance', 'features', 'contact'];
 const tabButtons = ['basic-tab', 'engine-tab', 'ownership-tab', 'insurance-tab', 'features-tab', 'contact-tab'];
 
 function resetToFirstTab() {
     currentTabIndex = 0;
-    document.getElementById('basic-tab').click();
+    const firstTabButton = document.getElementById('basic-tab');
+    if (firstTabButton) {
+        firstTabButton.click();
+    } else {
+        console.warn('Basic tab button not found during reset.');
+    }
 }
 
 function updateProgressIndicator(activeIndex) {
     const indicators = document.querySelectorAll('.step-indicator');
-    
+
     indicators.forEach((indicator, index) => {
         const stepContainer = indicator.parentNode;
         const stepNumber = stepContainer.querySelector('.small.fw-bold, .small.text-muted:first-of-type');
         const stepLabel = stepContainer.querySelector('.small.text-muted:last-child');
-        
+
         if (index <= activeIndex) {
             // Completed or current step
             indicator.className = 'step-indicator bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center';
             indicator.style.cssText = 'width: 40px; height: 40px; border: 3px solid white; box-shadow: 0 2px 8px rgba(0,123,255,0.3);';
-            
+
             if (stepNumber) {
                 stepNumber.className = 'mt-2 small fw-bold text-primary';
             }
             if (stepLabel) {
                 stepLabel.className = 'small text-primary';
             }
-            
+
             // Add checkmark for completed steps
             if (index < activeIndex) {
                 indicator.innerHTML = '<i class="fas fa-check"></i>';
@@ -1304,24 +1304,26 @@ function updateProgressIndicator(activeIndex) {
             // Future steps
             indicator.className = 'step-indicator bg-light text-muted rounded-circle d-inline-flex align-items-center justify-content-center';
             indicator.style.cssText = 'width: 40px; height: 40px; border: 3px solid white;';
-            
+
             if (stepNumber) {
                 stepNumber.className = 'mt-2 small text-muted';
             }
             if (stepLabel) {
                 stepLabel.className = 'small text-muted';
             }
-            
+
             // Show original icon for future steps
             const icons = ['fas fa-info-circle', 'fas fa-cog', 'fas fa-history', 'fas fa-shield-alt', 'fas fa-star', 'fas fa-check'];
             indicator.innerHTML = `<i class="${icons[index]}"></i>`;
         }
     });
-    
+
     // Update progress line
     const progressLine = document.getElementById('progress-line');
-    const progressPercentage = (activeIndex / (tabs.length - 1)) * 100;
-    progressLine.style.width = `${progressPercentage}%`;
+    if (progressLine) {
+        const progressPercentage = (activeIndex / (tabs.length - 1)) * 100;
+        progressLine.style.width = `${progressPercentage}%`;
+    }
 }
 
 function updateNavigationButtons() {
@@ -1329,29 +1331,37 @@ function updateNavigationButtons() {
     const nextBtn = document.getElementById('next-tab-btn');
     const submitBtn = document.getElementById('submit-btn');
     const stepCounter = document.getElementById('step-counter');
-    
+
     // Update step counter
-    stepCounter.textContent = `Step ${currentTabIndex + 1} of ${tabs.length}`;
-    
+    if (stepCounter) {
+        stepCounter.textContent = `Step ${currentTabIndex + 1} of ${tabs.length}`;
+    }
+
     // Show/hide previous button
-    prevBtn.style.display = currentTabIndex > 0 ? 'inline-block' : 'none';
-    
+    if (prevBtn) {
+        prevBtn.style.display = currentTabIndex > 0 ? 'inline-block' : 'none';
+    }
+
     // Update button text based on current step
     const stepNames = ['Basic Info', 'Engine Details', 'Vehicle History', 'Insurance Info', 'Features', 'Images & Finish'];
-    
+
     if (currentTabIndex === tabs.length - 1) {
         // Last step - show save button
-        nextBtn.style.display = 'none';
-        submitBtn.style.display = 'inline-block';
-        submitBtn.innerHTML = '<i class="fas fa-save me-1"></i>Save Vehicle';
-        stepCounter.className = 'badge bg-success px-3 py-2';
-        stepCounter.textContent = 'Ready to Save!';
+        if (nextBtn) nextBtn.style.display = 'none';
+        if (submitBtn) submitBtn.style.display = 'inline-block';
+        if (submitBtn) submitBtn.innerHTML = '<i class="fas fa-save me-1"></i>Save Vehicle';
+        if (stepCounter) {
+            stepCounter.className = 'badge bg-success px-3 py-2';
+            stepCounter.textContent = 'Ready to Save!';
+        }
     } else {
         // Show next button with step name
-        nextBtn.style.display = 'inline-block';
-        submitBtn.style.display = 'none';
-        nextBtn.innerHTML = `Continue to ${stepNames[currentTabIndex + 1]} <i class="fas fa-arrow-right ms-1"></i>`;
-        stepCounter.className = 'badge bg-primary px-3 py-2';
+        if (nextBtn) nextBtn.style.display = 'inline-block';
+        if (submitBtn) submitBtn.style.display = 'none';
+        if (nextBtn) nextBtn.innerHTML = `Continue to ${stepNames[currentTabIndex + 1]} <i class="fas fa-arrow-right ms-1"></i>`;
+        if (stepCounter) {
+            stepCounter.className = 'badge bg-primary px-3 py-2';
+        }
     }
 }
 
@@ -1361,13 +1371,18 @@ document.getElementById('next-tab-btn').addEventListener('click', function() {
     if (validateCurrentStep()) {
         if (currentTabIndex < tabs.length - 1) {
             currentTabIndex++;
-            document.getElementById(tabButtons[currentTabIndex]).click();
+            const nextTabButton = document.getElementById(tabButtons[currentTabIndex]);
+            if (nextTabButton) {
+                nextTabButton.click();
+            } else {
+                console.warn(`Next tab button not found for index ${currentTabIndex}`);
+            }
             updateProgressIndicator(currentTabIndex);
             updateNavigationButtons();
-            
+
             // Smooth scroll to top of modal content
             document.querySelector('.modal-body').scrollTop = 0;
-            
+
             // Add a subtle animation
             const activeTab = document.querySelector('.tab-pane.active');
             if (activeTab) {
@@ -1384,10 +1399,15 @@ document.getElementById('next-tab-btn').addEventListener('click', function() {
 document.getElementById('prev-tab-btn').addEventListener('click', function() {
     if (currentTabIndex > 0) {
         currentTabIndex--;
-        document.getElementById(tabButtons[currentTabIndex]).click();
+        const prevTabButton = document.getElementById(tabButtons[currentTabIndex]);
+        if (prevTabButton) {
+            prevTabButton.click();
+        } else {
+            console.warn(`Previous tab button not found for index ${currentTabIndex}`);
+        }
         updateProgressIndicator(currentTabIndex);
         updateNavigationButtons();
-        
+
         // Smooth scroll to top of modal content
         document.querySelector('.modal-body').scrollTop = 0;
     }
@@ -1396,7 +1416,7 @@ document.getElementById('prev-tab-btn').addEventListener('click', function() {
 // Validation function for current step
 function validateCurrentStep() {
     clearFormErrors();
-    
+
     if (currentTabIndex === 0) {
         // Basic Info validation
         const title = document.getElementById('modal-title').value.trim();
@@ -1407,18 +1427,20 @@ function validateCurrentStep() {
         const mileage = document.getElementById('modal-mileage').value;
         const contactName = document.getElementById('modal-contact-name').value.trim();
         const contactPhone = document.getElementById('modal-contact-phone').value.trim();
-        
+
         const basicRequiredFields = [
             { id: 'modal-title', name: 'Vehicle Title' },
             { id: 'modal-make', name: 'Make' },
             { id: 'modal-model', name: 'Model' },
             { id: 'modal-year', name: 'Year' },
             { id: 'modal-price', name: 'Price' },
-            { id: 'modal-mileage', name: 'Mileage' }
+            { id: 'modal-mileage', name: 'Mileage' },
+            { id: 'modal-contact-name', name: 'Contact Name' },
+            { id: 'modal-contact-phone', name: 'Contact Phone' }
         ];
 
         const missingBasicFields = [];
-        
+
         basicRequiredFields.forEach(field => {
             const element = document.getElementById(field.id);
             if (element) {
@@ -1436,28 +1458,38 @@ function validateCurrentStep() {
             return false;
         }
     }
-    
+
+    // Add validation for other steps if needed
+    // Example for Engine step (optional fields, but good to check required dropdowns)
     if (currentTabIndex === 1) {
-        // Engine validation - ensure required fields are filled
         const fuelType = document.getElementById('modal-fuel-type').value;
         const transmission = document.getElementById('modal-transmission').value;
-        
-        if (!fuelType || !transmission) {
-            showToast('Please select fuel type and transmission before continuing', 'warning');
+
+        if (!fuelType) {
+            document.getElementById('modal-fuel-type').classList.add('is-invalid');
+            showToast('Please select a fuel type.', 'warning');
+            return false;
+        }
+        if (!transmission) {
+            document.getElementById('modal-transmission').classList.add('is-invalid');
+            showToast('Please select a transmission type.', 'warning');
             return false;
         }
     }
-    
+
     return true;
 }
 
 // Tab click event listeners
 tabButtons.forEach((tabId, index) => {
-    document.getElementById(tabId).addEventListener('click', function() {
-        currentTabIndex = index;
-        updateProgressIndicator(currentTabIndex);
-        updateNavigationButtons();
-    });
+    const tabElement = document.getElementById(tabId);
+    if (tabElement) {
+        tabElement.addEventListener('click', function() {
+            currentTabIndex = index;
+            updateProgressIndicator(currentTabIndex);
+            updateNavigationButtons();
+        });
+    }
 });
 
 // Enhanced image upload UI
@@ -1465,17 +1497,20 @@ function initializeImageSlots() {
     for (let i = 1; i <= 6; i++) {
         const slot = document.getElementById(`image-slot-${i}`);
         if (!slot) continue;
-        
+
         const slotContent = slot.querySelector('.slot-content');
         if (!slotContent) continue;
-        
-        slotContent.innerHTML = `
-            <i class="fas fa-cloud-upload-alt fa-3x text-primary mb-2"></i>
-            <p class="mb-1 fw-bold">Click to upload</p>
-            <small class="text-muted">or drag and drop image here</small>
-            <small class="d-block text-muted mt-1">Max 5MB • JPG, PNG, GIF</small>
-        `;
-        
+
+        // Only initialize if content is empty
+        if (!slotContent.innerHTML.trim()) {
+            slotContent.innerHTML = `
+                <i class="fas fa-cloud-upload-alt fa-3x text-primary mb-2"></i>
+                <p class="mb-1 fw-bold">Click to upload</p>
+                <small class="text-muted">or drag and drop image here</small>
+                <small class="d-block text-muted mt-1">Max 5MB • JPG, PNG, GIF</small>
+            `;
+        }
+
         // Add drag and drop functionality with proper error handling
         slot.addEventListener('dragover', function(e) {
             e.preventDefault();
@@ -1485,16 +1520,18 @@ function initializeImageSlots() {
                 uploadSlot.style.background = 'linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%)';
             }
         });
-        
+
         slot.addEventListener('dragleave', function(e) {
             e.preventDefault();
             e.stopPropagation();
             const uploadSlot = this.querySelector('.image-upload-slot');
-            if (uploadSlot) {
+            // Check if the mouse is still within the bounds of the slot before resetting
+            const relatedTarget = e.relatedTarget;
+            if (!uploadSlot.contains(relatedTarget)) {
                 uploadSlot.style.background = 'linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)';
             }
         });
-        
+
         slot.addEventListener('drop', function(e) {
             e.preventDefault();
             e.stopPropagation();
@@ -1502,12 +1539,13 @@ function initializeImageSlots() {
             if (uploadSlot) {
                 uploadSlot.style.background = 'linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)';
             }
-            
+
             const files = e.dataTransfer.files;
             if (files.length > 0) {
                 const input = document.getElementById(`image-input-${i}`);
                 if (input) {
                     try {
+                        // Simulate file input change
                         input.files = files;
                         handleImageUpload(i, input);
                     } catch (error) {
@@ -1524,53 +1562,38 @@ function initializeImageSlots() {
 document.getElementById('vehicleModal').addEventListener('hidden.bs.modal', function() {
     document.getElementById('vehicleForm').reset();
     clearFormErrors();
-    resetToFirstTab();
-    updateProgressIndicator(0);
-    updateNavigationButtons();
+    resetToFirstTab(); // Reset tab index and click the first tab
+    updateProgressIndicator(0); // Ensure progress is reset
+    updateNavigationButtons(); // Update navigation buttons for the first tab
 });
 
 // Initialize enhanced UI when modal is shown
 document.getElementById('vehicleModal').addEventListener('shown.bs.modal', function() {
-    initializeImageSlots();
+    initializeImageSlots(); // Ensure image slots are ready
 });
 
-// Add click handler for submit button specifically
+// Add initializations on DOMContentLoaded
 document.addEventListener('DOMContentLoaded', function() {
     console.log('Auto Dealership app loaded successfully');
-    
+
     // Initialize all components with null checks
     initializeAdminInterface();
-    
-    // Debug: Add explicit click handler for submit button
-    const submitBtn = document.getElementById('submit-btn');
-    if (submitBtn) {
-        submitBtn.addEventListener('click', function(e) {
-            console.log('Submit button clicked!');
-            console.log('Button type:', this.type);
-            console.log('Form:', document.getElementById('vehicleForm'));
-            
-            // Force form submission if needed
-            if (this.type === 'button') {
-                e.preventDefault();
-                const form = document.getElementById('vehicleForm');
-                if (form) {
-                    form.dispatchEvent(new Event('submit', {bubbles: true, cancelable: true}));
-                }
-            }
-        });
-    }
-    
+
     // Initialize image slots when page loads
     const modal = document.getElementById('vehicleModal');
     if (modal) {
         initializeImageSlots();
     }
-    
+
     // Update statistics on page load
     updateStatistics();
-    
-    // Initialize tab navigation
+
+    // Initialize tab navigation listeners
     updateTabNavigation();
+
+    // Setup initial state for navigation buttons and progress
+    updateProgressIndicator(currentTabIndex);
+    updateNavigationButtons();
 });
 
 function initializeAdminInterface() {
@@ -1584,23 +1607,22 @@ function initializeAdminInterface() {
             'available-count',
             'sold-count'
         ];
-        
+
         requiredElements.forEach(id => {
             const element = document.getElementById(id);
             if (!element) {
-                console.warn(`Required element ${id} not found`);
+                console.warn(`Required element '${id}' not found.`);
             }
         });
-        
-        // Initialize image slots with error handling
+
+        // Initialize image slots content if they are empty
         for (let i = 1; i <= 6; i++) {
             const slot = document.getElementById(`image-slot-${i}`);
             if (!slot) {
-                console.warn(`Image slot ${i} not found`);
+                console.warn(`Image slot ${i} not found.`);
                 continue;
             }
-            
-            // Initialize slot content if empty
+
             const slotContent = slot.querySelector('.slot-content');
             if (slotContent && !slotContent.innerHTML.trim()) {
                 slotContent.innerHTML = `
@@ -1611,25 +1633,31 @@ function initializeAdminInterface() {
                 `;
             }
         }
-        
+
     } catch (error) {
-        console.error('Error initializing admin interface:', error);
+        console.error('Error during admin interface initialization:', error);
     }
 }
 
 // Auto-format price input
-document.getElementById('modal-price').addEventListener('input', function() {
-    let value = this.value.replace(/[^\d.]/g, '');
-    if (value.includes('.')) {
-        const parts = value.split('.');
-        value = parts[0] + '.' + parts[1].substring(0, 2);
-    }
-    this.value = value;
-});
+const priceInput = document.getElementById('modal-price');
+if (priceInput) {
+    priceInput.addEventListener('input', function() {
+        let value = this.value.replace(/[^\d.]/g, '');
+        if (value.includes('.')) {
+            const parts = value.split('.');
+            value = parts[0] + '.' + parts[1].substring(0, 2); // Limit to 2 decimal places
+        }
+        this.value = value;
+    });
+}
 
 // Auto-format mileage input
-document.getElementById('modal-mileage').addEventListener('input', function() {
-    this.value = this.value.replace(/[^\d]/g, '');
-});
+const mileageInput = document.getElementById('modal-mileage');
+if (mileageInput) {
+    mileageInput.addEventListener('input', function() {
+        this.value = this.value.replace(/[^\d]/g, ''); // Only allow digits
+    });
+}
 </script>
 {% endblock %}

@@ -22,7 +22,7 @@ def save_uploaded_files(files):
         files = [files] if files else []
     
     # Filter out None/empty files and limit to maximum 6 images
-    valid_files = [f for f in files if f and hasattr(f, 'filename') and f.filename.strip()]
+    valid_files = [f for f in files if f and hasattr(f, 'filename') and f.filename and f.filename.strip()]
     limited_files = valid_files[:6]
     
     app.logger.info(f"Processing {len(limited_files)} valid files out of {len(files)} total files")
@@ -41,14 +41,20 @@ def save_uploaded_files(files):
                 # Save the file
                 file.save(filepath)
                 filenames.append(filename)
-                app.logger.info(f"Successfully saved file: {filename}")
+                app.logger.info(f"Successfully saved file: {filename} at path: {filepath}")
+                
+                # Verify file was saved
+                if os.path.exists(filepath):
+                    app.logger.info(f"File verification successful: {filename}")
+                else:
+                    app.logger.error(f"File verification failed: {filename}")
                 
             except Exception as e:
                 app.logger.error(f"Error saving file {file.filename}: {e}")
                 continue
         else:
-            if file:
-                app.logger.warning(f"File rejected - invalid filename or type: {getattr(file, 'filename', 'unknown')}")
+            if file and hasattr(file, 'filename'):
+                app.logger.warning(f"File rejected - invalid filename or type: {file.filename}")
     
     app.logger.info(f"Total files saved: {len(filenames)}")
     return filenames
@@ -303,15 +309,18 @@ def add_vehicle_route():
     if form.validate_on_submit():
         try:
             # Save uploaded images - handle both single file and multiple files
-            uploaded_files = form.images.data
-            if not isinstance(uploaded_files, list):
-                uploaded_files = [uploaded_files] if uploaded_files else []
+            uploaded_files = request.files.getlist('images')
+            if not uploaded_files:
+                uploaded_files = form.images.data
+                if not isinstance(uploaded_files, list):
+                    uploaded_files = [uploaded_files] if uploaded_files else []
             
             # Filter out empty files
-            valid_files = [f for f in uploaded_files if f and hasattr(f, 'filename') and f.filename]
+            valid_files = [f for f in uploaded_files if f and hasattr(f, 'filename') and f.filename and f.filename.strip()]
             
             image_filenames = save_uploaded_files(valid_files)
             app.logger.info(f"Saved {len(image_filenames)} images: {image_filenames}")
+            app.logger.debug(f"Image filenames: {image_filenames}")
 
             # Create vehicle with comprehensive data
             vehicle = Vehicle(
