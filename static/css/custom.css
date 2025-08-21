@@ -244,36 +244,36 @@ body {
     .hero-section {
         padding: 1.5rem 0 !important;
     }
-    
+
     .hero-section .display-5 {
         font-size: 1.5rem;
         margin-bottom: 1rem !important;
     }
-    
+
     .hero-section .lead {
         font-size: 0.95rem;
         margin-bottom: 1.5rem !important;
     }
-    
+
     .search-box {
         margin-top: 1rem;
         padding: 1rem !important;
     }
-    
+
     .search-box .row {
         --bs-gutter-x: 0.5rem;
     }
-    
+
     .search-box .form-control-lg {
         padding: 0.5rem 1rem;
         font-size: 1rem;
     }
-    
+
     .search-box .btn-lg {
         padding: 0.5rem 1rem;
         font-size: 0.9rem;
     }
-    
+
     .listing-card {
         margin-bottom: 1rem;
         display: flex;
@@ -282,14 +282,14 @@ body {
         height: auto;
         min-height: 140px;
     }
-    
+
     .listing-image-wrapper {
         height: 140px;
         width: 140px;
         flex-shrink: 0;
         margin-right: 0;
     }
-    
+
     .listing-content {
         flex: 1;
         padding: 0.75rem !important;
@@ -297,23 +297,23 @@ body {
         flex-direction: column;
         justify-content: space-between;
     }
-    
+
     .listing-price h4 {
         font-size: 1.2rem;
         margin-bottom: 0.25rem;
     }
-    
+
     .listing-title {
         font-size: 0.95rem;
         margin-bottom: 0.25rem;
         line-height: 1.2;
     }
-    
+
     .listing-subtitle {
         font-size: 0.8rem;
         margin-bottom: 0.5rem;
     }
-    
+
     .listing-specs {
         padding: 0.5rem 0;
         margin-bottom: 0.5rem;
@@ -323,237 +323,42 @@ body {
         flex-wrap: wrap;
         gap: 0.5rem;
     }
-    
+
     .spec-item {
         font-size: 0.75rem;
         display: flex;
         align-items: center;
         gap: 0.25rem;
     }
-    
+
     .listing-actions {
         margin-top: auto;
         gap: 0.5rem;
     }
-    
+
     .listing-actions .btn {
         font-size: 0.75rem;
         padding: 0.25rem 0.4rem;
     }
-    
+
     .category-card {
         margin-bottom: 0.5rem;
         min-height: 40px;
         padding: 0.25rem !important;
     }
-    
+
     .category-card h6 {
         font-size: 0.75rem;
         margin-bottom: 0.125rem !important;
     }
-    
-    .container {
-        padding-left: 0.5rem;
-        padding-right: 0.5rem;
-    }
-}
 
-/* Enhanced Carousel Styles */
-.carousel-control-prev,
-.carousel-control-next {
-    width: 15%;
-    opacity: 0;
-    transition: all 0.3s ease;
-}
-
-.listing-card:hover .carousel-control-prev,
-.listing-card:hover .carousel-control-next {
-    opacity: 0.9;
-}
-
-.carousel-control-prev:hover,
-.carousel-control-next:hover {
-    opacity: 1 !important;
-}
-
-.carousel-indicators {
-    bottom: 12px;
-    margin-bottom: 0;
-}
-
-.carousel-indicators [data-bs-target] {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    margin: 0 4px;
-    opacity: 0.6;
-    background-color: white;
-    border: 2px solid rgba(0,0,0,0.2);
-    transition: all 0.3s ease;
-}
-
-.carousel-indicators .active {
-    opacity: 1;
-    background-color: var(--primary-color);
-    border-color: var(--primary-color);
-    transform: scale(1.2);
-}
-
-.image-count-badge {
-    position: absolute;
-    top: 12px;
-    right: 60px;
-    font-size: 0.7rem;
-    z-index: 10;
-    background: rgba(0, 0, 0, 0.8) !important;
-    color: white;
-    border-radius: 12px;
-    padding: 4px 8px;
-}
-
-/* Enhanced Button Styles */
-.btn {
-    border-radius: 12px;
-    font-weight: 500;
-    transition: all 0.3s ease;
-    border-width: 1.5px;
-}
-
-.btn-primary {
-    background: var(--primary-color);
-    border-color: var(--primary-color);
-    color: white;
-}
-
-.btn-primary:hover, .btn-primary:focus {
-    background: var(--primary-dark);
-    border-color: var(--primary-dark);
-    transform: translateY(-1px);
-    box-shadow: var(--shadow-sm);
-    color: white;
-}
-
-.btn-outline-primary {
-    color: var(--primary-color);
-    border-color: var(--primary-color);
-    background: transparent;
-}
-
-.btn-outline-primary:hover, .btn-outline-primary:focus {
-    background: var(--primary-color);
-    border-color: var(--primary-color);
-    transform: translateY(-1px);
-    color: white;
-}
-
-.btn-success {
-    background: var(--success-color);
-    border-color: var(--success-color);
-    color: white;
-}
-
-.btn-success:hover, .btn-success:focus {
-    background: #059669;
-    border-color: #059669;
-    color: white;
-}
-
-.btn-danger {
-    background: var(--danger-color);
-    border-color: var(--danger-color);
-    color: white;
-}
-
-.btn-danger:hover, .btn-danger:focus {
-    background: #dc2626;
-    border-color: #dc2626;
-    color: white;
-}
-
-.btn-outline-warning {
-    color: var(--warning-color);
-    border-color: var(--warning-color);
-}
-
-.btn-outline-warning:hover {
-    background: var(--warning-color);
-    border-color: var(--warning-color);
-    color: white;
-}
-
-.btn-sm {
-    border-radius: 8px;
-    font-size: 0.85rem;
-}
-
-.btn-lg {
-    border-radius: 16px;
-    font-size: 1.1rem;
-    padding: 12px 24px;
-}
-
-/* Form Controls */
-.form-control, .form-select {
-    border-radius: 12px;
-    border-color: var(--border-color);
-    transition: all 0.3s ease;
-}
-
-.form-control:focus, .form-select:focus {
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.15);
-}
-    
-    /* Mobile grid improvements */
-    .row.g-3 {
-        --bs-gutter-x: 0.5rem;
-        --bs-gutter-y: 0.5rem;
-    }
-    
-    .row.g-2 {
-        --bs-gutter-x: 0.25rem;
-        --bs-gutter-y: 0.25rem;
-    }
-    
-    /* Compact mobile category buttons */
-    .category-card {
-        margin-bottom: 0.25rem;
-        min-height: 35px;
-        padding: 0.125rem !important;
-    }
-    
-    .category-card h6 {
-        font-size: 0.7rem;
-        margin-bottom: 0.1rem !important;
-    }
-    
     .category-card small {
         font-size: 0.6rem !important;
     }
-    
-    /* Favorite button mobile adjustments */
-    .favorite-btn {
-        width: 32px;
-        height: 32px;
-        top: 8px;
-        right: 8px;
-        font-size: 14px;
-    }
-    
-    /* Category badge mobile adjustments */
-    .listing-overlay {
-        top: 8px;
-        left: 8px;
-    }
-    
-    .category-badge {
-        font-size: 0.65rem;
-        padding: 0.25rem 0.5rem;
-    }
-    
-    .sold-badge {
-        font-size: 0.65rem;
-        padding: 0.25rem 0.5rem;
+
+    .container {
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
     }
 }
 
@@ -562,104 +367,104 @@ body {
     .hero-section {
         padding: 1rem 0 !important;
     }
-    
+
     .hero-section .display-5 {
         font-size: 1.3rem;
         margin-bottom: 0.5rem !important;
     }
-    
+
     .hero-section .lead {
         font-size: 0.85rem;
         margin-bottom: 1rem !important;
     }
-    
+
     .search-box {
         padding: 0.75rem !important;
         margin-top: 0.75rem;
     }
-    
+
     .listing-card {
         min-height: 100px;
         margin-bottom: 0.5rem;
     }
-    
+
     .listing-image-wrapper {
         height: 100px;
         width: 100px;
     }
-    
+
     .listing-content {
         padding: 0.4rem !important;
     }
-    
+
     .listing-price h4 {
         font-size: 1rem;
         margin-bottom: 0.1rem;
     }
-    
+
     .listing-title {
         font-size: 0.85rem;
         margin-bottom: 0.1rem;
         line-height: 1.1;
     }
-    
+
     .listing-subtitle {
         font-size: 0.7rem;
         margin-bottom: 0.3rem;
     }
-    
+
     .listing-specs {
         padding: 0.2rem 0;
         margin-bottom: 0.3rem;
         gap: 0.2rem;
         display: none; /* Hide specs on very small screens */
     }
-    
+
     .spec-item {
         font-size: 0.65rem;
     }
-    
+
     .listing-actions {
         gap: 0.3rem;
     }
-    
+
     .listing-actions .btn {
         font-size: 0.75rem;
         padding: 0.25rem 0.4rem;
     }
-    
+
     .hero-section .lead {
         font-size: 1rem;
     }
-    
+
     .hero-section {
         padding: 1.5rem 0;
     }
-    
+
     .category-card {
         padding: 0.75rem;
         margin-bottom: 0.75rem;
     }
-    
+
     .category-card h6 {
         font-size: 0.9rem;
         margin-bottom: 0.25rem;
     }
-    
+
     .category-card small {
         font-size: 0.75rem;
     }
-    
+
     /* Reduce spacing between sections */
     .container.mb-4 {
         margin-bottom: 1.5rem !important;
     }
-    
+
     /* Make filter bar more compact */
     .row.align-items-center h5 {
         font-size: 1.1rem;
     }
-    
+
     .badge {
         font-size: 0.7rem;
     }
@@ -776,13 +581,13 @@ body {
         text-align: center;
         margin-top: 1rem;
     }
-    
+
     .navbar-nav .nav-link {
         padding: 0.75rem 1rem;
         border-radius: 8px;
         margin: 0.25rem 0;
     }
-    
+
     .navbar-nav .nav-link:hover {
         background-color: rgba(0, 123, 255, 0.1);
     }
@@ -798,16 +603,16 @@ body {
     .vehicle-image {
         height: 200px;
     }
-    
+
     .vehicle-detail-image {
         height: 300px;
     }
-    
+
     .container {
         padding-left: 1rem;
         padding-right: 1rem;
     }
-    
+
     .btn-group-sm .btn {
         padding: 0.25rem 0.5rem;
         font-size: 0.875rem;
@@ -869,16 +674,16 @@ body {
     .display-4 {
         font-size: 2rem;
     }
-    
+
     .lead {
         font-size: 1rem;
     }
-    
+
     .btn-group .btn {
         padding: 0.375rem 0.5rem;
         font-size: 0.8rem;
     }
-    
+
     .table-responsive {
         font-size: 0.9rem;
     }
@@ -889,7 +694,7 @@ body {
     .navbar, .btn, .card-footer {
         display: none !important;
     }
-    
+
     .container {
         max-width: none;
         padding: 0;
@@ -926,15 +731,15 @@ body {
     .table-responsive {
         font-size: 0.85rem;
     }
-    
+
     .btn-group-sm .btn {
         padding: 0.2rem 0.4rem;
     }
-    
+
     .modal-dialog {
         margin: 0.5rem;
     }
-    
+
     .modal-lg {
         max-width: none;
     }
@@ -971,4 +776,39 @@ body {
 
 #current-images-container img:hover {
     transform: scale(1.05);
+}
+
+/* Custom styles for AutoMarket */
+
+/* Ensure listing images display properly */
+.listing-image {
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.listing-image-wrapper {
+    height: 250px;
+    overflow: hidden;
+    border-radius: 8px;
+}
+
+.listing-placeholder {
+    background-color: #f8f9fa;
+    border: 2px dashed #dee2e6;
+    height: 250px;
+    border-radius: 8px;
+}
+
+/* Admin table image styles */
+.img-thumbnail {
+    border: 2px solid #dee2e6;
+    transition: transform 0.2s ease;
+}
+
+.img-thumbnail:hover {
+    transform: scale(1.1);
+    z-index: 10;
+    position: relative;
 }

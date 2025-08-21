@@ -14,27 +14,43 @@ def save_uploaded_files(files):
     """Save uploaded files and return list of filenames (max 6 images)"""
     filenames = []
     if not files:
+        app.logger.info("No files provided to save_uploaded_files")
         return filenames
     
-    # Limit to maximum 6 images
-    limited_files = files[:6] if isinstance(files, list) else [files] if files else []
+    # Ensure files is a list
+    if not isinstance(files, list):
+        files = [files] if files else []
+    
+    # Filter out None/empty files and limit to maximum 6 images
+    valid_files = [f for f in files if f and hasattr(f, 'filename') and f.filename.strip()]
+    limited_files = valid_files[:6]
+    
+    app.logger.info(f"Processing {len(limited_files)} valid files out of {len(files)} total files")
 
     for file in limited_files:
         if file and hasattr(file, 'filename') and file.filename and allowed_file(file.filename):
             try:
                 # Generate unique filename
-                filename = str(uuid.uuid4()) + '_' + secure_filename(file.filename)
+                original_filename = secure_filename(file.filename)
+                filename = str(uuid.uuid4()) + '_' + original_filename
                 filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
                 
                 # Ensure upload directory exists
                 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
                 
+                # Save the file
                 file.save(filepath)
                 filenames.append(filename)
+                app.logger.info(f"Successfully saved file: {filename}")
+                
             except Exception as e:
                 app.logger.error(f"Error saving file {file.filename}: {e}")
                 continue
+        else:
+            if file:
+                app.logger.warning(f"File rejected - invalid filename or type: {getattr(file, 'filename', 'unknown')}")
     
+    app.logger.info(f"Total files saved: {len(filenames)}")
     return filenames
 
 @app.route('/')
@@ -60,6 +76,13 @@ def marketplace():
                    search.lower() in v.title.lower() or 
                    search.lower() in v.make.lower() or 
                    search.lower() in v.model.lower()]
+
+    # Debug: Log vehicle images for troubleshooting
+    for vehicle in vehicles:
+        if not vehicle.images_list or len(vehicle.images_list) == 0:
+            app.logger.warning(f"Vehicle \"{vehicle.title}\" has no images: {vehicle.images_list}")
+        else:
+            app.logger.info(f"Vehicle \"{vehicle.title}\" has images: {vehicle.images_list}")
 
     categories = ['Cars', 'Trucks', 'Commercial Vehicles']
     return render_template('index.html', vehicles=vehicles, categories=categories, 
@@ -279,8 +302,16 @@ def add_vehicle_route():
 
     if form.validate_on_submit():
         try:
-            # Save uploaded images
-            image_filenames = save_uploaded_files(form.images.data)
+            # Save uploaded images - handle both single file and multiple files
+            uploaded_files = form.images.data
+            if not isinstance(uploaded_files, list):
+                uploaded_files = [uploaded_files] if uploaded_files else []
+            
+            # Filter out empty files
+            valid_files = [f for f in uploaded_files if f and hasattr(f, 'filename') and f.filename]
+            
+            image_filenames = save_uploaded_files(valid_files)
+            app.logger.info(f"Saved {len(image_filenames)} images: {image_filenames}")
 
             # Create vehicle with comprehensive data
             vehicle = Vehicle(

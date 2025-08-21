@@ -1,2 +1,5 @@
 <svg width="300" height="200" xmlns="http://www.w3.org/2000/svg"><rect width="300" height="200" fill="#f8f9fa"/><text x="150" y="100" text-anchor="middle" fill="#6c757d" font-family="Arial, sans-serif" font-size="16">No Image Available</text><rect x="10" y="10" width="280" height="180" fill="none" stroke="#dee2e6" stroke-width="2" stroke-dasharray="5,5"/></svg>
 <!-- This will be handled by creating an actual placeholder image file -->
+# This is a placeholder for the placeholder image file.
+# The actual image file should be uploaded separately.
+# For now, the templates will handle missing images gracefully.
