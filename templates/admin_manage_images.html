@@ -9,66 +9,101 @@
     <style>
         body { background: #f8f9fa; }
         .admin-header { background: linear-gradient(135deg, #007bff 0%, #0056b3 100%); }
-        .image-card { 
-            border: none; 
-            border-radius: 12px; 
-            box-shadow: 0 4px 15px rgba(0,0,0,0.08); 
-            transition: transform 0.2s ease;
-        }
-        .image-card:hover { transform: translateY(-3px); }
-        .vehicle-image { 
-            width: 100%; 
-            height: 200px; 
-            object-fit: cover; 
-            border-radius: 8px; 
-        }
-        .upload-zone { 
-            border: 3px dashed #007bff; 
-            border-radius: 12px; 
-            padding: 3rem 2rem; 
-            text-align: center; 
-            background: #f8f9ff;
+        
+        .image-slot {
+            width: 100%;
+            height: 200px;
+            border: 2px dashed #dee2e6;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             cursor: pointer;
             transition: all 0.3s ease;
+            background: #f8f9fa;
+            position: relative;
+            overflow: hidden;
         }
-        .upload-zone:hover { 
-            background: #e6f0ff; 
-            border-color: #0056b3;
+        
+        .image-slot:hover { border-color: #007bff; background: #f0f8ff; }
+        .image-slot.has-image { border: 2px solid #28a745; }
+        .image-slot.hero { border: 3px solid #dc3545; background: linear-gradient(45deg, #fff5f5, #f0f8ff); }
+        .image-slot.hero:hover { border-color: #c82333; }
+        
+        .slot-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 10px;
         }
-        .upload-zone.dragover {
-            background: #cce5ff;
-            border-color: #0056b3;
-            transform: scale(1.02);
+        
+        .slot-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
         }
-        .vehicle-info { 
-            background: white; 
-            border-radius: 12px; 
-            padding: 1.5rem; 
-            box-shadow: 0 4px 15px rgba(0,0,0,0.08); 
-        }
-        .btn-delete {
-            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
-            border: none;
-            color: white;
+        
+        .image-slot:hover .slot-overlay { opacity: 1; }
+        
+        .slot-label {
             position: absolute;
             top: 10px;
-            right: 10px;
+            left: 10px;
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .hero-label { background: #dc3545 !important; }
+        .regular-label { background: #007bff !important; }
+        
+        .upload-text {
+            text-align: center;
+            color: #6c757d;
+        }
+        
+        .vehicle-info {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+        
+        .btn-delete {
+            background: #dc3545;
+            border: none;
+            color: white;
             width: 35px;
             height: 35px;
             border-radius: 50%;
+            margin-left: 10px;
         }
+        
         .btn-delete:hover {
-            background: linear-gradient(135deg, #c82333 0%, #a71e2a 100%);
+            background: #c82333;
             color: white;
         }
-        .image-container { position: relative; }
-        .notification { 
-            position: fixed; 
-            top: 20px; 
-            right: 20px; 
-            z-index: 9999; 
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
             max-width: 300px;
         }
+        
+        .progress-container { display: none; }
     </style>
 </head>
 <body>
@@ -120,127 +155,120 @@
             </div>
         </div>
 
-        <!-- Upload Zone -->
-        {% if not vehicle.images_list or vehicle.images_list|length < 6 %}
-        <div class="upload-zone mb-4" id="uploadZone">
-            <form id="imageUploadForm" enctype="multipart/form-data">
-                <i class="fas fa-cloud-upload-alt fa-3x text-primary mb-3"></i>
-                <h4>Upload Vehicle Images</h4>
-                <p class="text-muted mb-3">
-                    Drag & drop images here or click to select<br>
-                    <small>Maximum 6 images total • JPG, PNG, GIF up to 16MB each</small>
-                </p>
-                <input type="file" id="imageInput" name="images" multiple accept="image/*" style="display: none;">
-                <button type="button" class="btn btn-primary" onclick="document.getElementById('imageInput').click();">
-                    <i class="fas fa-plus me-2"></i>Choose Images
-                </button>
-            </form>
-        </div>
-        {% endif %}
-
         <!-- Progress Bar -->
-        <div id="uploadProgress" class="mb-4" style="display: none;">
+        <div id="uploadProgress" class="progress-container mb-4">
             <div class="progress">
                 <div class="progress-bar progress-bar-striped progress-bar-animated" 
                      role="progressbar" style="width: 0%"></div>
             </div>
         </div>
 
-        <!-- Current Images -->
-        <div class="row" id="imagesGrid">
-            {% if vehicle.images_list and vehicle.images_list|length > 0 %}
-                {% for image in vehicle.images_list %}
-                <div class="col-lg-3 col-md-4 col-sm-6 mb-4" data-image="{{ image }}">
-                    <div class="card image-card">
-                        <div class="image-container">
-                            <img src="/static/uploads/{{ image }}" alt="Vehicle Image" class="vehicle-image">
-                            <button class="btn btn-delete" onclick="deleteImage('{{ image }}')" 
-                                    title="Delete Image">
-                                <i class="fas fa-times"></i>
-                            </button>
-                        </div>
-                        <div class="card-body text-center">
-                            <small class="text-muted">{{ image }}</small>
-                        </div>
+        <!-- Hero Image Slot -->
+        <div class="mb-4">
+            <h5><i class="fas fa-star text-warning me-2"></i>Hero Banner Image</h5>
+            <p class="text-muted mb-3">This image will be displayed as the main banner in listings</p>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="image-slot hero" data-slot="0" onclick="selectImage(0)">
+                        <div class="slot-label hero-label">HERO IMAGE</div>
+                        {% if vehicle.images_list and vehicle.images_list|length > 0 %}
+                            <img src="/static/uploads/{{ vehicle.images_list[0] }}" alt="Hero Image" class="slot-image">
+                            <div class="slot-overlay">
+                                <button class="btn btn-light me-2" onclick="event.stopPropagation(); selectImage(0);">
+                                    <i class="fas fa-edit"></i> Change
+                                </button>
+                                <button class="btn btn-danger" onclick="event.stopPropagation(); deleteImage(0);">
+                                    <i class="fas fa-trash"></i> Delete
+                                </button>
+                            </div>
+                        {% else %}
+                            <div class="upload-text">
+                                <i class="fas fa-star fa-3x mb-2"></i>
+                                <h6>Upload Hero Image</h6>
+                                <small>Click to add main banner image</small>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Additional Images -->
+        <div class="mb-4">
+            <h5><i class="fas fa-images me-2"></i>Additional Images (5 slots)</h5>
+            <p class="text-muted mb-3">Additional photos to showcase your vehicle</p>
+            
+            <div class="row">
+                {% for i in range(1, 6) %}
+                <div class="col-lg-3 col-md-4 col-sm-6 mb-3">
+                    <div class="image-slot{% if vehicle.images_list and vehicle.images_list|length > i %} has-image{% endif %}" 
+                         data-slot="{{ i }}" onclick="selectImage({{ i }})">
+                        <div class="slot-label regular-label">IMAGE {{ i }}</div>
+                        {% if vehicle.images_list and vehicle.images_list|length > i %}
+                            <img src="/static/uploads/{{ vehicle.images_list[i] }}" alt="Vehicle Image {{ i }}" class="slot-image">
+                            <div class="slot-overlay">
+                                <button class="btn btn-light me-2" onclick="event.stopPropagation(); selectImage({{ i }});">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="btn btn-danger" onclick="event.stopPropagation(); deleteImage({{ i }});">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        {% else %}
+                            <div class="upload-text">
+                                <i class="fas fa-plus fa-2x mb-2"></i>
+                                <h6>Add Image</h6>
+                                <small>Click to upload</small>
+                            </div>
+                        {% endif %}
                     </div>
                 </div>
                 {% endfor %}
-            {% else %}
-                <div class="col-12">
-                    <div class="text-center py-5">
-                        <i class="fas fa-image fa-4x text-muted mb-3"></i>
-                        <h4 class="text-muted">No images yet</h4>
-                        <p class="text-muted">Upload some images to get started!</p>
-                    </div>
-                </div>
-            {% endif %}
+            </div>
         </div>
     </div>
+
+    <!-- Hidden file input -->
+    <input type="file" id="fileInput" accept="image/*" style="display: none;">
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         const vehicleId = '{{ vehicle.id }}';
-        const uploadZone = document.getElementById('uploadZone');
-        const imageInput = document.getElementById('imageInput');
-        const uploadForm = document.getElementById('imageUploadForm');
-        const progressBar = document.getElementById('uploadProgress');
-        const imagesGrid = document.getElementById('imagesGrid');
+        const fileInput = document.getElementById('fileInput');
+        const progressContainer = document.getElementById('uploadProgress');
+        let currentSlot = 0;
 
-        // Drag and drop functionality
-        if (uploadZone) {
-            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-                uploadZone.addEventListener(eventName, preventDefaults, false);
-            });
-
-            function preventDefaults(e) {
-                e.preventDefault();
-                e.stopPropagation();
-            }
-
-            ['dragenter', 'dragover'].forEach(eventName => {
-                uploadZone.addEventListener(eventName, highlight, false);
-            });
-
-            ['dragleave', 'drop'].forEach(eventName => {
-                uploadZone.addEventListener(eventName, unhighlight, false);
-            });
-
-            function highlight(e) {
-                uploadZone.classList.add('dragover');
-            }
-
-            function unhighlight(e) {
-                uploadZone.classList.remove('dragover');
-            }
-
-            uploadZone.addEventListener('drop', handleDrop, false);
-            uploadZone.addEventListener('click', () => imageInput.click());
-
-            function handleDrop(e) {
-                const dt = e.dataTransfer;
-                const files = dt.files;
-                imageInput.files = files;
-                uploadImages();
-            }
+        function selectImage(slotIndex) {
+            currentSlot = slotIndex;
+            fileInput.click();
         }
 
-        // File input change handler
-        if (imageInput) {
-            imageInput.addEventListener('change', uploadImages);
-        }
+        fileInput.addEventListener('change', function() {
+            const file = this.files[0];
+            if (!file) return;
 
-        function uploadImages() {
-            const files = imageInput.files;
-            if (files.length === 0) return;
+            // Validate file
+            if (!file.type.startsWith('image/')) {
+                showNotification('Please select a valid image file.', 'error');
+                return;
+            }
 
+            if (file.size > 16 * 1024 * 1024) {
+                showNotification('Image size must be less than 16MB.', 'error');
+                return;
+            }
+
+            uploadImageToSlot(file, currentSlot);
+        });
+
+        function uploadImageToSlot(file, slotIndex) {
             const formData = new FormData();
-            for (let i = 0; i < files.length; i++) {
-                formData.append('images', files[i]);
-            }
+            formData.append('image', file);
+            formData.append('slot', slotIndex);
 
             showProgress();
 
-            fetch(`/admin/upload-images/${vehicleId}`, {
+            fetch(`/admin/upload-image-to-slot/${vehicleId}`, {
                 method: 'POST',
                 body: formData
             })
@@ -248,10 +276,10 @@
             .then(data => {
                 hideProgress();
                 if (data.success) {
-                    showNotification('Images uploaded successfully!', 'success');
+                    showNotification('Image uploaded successfully!', 'success');
                     setTimeout(() => {
                         window.location.reload();
-                    }, 1500);
+                    }, 1000);
                 } else {
                     showNotification(data.message || 'Upload failed', 'error');
                 }
@@ -263,22 +291,16 @@
             });
         }
 
-        function deleteImage(imageName) {
+        function deleteImage(slotIndex) {
             if (!confirm('Are you sure you want to delete this image?')) return;
 
-            fetch(`/admin/delete-image/${vehicleId}/${imageName}`, {
+            fetch(`/admin/delete-image-from-slot/${vehicleId}/${slotIndex}`, {
                 method: 'DELETE'
             })
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
                     showNotification('Image deleted successfully!', 'success');
-                    // Remove the image card from the grid
-                    const imageCard = document.querySelector(`[data-image="${imageName}"]`);
-                    if (imageCard) {
-                        imageCard.remove();
-                    }
-                    // Reload page if no images left
                     setTimeout(() => {
                         window.location.reload();
                     }, 1000);
@@ -293,17 +315,13 @@
         }
 
         function showProgress() {
-            if (progressBar) {
-                progressBar.style.display = 'block';
-                progressBar.querySelector('.progress-bar').style.width = '100%';
-            }
+            progressContainer.style.display = 'block';
+            progressContainer.querySelector('.progress-bar').style.width = '100%';
         }
 
         function hideProgress() {
-            if (progressBar) {
-                progressBar.style.display = 'none';
-                progressBar.querySelector('.progress-bar').style.width = '0%';
-            }
+            progressContainer.style.display = 'none';
+            progressContainer.querySelector('.progress-bar').style.width = '0%';
         }
 
         function showNotification(message, type) {
@@ -320,12 +338,12 @@
             
             notificationArea.appendChild(notification);
             
-            // Auto dismiss after 5 seconds
+            // Auto dismiss after 4 seconds
             setTimeout(() => {
                 if (notification.parentNode) {
                     notification.parentNode.removeChild(notification);
                 }
-            }, 5000);
+            }, 4000);
         }
     </script>
 </body>

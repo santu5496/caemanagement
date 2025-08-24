@@ -481,8 +481,6 @@ def edit_vehicle(vehicle_id):
 
     if form.validate_on_submit():
         try:
-            # No image handling in vehicle editing now - images managed separately
-
             # Update vehicle with comprehensive data
             update_data = {
                 'title': form.title.data,
@@ -527,9 +525,7 @@ def edit_vehicle(vehicle_id):
                 'warranty_info': form.warranty_info.data or None
             }
 
-            # Add new images to existing ones
-            if new_images:
-                update_data['images'] = vehicle.images_list + new_images
+            # Images are managed separately - no image updates here
 
             vehicle.update_from_dict(**update_data)
             db.session.commit()
@@ -781,64 +777,9 @@ def admin_manage_images(vehicle_id):
     form = ImageManagementForm()
     return render_template('admin_manage_images.html', vehicle=vehicle, form=form)
 
-@app.route('/admin/upload-images/<vehicle_id>', methods=['POST'])
-def admin_upload_images(vehicle_id):
-    """Handle image uploads for specific vehicle"""
-    if not session.get('admin_logged_in'):
-        return jsonify({'success': False, 'message': 'Authentication required'}), 401
-
-    vehicle = Vehicle.query.get(vehicle_id)
-    if not vehicle:
-        return jsonify({'success': False, 'message': 'Vehicle not found'}), 404
-
-    form = ImageManagementForm()
-    if form.validate_on_submit():
-        try:
-            # Save uploaded images
-            uploaded_files = request.files.getlist('images')
-            if not uploaded_files:
-                uploaded_files = form.images.data
-                if not isinstance(uploaded_files, list):
-                    uploaded_files = [uploaded_files] if uploaded_files else []
-            
-            # Filter out empty files
-            valid_files = [f for f in uploaded_files if f and hasattr(f, 'filename') and f.filename and f.filename.strip()]
-            
-            image_filenames = save_uploaded_files(valid_files)
-            app.logger.info(f"Saved {len(image_filenames)} images for vehicle {vehicle_id}: {image_filenames}")
-
-            # Add new images to existing ones (max 6 total)
-            existing_images = vehicle.images_list
-            all_images = existing_images + image_filenames
-            # Keep only first 6 images
-            vehicle.images_list = all_images[:6]
-            
-            db.session.commit()
-            
-            return jsonify({
-                'success': True, 
-                'message': f'Successfully uploaded {len(image_filenames)} images',
-                'images': vehicle.images_list
-            })
-
-        except Exception as e:
-            app.logger.error(f"Error uploading images: {str(e)}")
-            db.session.rollback()
-            return jsonify({'success': False, 'message': f'Error uploading images: {str(e)}'}), 500
-
-    # Return validation errors
-    errors = {}
-    for field, error_list in form.errors.items():
-        if isinstance(error_list, list) and error_list:
-            errors[field] = error_list[0]
-        else:
-            errors[field] = 'Validation error'
-
-    return jsonify({'success': False, 'message': 'Please check the uploaded files', 'errors': errors}), 400
-
-@app.route('/admin/delete-image/<vehicle_id>/<image_name>', methods=['DELETE'])
-def admin_delete_image(vehicle_id, image_name):
-    """Delete specific image from vehicle"""
+@app.route('/admin/upload-image-to-slot/<vehicle_id>', methods=['POST'])
+def admin_upload_image_to_slot(vehicle_id):
+    """Handle image upload to specific slot"""
     if not session.get('admin_logged_in'):
         return jsonify({'success': False, 'message': 'Authentication required'}), 401
 
@@ -847,27 +788,109 @@ def admin_delete_image(vehicle_id, image_name):
         return jsonify({'success': False, 'message': 'Vehicle not found'}), 404
 
     try:
-        # Remove image from vehicle's image list
-        current_images = vehicle.images_list
-        if image_name in current_images:
-            current_images.remove(image_name)
-            vehicle.images_list = current_images
-            db.session.commit()
+        slot_index = int(request.form.get('slot', 0))
+        image_file = request.files.get('image')
+        
+        if not image_file or not image_file.filename:
+            return jsonify({'success': False, 'message': 'No image file provided'}), 400
             
-            # Try to delete the physical file
-            try:
-                file_path = os.path.join(app.config['UPLOAD_FOLDER'], image_name)
-                if os.path.exists(file_path):
-                    os.remove(file_path)
-            except Exception as e:
-                app.logger.warning(f"Could not delete physical file {image_name}: {e}")
+        if not allowed_file(image_file.filename):
+            return jsonify({'success': False, 'message': 'Invalid file type. Use JPG, PNG, or GIF'}), 400
+
+        # Save the image
+        image_filenames = save_uploaded_files([image_file])
+        if not image_filenames:
+            return jsonify({'success': False, 'message': 'Failed to save image'}), 500
             
-            return jsonify({'success': True, 'message': 'Image deleted successfully'})
-        else:
-            return jsonify({'success': False, 'message': 'Image not found'}), 404
+        new_image = image_filenames[0]
+        
+        # Get current images and ensure we have a list with 6 slots
+        current_images = vehicle.images_list[:]
+        while len(current_images) < 6:
+            current_images.append('')
+            
+        # Replace or add image at specific slot
+        if slot_index < len(current_images):
+            # If there was an old image at this slot, we could delete it here
+            old_image = current_images[slot_index]
+            if old_image:
+                try:
+                    old_path = os.path.join(app.config['UPLOAD_FOLDER'], old_image)
+                    if os.path.exists(old_path):
+                        os.remove(old_path)
+                except Exception as e:
+                    app.logger.warning(f"Could not delete old image {old_image}: {e}")
+            
+            current_images[slot_index] = new_image
+        
+        # Remove empty strings from the end and save
+        while current_images and current_images[-1] == '':
+            current_images.pop()
+            
+        vehicle.images_list = current_images
+        db.session.commit()
+        
+        app.logger.info(f"Saved image {new_image} to slot {slot_index} for vehicle {vehicle_id}")
+        
+        return jsonify({
+            'success': True,
+            'message': f'Image uploaded to slot {slot_index + 1}',
+            'image': new_image,
+            'slot': slot_index
+        })
+        
+    except Exception as e:
+        app.logger.error(f"Error uploading image to slot: {str(e)}")
+        db.session.rollback()
+        return jsonify({'success': False, 'message': f'Error uploading image: {str(e)}'}), 500
+
+@app.route('/admin/delete-image-from-slot/<vehicle_id>/<int:slot_index>', methods=['DELETE'])
+def admin_delete_image_from_slot(vehicle_id, slot_index):
+    """Delete image from specific slot"""
+    if not session.get('admin_logged_in'):
+        return jsonify({'success': False, 'message': 'Authentication required'}), 401
+
+    vehicle = Vehicle.query.get(vehicle_id)
+    if not vehicle:
+        return jsonify({'success': False, 'message': 'Vehicle not found'}), 404
+
+    try:
+        current_images = vehicle.images_list[:]
+        
+        if slot_index >= len(current_images) or not current_images[slot_index]:
+            return jsonify({'success': False, 'message': 'No image found at this slot'}), 404
+        
+        # Get the image filename to delete
+        image_to_delete = current_images[slot_index]
+        
+        # Remove image from the list
+        current_images[slot_index] = ''
+        
+        # Clean up empty strings from the end
+        while current_images and current_images[-1] == '':
+            current_images.pop()
+            
+        vehicle.images_list = current_images
+        db.session.commit()
+        
+        # Try to delete the physical file
+        try:
+            file_path = os.path.join(app.config['UPLOAD_FOLDER'], image_to_delete)
+            if os.path.exists(file_path):
+                os.remove(file_path)
+        except Exception as e:
+            app.logger.warning(f"Could not delete physical file {image_to_delete}: {e}")
+        
+        app.logger.info(f"Deleted image {image_to_delete} from slot {slot_index} for vehicle {vehicle_id}")
+        
+        return jsonify({
+            'success': True, 
+            'message': f'Image deleted from slot {slot_index + 1}',
+            'slot': slot_index
+        })
 
     except Exception as e:
-        app.logger.error(f"Error deleting image: {str(e)}")
+        app.logger.error(f"Error deleting image from slot: {str(e)}")
         db.session.rollback()
         return jsonify({'success': False, 'message': f'Error deleting image: {str(e)}'}), 500
 
