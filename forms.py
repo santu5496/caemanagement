@@ -14,6 +14,10 @@ class LoginForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
     password = PasswordField('Password', validators=[DataRequired()])
 
+class ImageManagementForm(FlaskForm):
+    images = MultipleFileField('Vehicle Images (Max 6)',
+                              validators=[FileAllowed(['jpg', 'jpeg', 'png', 'gif'], 'Images only!')])
+
 class VehicleForm(FlaskForm):
     # Basic Information
     title = StringField('Vehicle Title', validators=[DataRequired(), Length(min=3, max=200, message="Title must be between 3 and 200 characters long")])
@@ -74,10 +78,8 @@ class VehicleForm(FlaskForm):
                                   validators=[Optional()])
     warranty_info = TextAreaField('Warranty Information (Optional)', validators=[Optional(), Length(max=500)])
 
-    # Contact & Images
+    # Contact Information
     contact_name = StringField('Contact Name', validators=[DataRequired(), Length(max=100)])
     contact_phone = StringField('Contact Phone', validators=[DataRequired(), Length(max=50)])
     contact_email = EmailField('Contact Email (Optional)', validators=[Optional(), Email(), Length(max=100)])
     vehicle_number = StringField('Vehicle Number (Optional)', validators=[Optional(), Length(max=50)])
-    images = MultipleFileField('Vehicle Images (Max 6)',
-                              validators=[FileAllowed(['jpg', 'jpeg', 'png', 'gif'], 'Images only!')])

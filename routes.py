@@ -5,7 +5,7 @@ from werkzeug.utils import secure_filename
 
 from app import app, db
 from models import Vehicle, AdminUser, add_vehicle, get_all_vehicles, get_vehicle, delete_vehicle, verify_admin, get_available_vehicles, get_vehicles_by_category, initialize_sample_data
-from forms import VehicleForm, LoginForm
+from forms import VehicleForm, LoginForm, ImageManagementForm
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in {'png', 'jpg', 'jpeg', 'gif'}
@@ -308,21 +308,7 @@ def add_vehicle_route():
 
     if form.validate_on_submit():
         try:
-            # Save uploaded images - handle both single file and multiple files
-            uploaded_files = request.files.getlist('images')
-            if not uploaded_files:
-                uploaded_files = form.images.data
-                if not isinstance(uploaded_files, list):
-                    uploaded_files = [uploaded_files] if uploaded_files else []
-            
-            # Filter out empty files
-            valid_files = [f for f in uploaded_files if f and hasattr(f, 'filename') and f.filename and f.filename.strip()]
-            
-            image_filenames = save_uploaded_files(valid_files)
-            app.logger.info(f"Saved {len(image_filenames)} images: {image_filenames}")
-            app.logger.debug(f"Image filenames: {image_filenames}")
-
-            # Create vehicle with comprehensive data
+            # Create vehicle without images - images will be managed separately
             vehicle = Vehicle(
                 title=form.title.data,
                 category=form.category.data,
@@ -336,7 +322,7 @@ def add_vehicle_route():
                 contact_phone=form.contact_phone.data,
                 contact_email=form.contact_email.data or None,
                 vehicle_number=form.vehicle_number.data or None,
-                images=image_filenames,
+                images=[],  # No images initially
                 # Engine & Performance
                 fuel_type=form.fuel_type.data or None,
                 transmission=form.transmission.data or None,
@@ -495,8 +481,7 @@ def edit_vehicle(vehicle_id):
 
     if form.validate_on_submit():
         try:
-            # Handle new image uploads
-            new_images = save_uploaded_files(form.images.data)
+            # No image handling in vehicle editing now - images managed separately
 
             # Update vehicle with comprehensive data
             update_data = {
@@ -771,6 +756,120 @@ def admin_api_delete_vehicle(vehicle_id):
     except Exception as e:
         app.logger.error(f"Error deleting vehicle: {e}")
         return jsonify({'success': False, 'message': 'Error deleting vehicle'}), 500
+
+# Vehicle Selection and Image Management Routes
+@app.route('/admin/select-vehicle')
+def admin_select_vehicle():
+    """Vehicle selection interface"""
+    if not session.get('admin_logged_in'):
+        return redirect(url_for('admin_login'))
+    
+    vehicles = get_all_vehicles()
+    return render_template('admin_select_vehicle.html', vehicles=vehicles)
+
+@app.route('/admin/manage-images/<vehicle_id>')
+def admin_manage_images(vehicle_id):
+    """Image management interface for specific vehicle"""
+    if not session.get('admin_logged_in'):
+        return redirect(url_for('admin_login'))
+    
+    vehicle = get_vehicle(vehicle_id)
+    if not vehicle:
+        flash('Vehicle not found', 'error')
+        return redirect(url_for('admin_select_vehicle'))
+    
+    form = ImageManagementForm()
+    return render_template('admin_manage_images.html', vehicle=vehicle, form=form)
+
+@app.route('/admin/upload-images/<vehicle_id>', methods=['POST'])
+def admin_upload_images(vehicle_id):
+    """Handle image uploads for specific vehicle"""
+    if not session.get('admin_logged_in'):
+        return jsonify({'success': False, 'message': 'Authentication required'}), 401
+
+    vehicle = Vehicle.query.get(vehicle_id)
+    if not vehicle:
+        return jsonify({'success': False, 'message': 'Vehicle not found'}), 404
+
+    form = ImageManagementForm()
+    if form.validate_on_submit():
+        try:
+            # Save uploaded images
+            uploaded_files = request.files.getlist('images')
+            if not uploaded_files:
+                uploaded_files = form.images.data
+                if not isinstance(uploaded_files, list):
+                    uploaded_files = [uploaded_files] if uploaded_files else []
+            
+            # Filter out empty files
+            valid_files = [f for f in uploaded_files if f and hasattr(f, 'filename') and f.filename and f.filename.strip()]
+            
+            image_filenames = save_uploaded_files(valid_files)
+            app.logger.info(f"Saved {len(image_filenames)} images for vehicle {vehicle_id}: {image_filenames}")
+
+            # Add new images to existing ones (max 6 total)
+            existing_images = vehicle.images_list
+            all_images = existing_images + image_filenames
+            # Keep only first 6 images
+            vehicle.images_list = all_images[:6]
+            
+            db.session.commit()
+            
+            return jsonify({
+                'success': True, 
+                'message': f'Successfully uploaded {len(image_filenames)} images',
+                'images': vehicle.images_list
+            })
+
+        except Exception as e:
+            app.logger.error(f"Error uploading images: {str(e)}")
+            db.session.rollback()
+            return jsonify({'success': False, 'message': f'Error uploading images: {str(e)}'}), 500
+
+    # Return validation errors
+    errors = {}
+    for field, error_list in form.errors.items():
+        if isinstance(error_list, list) and error_list:
+            errors[field] = error_list[0]
+        else:
+            errors[field] = 'Validation error'
+
+    return jsonify({'success': False, 'message': 'Please check the uploaded files', 'errors': errors}), 400
+
+@app.route('/admin/delete-image/<vehicle_id>/<image_name>', methods=['DELETE'])
+def admin_delete_image(vehicle_id, image_name):
+    """Delete specific image from vehicle"""
+    if not session.get('admin_logged_in'):
+        return jsonify({'success': False, 'message': 'Authentication required'}), 401
+
+    vehicle = Vehicle.query.get(vehicle_id)
+    if not vehicle:
+        return jsonify({'success': False, 'message': 'Vehicle not found'}), 404
+
+    try:
+        # Remove image from vehicle's image list
+        current_images = vehicle.images_list
+        if image_name in current_images:
+            current_images.remove(image_name)
+            vehicle.images_list = current_images
+            db.session.commit()
+            
+            # Try to delete the physical file
+            try:
+                file_path = os.path.join(app.config['UPLOAD_FOLDER'], image_name)
+                if os.path.exists(file_path):
+                    os.remove(file_path)
+            except Exception as e:
+                app.logger.warning(f"Could not delete physical file {image_name}: {e}")
+            
+            return jsonify({'success': True, 'message': 'Image deleted successfully'})
+        else:
+            return jsonify({'success': False, 'message': 'Image not found'}), 404
+
+    except Exception as e:
+        app.logger.error(f"Error deleting image: {str(e)}")
+        db.session.rollback()
+        return jsonify({'success': False, 'message': f'Error deleting image: {str(e)}'}), 500
 
 # Error handlers
 @app.errorhandler(404)
