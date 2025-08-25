@@ -28,8 +28,15 @@
                             <div class="carousel-inner">
                                 {% for image in vehicle.images_list %}
                                     <div class="carousel-item {{ 'active' if loop.first else '' }}">
-                                        <img src="{{ url_for('static', filename='uploads/' + image) }}" 
-                                             class="d-block w-100 vehicle-detail-image" alt="{{ vehicle.title }}">
+                                        <div class="position-relative">
+                                            <img src="{{ url_for('static', filename='uploads/' + image) }}" 
+                                                 class="d-block w-100 vehicle-detail-image" alt="{{ vehicle.title }}">
+                                            <button class="btn btn-success position-absolute" 
+                                                    style="top: 10px; right: 10px; opacity: 0.8;"
+                                                    onclick="downloadSingleImage('{{ image }}', '{{ vehicle.title }}', {{ loop.index }})">
+                                                <i class="fas fa-download me-1"></i>Download
+                                            </button>
+                                        </div>
                                     </div>
                                 {% endfor %}
                             </div>
@@ -147,9 +154,14 @@
             <!-- Share Button -->
             <div class="card">
                 <div class="card-body text-center">
-                    <button class="btn btn-outline-primary w-100" onclick="shareVehicle()">
+                    <button class="btn btn-outline-primary w-100 mb-2" onclick="shareVehicle()">
                         <i class="fas fa-share me-2"></i>Share This Vehicle
                     </button>
+                    {% if vehicle.images_list and vehicle.images_list|length > 0 %}
+                    <button class="btn btn-success w-100" onclick="downloadAllImages()">
+                        <i class="fas fa-download me-2"></i>Download All Images ({{ vehicle.images_list|length }})
+                    </button>
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -177,7 +189,7 @@ function shareVehicle() {
     if (navigator.share) {
         navigator.share({
             title: '{{ vehicle.title }}',
-            text: '{{ vehicle.year }} {{ vehicle.make }} {{ vehicle.model }} - ${{ "{:,.0f}".format(vehicle.price) }}',
+            text: '{{ vehicle.year }} {{ vehicle.make }} {{ vehicle.model }} - ₹{{ "{:,.0f}".format(vehicle.price) }}',
             url: window.location.href
         });
     } else {
@@ -186,6 +198,55 @@ function shareVehicle() {
             alert('Link copied to clipboard!');
         });
     }
+}
+
+function downloadSingleImage(imageName, vehicleTitle, imageIndex) {
+    const link = document.createElement('a');
+    link.href = '/static/uploads/' + imageName;
+    link.download = vehicleTitle.replace(/[^a-z0-9]/gi, '_').toLowerCase() + '_image_' + imageIndex + '_' + imageName;
+    
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
+    showNotification('Image ' + imageIndex + ' downloaded successfully!', 'success');
+}
+
+function downloadAllImages() {
+    const vehicleImages = {{ vehicle.images_list|tojson }};
+    const vehicleTitle = '{{ vehicle.title }}';
+    
+    vehicleImages.forEach((imageName, index) => {
+        setTimeout(() => {
+            const link = document.createElement('a');
+            link.href = '/static/uploads/' + imageName;
+            link.download = vehicleTitle.replace(/[^a-z0-9]/gi, '_').toLowerCase() + '_image_' + (index + 1) + '_' + imageName;
+            
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }, index * 500); // Delay each download by 500ms
+    });
+    
+    showNotification('Downloading all ' + vehicleImages.length + ' images...', 'info');
+}
+
+function showNotification(message, type) {
+    const notification = document.createElement('div');
+    notification.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
+    notification.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+    notification.innerHTML = `
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+    
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        if (notification.parentNode) {
+            notification.parentNode.removeChild(notification);
+        }
+    }, 3000);
 }
 </script>
 {% endblock %}

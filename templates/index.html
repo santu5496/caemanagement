@@ -148,10 +148,17 @@
                                 {% endif %}
                             </div>
 
-                            <!-- Favorite Button -->
-                            <button class="favorite-btn" onclick="toggleFavorite('{{ vehicle.id }}')">
-                                <i class="far fa-heart"></i>
-                            </button>
+                            <!-- Action Buttons -->
+                            <div class="listing-action-buttons">
+                                <button class="favorite-btn" onclick="toggleFavorite('{{ vehicle.id }}')">
+                                    <i class="far fa-heart"></i>
+                                </button>
+                                {% if vehicle.images_list and vehicle.images_list|length > 0 %}
+                                <button class="download-btn" onclick="downloadImage('{{ vehicle.id }}', '{{ vehicle.images_list[0] }}', '{{ vehicle.title }}')">
+                                    <i class="fas fa-download"></i>
+                                </button>
+                                {% endif %}
+                            </div>
                         </div>
 
                         <div class="listing-content p-3">
@@ -280,6 +287,42 @@ function toggleFavorite(vehicleId) {
 function showMoreVehicles() {
     // Placeholder for future pagination functionality
     console.log('Load more vehicles...');
+}
+
+function downloadImage(vehicleId, imageName, vehicleTitle) {
+    // Create a temporary link element
+    const link = document.createElement('a');
+    link.href = '/static/uploads/' + imageName;
+    link.download = vehicleTitle.replace(/[^a-z0-9]/gi, '_').toLowerCase() + '_' + imageName;
+    
+    // Append to body, click, and remove
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
+    // Show feedback
+    showNotification('Image downloaded successfully!', 'success');
+}
+
+function showNotification(message, type) {
+    // Create notification element
+    const notification = document.createElement('div');
+    notification.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
+    notification.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+    notification.innerHTML = `
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+    
+    // Add to body
+    document.body.appendChild(notification);
+    
+    // Auto remove after 3 seconds
+    setTimeout(() => {
+        if (notification.parentNode) {
+            notification.parentNode.removeChild(notification);
+        }
+    }, 3000);
 }
 </script>
 {% endblock %}

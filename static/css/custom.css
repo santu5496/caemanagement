@@ -131,23 +131,27 @@ body {
 }
 
 /* Enhanced Favorite Button */
-.favorite-btn {
+.listing-action-buttons {
     position: absolute;
-    top: 12px;
-    right: 12px;
+    top: 10px;
+    right: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    z-index: 2;
+}
+
+.favorite-btn, .download-btn {
+    background: rgba(255, 255, 255, 0.9);
+    border: none;
+    border-radius: 50%;
     width: 40px;
     height: 40px;
-    border-radius: 50%;
-    border: none;
-    background: rgba(255, 255, 255, 0.95);
-    box-shadow: var(--shadow-sm);
-    color: #6c757d;
-    font-size: 16px;
-    transition: all 0.3s ease;
     display: flex;
     align-items: center;
     justify-content: center;
-    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+    color: #6c757d;
 }
 
 .favorite-btn:hover {
@@ -157,8 +161,18 @@ body {
 }
 
 .favorite-btn.favorited {
-    background: #dc3545;
-    color: white;
+    color: #dc3545;
+    background: white;
+}
+
+.download-btn:hover {
+    background: white;
+    color: #198754;
+    transform: scale(1.1);
+}
+
+.download-btn:active {
+    transform: scale(0.95);
 }
 
 /* Listing Content */
