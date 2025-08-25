@@ -150,11 +150,11 @@
 
                             <!-- Action Buttons -->
                             <div class="listing-action-buttons">
-                                <button class="favorite-btn" onclick="toggleFavorite('{{ vehicle.id }}')">
+                                <button type="button" class="favorite-btn" onclick="toggleFavorite('{{ vehicle.id }}')" title="Add to favorites">
                                     <i class="far fa-heart"></i>
                                 </button>
                                 {% if vehicle.images_list and vehicle.images_list|length > 0 %}
-                                <button class="download-btn" onclick="downloadImage('{{ vehicle.id }}', '{{ vehicle.images_list[0] }}', '{{ vehicle.title }}')">
+                                <button type="button" class="download-btn" onclick="event.stopPropagation(); downloadImage('{{ vehicle.id }}', '{{ vehicle.images_list[0] }}', '{{ vehicle.title }}')" title="Download image">
                                     <i class="fas fa-download"></i>
                                 </button>
                                 {% endif %}
@@ -290,18 +290,24 @@ function showMoreVehicles() {
 }
 
 function downloadImage(vehicleId, imageName, vehicleTitle) {
-    // Create a temporary link element
-    const link = document.createElement('a');
-    link.href = '/static/uploads/' + imageName;
-    link.download = vehicleTitle.replace(/[^a-z0-9]/gi, '_').toLowerCase() + '_' + imageName;
-    
-    // Append to body, click, and remove
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    
-    // Show feedback
-    showNotification('Image downloaded successfully!', 'success');
+    try {
+        // Create a temporary link element
+        const link = document.createElement('a');
+        link.href = '/static/uploads/' + imageName;
+        link.download = vehicleTitle.replace(/[^a-z0-9]/gi, '_').toLowerCase() + '_' + imageName;
+        link.style.display = 'none';
+        
+        // Append to body, click, and remove
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        // Show feedback
+        showNotification('Image downloaded successfully!', 'success');
+    } catch (error) {
+        console.error('Download failed:', error);
+        showNotification('Download failed. Please try again.', 'error');
+    }
 }
 
 function showNotification(message, type) {

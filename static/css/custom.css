@@ -130,34 +130,37 @@ body {
     border-radius: 8px;
 }
 
-/* Enhanced Favorite Button */
+/* Enhanced Action Buttons */
 .listing-action-buttons {
     position: absolute;
-    top: 10px;
-    right: 10px;
+    top: 8px;
+    right: 8px;
     display: flex;
     flex-direction: column;
-    gap: 5px;
-    z-index: 2;
+    gap: 6px;
+    z-index: 10;
 }
 
 .favorite-btn, .download-btn {
-    background: rgba(255, 255, 255, 0.9);
-    border: none;
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(0, 0, 0, 0.1);
     border-radius: 50%;
-    width: 40px;
-    height: 40px;
+    width: 36px;
+    height: 36px;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.3s ease;
+    transition: all 0.2s ease;
     color: #6c757d;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .favorite-btn:hover {
     background: white;
     color: #dc3545;
-    transform: scale(1.1);
+    transform: scale(1.05);
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
 }
 
 .favorite-btn.favorited {
@@ -168,7 +171,8 @@ body {
 .download-btn:hover {
     background: white;
     color: #198754;
-    transform: scale(1.1);
+    transform: scale(1.05);
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
 }
 
 .download-btn:active {
@@ -390,17 +394,24 @@ body {
         border-color: #007bff !important;
     }
 
-    /* Ensure favorite button is visible */
-    .favorite-btn {
-        top: 8px;
-        right: 8px;
+    /* Ensure action buttons are visible and clickable */
+    .listing-action-buttons {
+        top: 6px;
+        right: 6px;
+        gap: 4px;
+        z-index: 15;
+    }
+
+    .favorite-btn, .download-btn {
         width: 32px;
         height: 32px;
-        font-size: 14px;
+        font-size: 12px;
         background: rgba(255, 255, 255, 0.95) !important;
         color: #6c757d !important;
         border: 1px solid rgba(0, 0, 0, 0.1) !important;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+        cursor: pointer !important;
+        pointer-events: auto !important;
     }
 
     .favorite-btn:hover {
@@ -411,6 +422,11 @@ body {
     .favorite-btn.favorited {
         background: #dc3545 !important;
         color: white !important;
+    }
+
+    .download-btn:hover {
+        color: #198754 !important;
+        background: white !important;
     }
 
     /* Ensure badges are visible */
@@ -558,13 +574,19 @@ body {
         background: #007bff !important;
     }
 
-    /* Smaller favorite button */
-    .favorite-btn {
+    /* Smaller action buttons */
+    .listing-action-buttons {
+        top: 4px;
+        right: 4px;
+        gap: 3px;
+    }
+
+    .favorite-btn, .download-btn {
         width: 28px;
         height: 28px;
-        font-size: 12px;
-        top: 6px;
-        right: 6px;
+        font-size: 11px;
+        cursor: pointer !important;
+        pointer-events: auto !important;
     }
 
     /* Smaller badges */
