@@ -515,7 +515,7 @@
                 <div class="wizard-container p-4">
                     <!-- Progress Bar -->
                     <div class="progress-bar-custom">
-                        <div class="progress-fill" id="progressFill" style="width: 16.67%;"></div>
+                        <div class="progress-fill" id="progressFill" style="width: 20%;"></div>
                     </div>
 
                     <!-- Step Indicators -->
@@ -546,15 +546,9 @@
                         </div>
                         <div class="step-item" data-step="5">
                             <div class="step-circle">
-                                <i class="fas fa-star"></i>
+                                <i class="fas fa-check-circle"></i>
                             </div>
-                            <div class="step-label">Features</div>
-                        </div>
-                        <div class="step-item" data-step="6">
-                            <div class="step-circle">
-                                <i class="fas fa-camera"></i>
-                            </div>
-                            <div class="step-label">Photos</div>
+                            <div class="step-label">Review</div>
                         </div>
                     </div>
 
@@ -818,46 +812,27 @@
                                 </div>
                             </div>
 
-                            <!-- Step 6: Photos & Finish -->
-                            <div class="step-pane" id="step6">
+                            <!-- Step 5: Final Review -->
+                            <div class="step-pane" id="step5">
                                 <div class="step-header">
-                                    <h3 class="step-title">Photos & Final Review</h3>
-                                    <p class="step-description">Add photos and review your vehicle listing</p>
+                                    <h3 class="step-title">Final Review</h3>
+                                    <p class="step-description">Review your vehicle listing details</p>
                                 </div>
 
-                                <!-- 6 Image Upload Slots -->
                                 <div class="row g-4">
-                                    {% for i in range(1, 7) %}
-                                    <div class="col-md-4" id="image-slot-{{ i }}">
-                                        <div class="image-upload-slot border rounded-3 p-4 text-center position-relative" 
-                                             style="min-height: 200px; cursor: pointer; border: 2px dashed #007bff !important; 
-                                                    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-                                                    transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(0,123,255,0.1);" 
-                                             onclick="triggerImageUpload({{ i }})"
-                                             onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 15px rgba(0,123,255,0.2)';"
-                                             onmouseout="this.style.transform='translateY(0px)'; this.style.boxShadow='0 2px 8px rgba(0,123,255,0.1)';">
-                                            <div class="slot-content d-flex flex-column align-items-center justify-content-center h-100">
-                                                <i class="fas fa-cloud-upload-alt fa-2x text-primary mb-2"></i>
-                                                <p class="mb-1 fw-bold">Click to upload</p>
-                                                <small class="text-muted">or drag and drop image here</small>
-                                                <small class="d-block text-muted mt-1">Max 5MB • JPG, PNG, GIF</small>
+                                    <div class="col-12">
+                                        <div class="summary-section">
+                                            <h6 class="mb-3"><i class="fas fa-clipboard-list me-2"></i>Vehicle Summary</h6>
+                                            <div id="vehicleSummary">
+                                                <!-- Summary will be populated by JavaScript -->
                                             </div>
-                                            <input type="file" id="image-input-{{ i }}" accept="image/*" style="display: none;" onchange="handleImageUpload({{ i }}, this)">
-                                            <img id="image-preview-{{ i }}" class="img-fluid rounded-3 w-100 h-100" style="display: none; object-fit: cover; position: absolute; top: 0px; left: 0px;">
-                                            <button type="button" class="image-remove-btn" onclick="event.stopPropagation(); removeImage({{ i }});" style="display: none;">X</button>
                                         </div>
                                     </div>
-                                    {% endfor %}
-                                </div>
-
-                                <!-- Hidden field for form submission -->
-                                {{ form.images(style="display: none;", multiple=True) }}
-
-                                <div class="col-12">
-                                    <div class="summary-section">
-                                        <h6 class="mb-3"><i class="fas fa-clipboard-list me-2"></i>Vehicle Summary</h6>
-                                        <div id="vehicleSummary">
-                                            <!-- Summary will be populated by JavaScript -->
+                                    
+                                    <div class="col-12">
+                                        <div class="alert alert-info">
+                                            <i class="fas fa-info-circle me-2"></i>
+                                            <strong>Next Step:</strong> After saving, you can add images using the "Manage Images" option from the admin dashboard.
                                         </div>
                                     </div>
                                 </div>
@@ -871,7 +846,7 @@
                             </button>
 
                             <div class="navigation-info">
-                                Step <span id="currentStepNum">1</span> of 6
+                                Step <span id="currentStepNum">1</span> of 5
                             </div>
 
                             <button type="button" class="btn btn-primary btn-wizard" id="nextBtn" onclick="changeStep(1)">
@@ -895,10 +870,9 @@
 
 <script>
 let currentStep = 1;
-const totalSteps = 6;
+const totalSteps = 5;
 
-// Array to store image files
-let uploadedImages = Array(6).fill(null);
+// Removed image upload functionality - images managed separately
 
 function openWizard() {
     // Reset edit mode variables
@@ -1209,10 +1183,8 @@ function validateCurrentStep() {
                 }
             }
         });
-    } else if (currentStep === 6) {
-        // For editing, don't require new images if vehicle already has images
-        const hasExistingImages = uploadedImages.some(img => typeof img === 'string' && img.length > 0);
-        const hasNewImages = uploadedImages.some(img => img instanceof File);
+    } else if (currentStep === 5) {
+        // Final review step - all validation done in previous steps
         
         if (!hasExistingImages && !hasNewImages) {
             showAlert('Please upload at least one image for your vehicle.', 'warning');
@@ -1246,10 +1218,10 @@ function showStepSuccess() {
         2: 'Engine & Performance',
         3: 'Ownership & History', 
         4: 'Insurance & Documentation',
-        5: 'Features & Condition'
+        5: 'Final Review'
     };
 
-    if (currentStep < 6) {
+    if (currentStep < 5) {
         showAlert(`✅ ${stepTitles[currentStep]} completed successfully!`, 'success');
     }
 }
@@ -1309,7 +1281,7 @@ function updateVehicleSummary() {
         { label: 'Transmission', value: formData.get('transmission') || 'Not specified' },
         { label: 'Contact Person', value: formData.get('contact_name') || 'Not specified' },
         { label: 'Contact Phone', value: formData.get('contact_phone') || 'Not specified' },
-        { label: 'Images', value: `${imageCount} image(s) selected` }
+        { label: 'Status', value: 'Ready for images (add after saving)' }
     ];
 
     summary.innerHTML = summaryData.map(item => 
@@ -1320,112 +1292,7 @@ function updateVehicleSummary() {
     ).join('');
 }
 
-// Image preview functionality for multiple slots
-function triggerImageUpload(slotIndex) {
-    document.getElementById(`image-input-${slotIndex}`).click();
-}
-
-function handleImageUpload(slotIndex, input) {
-    const file = input.files[0];
-    if (!file) return;
-
-    const maxFileSize = 5 * 1024 * 1024; // 5MB
-    const allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
-
-    if (!allowedTypes.includes(file.type)) {
-        showAlert('Invalid file type. Please upload JPG, PNG, or GIF.', 'warning');
-        return;
-    }
-    if (file.size > maxFileSize) {
-        showAlert('File size exceeds the 5MB limit.', 'warning');
-        return;
-    }
-
-    uploadedImages[slotIndex - 1] = file; // Store the file
-
-    const reader = new FileReader();
-    reader.onload = function(e) {
-        const previewImage = document.getElementById(`image-preview-${slotIndex}`);
-        const removeBtn = document.querySelector(`#image-slot-${slotIndex} .image-remove-btn`);
-        previewImage.src = e.target.result;
-        previewImage.style.display = 'block';
-        if(removeBtn) removeBtn.style.display = 'flex';
-
-        // Hide slot content
-        const slotContent = document.querySelector(`#image-slot-${slotIndex} .slot-content`);
-        if (slotContent) slotContent.style.display = 'none';
-    };
-    reader.readAsDataURL(file);
-
-    // Update the hidden input for form submission with all files
-    updateHiddenFileInput();
-}
-
-function removeImage(slotIndex) {
-    const currentImage = uploadedImages[slotIndex - 1];
-    console.log(`Removing image from slot ${slotIndex}:`, currentImage);
-    
-    uploadedImages[slotIndex - 1] = null; // Clear the image from array
-
-    const previewImage = document.getElementById(`image-preview-${slotIndex}`);
-    const removeBtn = document.querySelector(`#image-slot-${slotIndex} .image-remove-btn`);
-    const input = document.getElementById(`image-input-${slotIndex}`);
-
-    if (previewImage) {
-        previewImage.src = '';
-        previewImage.style.display = 'none';
-        previewImage.onerror = null; // Clear error handler
-    }
-    
-    if (removeBtn) removeBtn.style.display = 'none';
-    
-    if (input) input.value = ''; // Clear the file input
-
-    // Show slot content again
-    const slotContent = document.querySelector(`#image-slot-${slotIndex} .slot-content`);
-    if (slotContent) slotContent.style.display = 'flex';
-
-    // Reset slot styling
-    const uploadSlot = document.querySelector(`#image-slot-${slotIndex} .image-upload-slot`);
-    if (uploadSlot) {
-        uploadSlot.style.border = '2px dashed #007bff';
-        uploadSlot.style.background = 'linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)';
-    }
-
-    updateHiddenFileInput();
-    
-    // Show confirmation
-    if (typeof currentImage === 'string') {
-        showAlert('Existing image marked for removal. Save to apply changes.', 'info');
-    } else {
-        showAlert('Image removed from upload queue.', 'info');
-    }
-}
-
-// Function to update the hidden file input with all selected files
-function updateHiddenFileInput() {
-    const actualInput = document.querySelector('input[name="images"]');
-    if (!actualInput) {
-        console.warn('Hidden images input not found');
-        return;
-    }
-
-    const dataTransfer = new DataTransfer();
-
-    uploadedImages.forEach((file, index) => {
-        if (file instanceof File) {
-            dataTransfer.items.add(file);
-            console.log(`Added new file to slot ${index + 1}:`, file.name);
-        } else if (typeof file === 'string' && file.length > 0) {
-            console.log(`Existing image in slot ${index + 1}:`, file);
-            // For existing images (strings), we don't add them to the file input
-            // They are preserved on the server side during edit operations
-        }
-    });
-    
-    actualInput.files = dataTransfer.files;
-    console.log(`Updated hidden input with ${dataTransfer.files.length} new files`);
-}
+// Image handling removed - images now managed separately after vehicle creation
 
 // Submit vehicle form function
 // Global variable to track if we're in edit mode
@@ -1537,10 +1404,6 @@ function submitVehicleForm() {
             if (firstErrorStep && firstErrorStep !== currentStep) {
                 currentStep = firstErrorStep;
                 updateWizardDisplay();
-            } else if (firstErrorStep && firstErrorStep === 6) {
-                // If error is in images and we are already on step 6, just show alert
-                showAlert('Please fix the image upload issues.', 'warning');
-            }
         } else {
             throw new Error(data.message || 'Failed to save vehicle');
         }
@@ -1582,9 +1445,7 @@ function validateAllSteps() {
     if (totalImages === 0) {
         showAlert('Please upload at least one image for your vehicle.', 'warning');
         allValid = false;
-        // Navigate to the images step
-        currentStep = 6;
-        updateWizardDisplay();
+        // Images managed separately
     }
 
     if (allValid) {
@@ -2090,8 +1951,7 @@ function autoSaveFormData() {
                 }
             }
 
-            // Save the count of uploaded images, not the files themselves
-            savedData.imageCount = uploadedImages.filter(img => img !== null).length;
+            // Image functionality removed - images managed separately
             savedData.currentStep = currentStep; // Save current step
 
             localStorage.setItem('automarket_vehicle_draft', JSON.stringify(savedData));
