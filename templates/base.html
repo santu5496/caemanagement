@@ -11,7 +11,7 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm" style="{% if request.endpoint == 'admin_login' %}display: none;{% endif %}">
         <div class="container">
-            <a class="navbar-brand fw-bold text-primary" href="{{ url_for('index') }}">
+            <a class="navbar-brand fw-bold text-primary" href="{{ url_for('marketplace') }}">
                 <i class="fas fa-car me-2"></i>Friendscars
             </a>
             
@@ -22,7 +22,7 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
-                        <a class="nav-link fw-semibold" href="{{ url_for('index') }}">
+                        <a class="nav-link fw-semibold" href="{{ url_for('marketplace') }}">
                             <i class="fas fa-home me-1"></i>Browse Cars
                         </a>
                     </li>
