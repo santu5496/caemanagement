@@ -70,7 +70,7 @@ def marketplace():
     category = request.args.get('category', 'all')
     search = request.args.get('search', '')
 
-    # Get available vehicles
+    # Get available vehicles (newest first)
     if category == 'all':
         vehicles = get_available_vehicles()
     else:
@@ -170,7 +170,7 @@ def admin_api_vehicles():
         return jsonify({'success': False, 'message': 'Unauthorized'}), 401
     
     try:
-        vehicles = get_all_vehicles()
+        vehicles = get_all_vehicles()  # Already ordered by newest first from models.py
         vehicles_data = []
         
         for vehicle in vehicles:

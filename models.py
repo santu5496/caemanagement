@@ -652,13 +652,13 @@ def get_vehicle(vehicle_id):
             return None
 
 def get_all_vehicles():
-    return Vehicle.query.all()
+    return Vehicle.query.order_by(Vehicle.created_at.desc()).all()
 
 def get_vehicles_by_category(category):
-    return Vehicle.query.filter_by(category=category).all()
+    return Vehicle.query.filter_by(category=category).order_by(Vehicle.created_at.desc()).all()
 
 def get_available_vehicles():
-    return Vehicle.query.filter_by(status='available').all()
+    return Vehicle.query.filter_by(status='available').order_by(Vehicle.created_at.desc()).all()
 
 def add_vehicle(**vehicle_data):
     """Create and add a new vehicle to the database"""
