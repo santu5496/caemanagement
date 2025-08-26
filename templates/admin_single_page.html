@@ -259,7 +259,6 @@
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // Global variables
         let vehicles = [];
         let currentVehicleId = null;
         let isEditMode = false;
@@ -406,21 +405,30 @@
 
         // Populate form with vehicle data
         function populateForm(vehicle) {
-            document.getElementById('title').value = vehicle.title || '';
-            document.getElementById('category').value = vehicle.category || '';
-            document.getElementById('status').value = vehicle.status || 'available';
-            document.getElementById('make').value = vehicle.make || '';
-            document.getElementById('model').value = vehicle.model || '';
-            document.getElementById('year').value = vehicle.year || '';
-            document.getElementById('price').value = vehicle.price || '';
-            document.getElementById('mileage').value = vehicle.mileage || '';
-            document.getElementById('fuel_type').value = vehicle.fuel_type || '';
-            document.getElementById('description').value = vehicle.description || '';
-            document.getElementById('contact_name').value = vehicle.contact_name || '';
-            document.getElementById('contact_phone').value = vehicle.contact_phone || '';
-            document.getElementById('contact_email').value = vehicle.contact_email || '';
-            document.getElementById('vehicle_number').value = vehicle.vehicle_number || '';
-            document.getElementById('previous_owner_phone').value = vehicle.previous_owner_phone || '';
+            const fields = {
+                'title': vehicle.title || '',
+                'category': vehicle.category || '',
+                'make': vehicle.make || '',
+                'model': vehicle.model || '',
+                'year': vehicle.year || '',
+                'price': vehicle.price || '',
+                'mileage': vehicle.mileage || '',
+                'description': vehicle.description || '',
+                'contact_name': vehicle.contact_name || '',
+                'contact_phone': vehicle.contact_phone || '',
+                'contact_email': vehicle.contact_email || '',
+                'status': vehicle.status || 'available',
+                'vehicle_number': vehicle.vehicle_number || '',
+                'previous_owner_phone': vehicle.previous_owner_phone || '',
+                'fuel_type': vehicle.fuel_type || ''
+            };
+
+            for (const [fieldId, value] of Object.entries(fields)) {
+                const element = document.getElementById(fieldId);
+                if (element) {
+                    element.value = value;
+                }
+            }
 
             // Handle images
             if (vehicle.images && vehicle.images.length > 0) {
@@ -461,6 +469,14 @@
             uploadedImages.forEach(image => {
                 if (image) {
                     formData.append('existing_images', image);
+                }
+            });
+
+            // Append new files
+            const fileInputs = document.querySelectorAll('input[type="file"]');
+            fileInputs.forEach((input, index) => {
+                if (input.files && input.files[0] && !uploadedImages.includes(input.files[0])) {
+                    formData.append(`images`, input.files[0]);
                 }
             });
 
@@ -522,13 +538,15 @@
         // Generate image slots
         function generateImageSlots() {
             const container = document.getElementById('imageSlots');
+            if (!container) return; // Exit if container not found
+
             container.innerHTML = '';
 
             for (let i = 0; i < 6; i++) {
                 const isHero = i === 0;
                 const slotHtml = `
-                    <div class="col-md-4">
-                        <div class="upload-slot" onclick="triggerImageUpload(${i})" id="imageSlot${i}" style="border: ${isHero ? '3px solid #007bff' : '2px dashed #dee2e6'}; min-height: 150px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; border-radius: 8px; padding: 20px;">
+                    <div class="col-md-4 mb-3">
+                        <div class="upload-slot" id="imageSlot${i}" style="border: ${isHero ? '3px solid #007bff' : '2px dashed #dee2e6'}; min-height: 150px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; border-radius: 8px; padding: 20px;">
                             <i class="fas fa-plus fa-2x text-muted mb-2"></i>
                             <p class="mb-0 text-muted">${isHero ? 'Hero Image (Table View)' : 'Click to add image'}</p>
                             <input type="file" id="imageInput${i}" accept="image/*" style="display: none;" onchange="handleImageUpload(${i}, this)">
@@ -551,13 +569,7 @@
         function handleImageUpload(index, input) {
             if (input.files && input.files[0]) {
                 const file = input.files[0];
-                // Check if it's a new file or an existing one being replaced
-                if (uploadedImages[index] && typeof uploadedImages[index] === 'string') {
-                    // If replacing an existing image, keep track of it
-                    uploadedImages[index] = file;
-                } else {
-                    uploadedImages[index] = file;
-                }
+                uploadedImages[index] = file; // Store the file object
                 updateImagePreviews();
             }
         }
@@ -566,14 +578,16 @@
         function updateImagePreviews() {
             for (let i = 0; i < 6; i++) {
                 const slot = document.getElementById(`imageSlot${i}`);
-                const image = uploadedImages[i];
+                if (!slot) continue;
+
+                const imageSource = uploadedImages[i];
                 const isHero = i === 0;
 
-                if (image) {
-                    if (typeof image === 'string') {
+                if (imageSource) {
+                    if (typeof imageSource === 'string') {
                         // Existing image from server
                         slot.innerHTML = `
-                            <img src="/static/uploads/${image}" class="img-fluid rounded" style="width: 100%; height: 150px; object-fit: cover;">
+                            <img src="/static/uploads/${imageSource}" class="img-fluid rounded" style="width: 100%; height: 150px; object-fit: cover;">
                             <button type="button" class="btn btn-sm btn-danger mt-2" onclick="removeImage(${i})">Remove</button>
                         `;
                     } else {
@@ -585,9 +599,9 @@
                                 <button type="button" class="btn btn-sm btn-danger mt-2" onclick="removeImage(${i})">Remove</button>
                             `;
                         };
-                        reader.readAsDataURL(image);
+                        reader.readAsDataURL(imageSource);
                     }
-                    slot.style.border = isHero ? '3px solid #007bff' : '2px dashed #dee2e6'; // Maintain border style
+                    slot.style.border = isHero ? '3px solid #007bff' : '2px dashed #dee2e6';
                     slot.onclick = null; // Remove click handler if it has an image
                 } else {
                     // No image, reset to default slot
@@ -604,23 +618,24 @@
 
         // Remove image
         function removeImage(index) {
-            // If it was an existing image, we need to mark it for deletion or handle it on the backend.
-            // For now, we'll just set it to null and let the backend handle deletion if the image field is updated.
-            uploadedImages[index] = null; 
+            uploadedImages[index] = null; // Mark for removal or set to null
             updateImagePreviews();
         }
 
         // Close modal
         function closeModal() {
-            const modal = bootstrap.Modal.getInstance(document.getElementById('vehicleModal'));
-            if (modal) {
-                modal.hide();
+            const modalElement = document.getElementById('vehicleModal');
+            if (modalElement) {
+                const modal = bootstrap.Modal.getInstance(modalElement);
+                if (modal) modal.hide();
             }
         }
 
         // Show notification
         function showNotification(message, type = 'info') {
             const container = document.getElementById('notificationContainer');
+            if (!container) return;
+
             const alertClass = type === 'error' ? 'alert-danger' : 
                               type === 'success' ? 'alert-success' : 'alert-info';
 
@@ -634,7 +649,9 @@
             container.appendChild(notification);
 
             setTimeout(() => {
-                notification.remove();
+                if (notification.parentNode) {
+                    notification.remove();
+                }
             }, 5000);
         }
 
