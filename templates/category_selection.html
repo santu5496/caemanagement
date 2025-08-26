@@ -1,0 +1,250 @@
+{% extends "base.html" %}
+
+{% block title %}Select Vehicle Type - AutoMarket{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<div class="hero-section bg-gradient-primary text-white">
+    <div class="container">
+        <div class="row align-items-center min-vh-50">
+            <div class="col-lg-8 mx-auto text-center">
+                <h1 class="display-4 fw-bold mb-4">
+                    <i class="fas fa-car me-3"></i>Choose Your Vehicle Type
+                </h1>
+                <p class="lead mb-5">Select the category of vehicles you want to browse. We have quality pre-owned vehicles in all categories.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Category Selection Cards -->
+<div class="container py-5">
+    <div class="row g-4">
+        <!-- All Vehicles Option -->
+        <div class="col-lg-3 col-md-6">
+            <a href="{{ url_for('browse_vehicles', category='all') }}" class="text-decoration-none">
+                <div class="category-selection-card h-100">
+                    <div class="card-body text-center p-4">
+                        <div class="category-icon mb-4">
+                            <i class="fas fa-grip-horizontal"></i>
+                        </div>
+                        <h4 class="card-title mb-3">All Vehicles</h4>
+                        <p class="card-text text-muted mb-4">Browse all available vehicles in our inventory</p>
+                        <div class="category-count">
+                            <span class="badge bg-primary fs-6 px-3 py-2">
+                                {{ vehicle_counts.get('Cars', 0) + vehicle_counts.get('Trucks', 0) + vehicle_counts.get('Commercial Vehicles', 0) }} Available
+                            </span>
+                        </div>
+                        <div class="category-arrow mt-3">
+                            <i class="fas fa-arrow-right"></i>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!-- Cars Category -->
+        <div class="col-lg-3 col-md-6">
+            <a href="{{ url_for('browse_vehicles', category='Cars') }}" class="text-decoration-none">
+                <div class="category-selection-card h-100">
+                    <div class="card-body text-center p-4">
+                        <div class="category-icon mb-4" style="color: #3b82f6;">
+                            <i class="fas fa-car"></i>
+                        </div>
+                        <h4 class="card-title mb-3">Cars</h4>
+                        <p class="card-text text-muted mb-4">Sedans, hatchbacks, SUVs, and luxury vehicles</p>
+                        <div class="category-count">
+                            <span class="badge bg-primary fs-6 px-3 py-2">
+                                {{ vehicle_counts.get('Cars', 0) }} Available
+                            </span>
+                        </div>
+                        <div class="category-arrow mt-3">
+                            <i class="fas fa-arrow-right"></i>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!-- Trucks Category -->
+        <div class="col-lg-3 col-md-6">
+            <a href="{{ url_for('browse_vehicles', category='Trucks') }}" class="text-decoration-none">
+                <div class="category-selection-card h-100">
+                    <div class="card-body text-center p-4">
+                        <div class="category-icon mb-4" style="color: #10b981;">
+                            <i class="fas fa-truck"></i>
+                        </div>
+                        <h4 class="card-title mb-3">Trucks</h4>
+                        <p class="card-text text-muted mb-4">Pickup trucks, delivery vehicles, and utility trucks</p>
+                        <div class="category-count">
+                            <span class="badge bg-primary fs-6 px-3 py-2">
+                                {{ vehicle_counts.get('Trucks', 0) }} Available
+                            </span>
+                        </div>
+                        <div class="category-arrow mt-3">
+                            <i class="fas fa-arrow-right"></i>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!-- Commercial Vehicles Category -->
+        <div class="col-lg-3 col-md-6">
+            <a href="{{ url_for('browse_vehicles', category='Commercial Vehicles') }}" class="text-decoration-none">
+                <div class="category-selection-card h-100">
+                    <div class="card-body text-center p-4">
+                        <div class="category-icon mb-4" style="color: #f59e0b;">
+                            <i class="fas fa-bus"></i>
+                        </div>
+                        <h4 class="card-title mb-3">Commercial Vehicles</h4>
+                        <p class="card-text text-muted mb-4">Buses, tempo travelers, and commercial transport</p>
+                        <div class="category-count">
+                            <span class="badge bg-primary fs-6 px-3 py-2">
+                                {{ vehicle_counts.get('Commercial Vehicles', 0) }} Available
+                            </span>
+                        </div>
+                        <div class="category-arrow mt-3">
+                            <i class="fas fa-arrow-right"></i>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Features Section -->
+<div class="container py-5">
+    <div class="row">
+        <div class="col-lg-8 mx-auto text-center">
+            <h3 class="mb-4">Why Choose AutoMarket?</h3>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="feature-item">
+                        <i class="fas fa-shield-check text-success fa-2x mb-3"></i>
+                        <h5>Quality Assured</h5>
+                        <p class="text-muted">All vehicles are thoroughly inspected</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-item">
+                        <i class="fas fa-rupee-sign text-primary fa-2x mb-3"></i>
+                        <h5>Best Prices</h5>
+                        <p class="text-muted">Competitive pricing on all vehicles</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-item">
+                        <i class="fas fa-headset text-info fa-2x mb-3"></i>
+                        <h5>24/7 Support</h5>
+                        <p class="text-muted">Expert assistance when you need it</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.min-vh-50 {
+    min-height: 50vh;
+}
+
+.category-selection-card {
+    background: white;
+    border: 2px solid #e5e7eb;
+    border-radius: 20px;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+    position: relative;
+    cursor: pointer;
+}
+
+.category-selection-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+    transition: left 0.6s ease;
+}
+
+.category-selection-card:hover::before {
+    left: 100%;
+}
+
+.category-selection-card:hover {
+    transform: translateY(-10px) scale(1.02);
+    border-color: var(--primary-color);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
+
+.category-icon {
+    font-size: 3.5rem;
+    color: var(--primary-color);
+    transition: all 0.3s ease;
+}
+
+.category-selection-card:hover .category-icon {
+    transform: scale(1.1);
+}
+
+.category-arrow {
+    color: var(--primary-color);
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+    opacity: 0.6;
+}
+
+.category-selection-card:hover .category-arrow {
+    transform: translateX(5px);
+    opacity: 1;
+}
+
+.feature-item {
+    padding: 2rem;
+    transition: transform 0.3s ease;
+}
+
+.feature-item:hover {
+    transform: translateY(-5px);
+}
+
+/* Animation for category cards on page load */
+.category-selection-card {
+    animation: fadeInUp 0.6s ease forwards;
+    opacity: 0;
+    transform: translateY(30px);
+}
+
+.category-selection-card:nth-child(1) { animation-delay: 0.1s; }
+.category-selection-card:nth-child(2) { animation-delay: 0.2s; }
+.category-selection-card:nth-child(3) { animation-delay: 0.3s; }
+.category-selection-card:nth-child(4) { animation-delay: 0.4s; }
+
+@keyframes fadeInUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .category-icon {
+        font-size: 2.5rem;
+    }
+    
+    .category-selection-card {
+        margin-bottom: 1.5rem;
+    }
+    
+    .feature-item {
+        padding: 1rem;
+    }
+}
+</style>
+{% endblock %}

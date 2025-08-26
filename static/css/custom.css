@@ -1070,6 +1070,60 @@ body {
 }
 
 /* Responsive Improvements */
+/* Category Selection Active State */
+.category-card.active {
+    background: var(--primary-color);
+    color: white !important;
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.category-card.active h6 {
+    color: white !important;
+}
+
+.category-card.active small {
+    color: rgba(255, 255, 255, 0.8) !important;
+}
+
+/* Category Card Transitions */
+.category-card {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 2px solid transparent;
+}
+
+.category-card:hover {
+    transform: translateY(-2px);
+    border-color: var(--primary-color);
+    background: rgba(102, 126, 234, 0.1);
+}
+
+/* Enhanced Filter Button Styling */
+.btn-outline-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.btn-outline-secondary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Improved Search Form */
+.search-box {
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.search-box:hover {
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+/* Loading States for Navigation */
+.btn:active {
+    transform: scale(0.98);
+}
+
 @media (max-width: 768px) {
     .admin-header {
         padding: 1.5rem;
@@ -1099,6 +1153,10 @@ body {
         width: 35px;
         height: 35px;
         font-size: 0.8rem;
+    }
+    
+    .category-card {
+        margin-bottom: 0.5rem;
     }
 }
 

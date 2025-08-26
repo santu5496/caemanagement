@@ -66,11 +66,28 @@ def index():
 
 @app.route('/marketplace')
 def marketplace():
-    """Customer-facing catalog page"""
-    category = request.args.get('category', 'all')
-    search = request.args.get('search', '')
+    """Category selection page - users must select vehicle type first"""
+    categories = ['Cars', 'Trucks', 'Commercial Vehicles']
+    vehicle_counts = {}
+    
+    # Get counts for each category
+    all_vehicles = get_available_vehicles()
+    for category in categories:
+        vehicle_counts[category] = len([v for v in all_vehicles if v.category == category])
+    
+    return render_template('category_selection.html', categories=categories, vehicle_counts=vehicle_counts)
 
-    # Get available vehicles (newest first)
+@app.route('/browse')
+def browse_vehicles():
+    """Customer-facing catalog page with filtered vehicles"""
+    category = request.args.get('category')
+    search = request.args.get('search', '')
+    
+    # Redirect to marketplace if no category is selected
+    if not category:
+        return redirect(url_for('marketplace'))
+
+    # Get available vehicles based on category
     if category == 'all':
         vehicles = get_available_vehicles()
     else:
@@ -91,7 +108,7 @@ def marketplace():
             app.logger.info(f"Vehicle \"{vehicle.title}\" has images: {vehicle.images_list}")
 
     categories = ['Cars', 'Trucks', 'Commercial Vehicles']
-    return render_template('index.html', vehicles=vehicles, categories=categories, 
+    return render_template('browse_vehicles.html', vehicles=vehicles, categories=categories, 
                          current_category=category, search=search)
 
 @app.route('/vehicle/<vehicle_id>')
