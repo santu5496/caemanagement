@@ -54,32 +54,7 @@
     </div>
 </div>
 
-<!-- Category Quick Links -->
-<div class="container mb-2">
-    <div class="row g-1">
-        <div class="col-md-3 col-3">
-            <a href="{{ url_for('browse_vehicles', category='all') }}" class="text-decoration-none">
-                <div class="category-card p-1 text-center rounded-3 h-100 d-flex align-items-center justify-content-center {{ 'active' if current_category == 'all' else '' }}">
-                    <div>
-                        <h6 class="mb-0 small fw-semibold">All</h6>
-                    </div>
-                </div>
-            </a>
-        </div>
-        {% for cat in categories %}
-        <div class="col-md-3 col-3">
-            <a href="{{ url_for('browse_vehicles', category=cat) }}" class="text-decoration-none">
-                <div class="category-card p-1 text-center rounded-3 h-100 d-flex align-items-center justify-content-center {{ 'active' if current_category == cat else '' }}">
-                    <div>
-                        <h6 class="mb-0 small fw-semibold">{{ cat.split()[0] }}</h6>
-                        <small class="text-muted d-none d-md-block" style="font-size: 0.65rem;">{{ vehicles|selectattr("category", "equalto", cat)|list|length }}</small>
-                    </div>
-                </div>
-            </a>
-        </div>
-        {% endfor %}
-    </div>
-</div>
+
 
 <!-- Filter and Sort Bar -->
 <div class="container mb-2">
