@@ -75,6 +75,9 @@ def marketplace():
     for category in categories:
         vehicle_counts[category] = len([v for v in all_vehicles if v.category == category])
     
+    # Set session flag to indicate user visited category selection
+    session['visited_marketplace'] = True
+    
     return render_template('category_selection.html', categories=categories, vehicle_counts=vehicle_counts)
 
 @app.route('/browse')
@@ -83,8 +86,12 @@ def browse_vehicles():
     category = request.args.get('category')
     search = request.args.get('search', '')
     
-    # Redirect to marketplace if no category is selected
+    # Redirect to marketplace if no category is selected or if accessing directly
     if not category:
+        return redirect(url_for('marketplace'))
+    
+    # Check if user visited marketplace first (session-based check)
+    if not session.get('visited_marketplace'):
         return redirect(url_for('marketplace'))
 
     # Get available vehicles based on category
