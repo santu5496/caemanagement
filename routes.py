@@ -77,6 +77,8 @@ def marketplace():
     
     # Set session flag to indicate user visited category selection
     session['visited_marketplace'] = True
+    # Clear any previous category session data
+    session.pop('current_category', None)
     
     return render_template('category_selection.html', categories=categories, vehicle_counts=vehicle_counts)
 
@@ -91,9 +93,12 @@ def browse_vehicles():
         return redirect(url_for('marketplace'))
     
     # Check if user visited marketplace first (session-based check)
-    # Allow if they're switching categories from within browse page
+    # Allow if they have marketplace session or coming from browse/marketplace
     referrer = request.referrer or ''
-    if not session.get('visited_marketplace') and '/browse' not in referrer:
+    has_marketplace_session = session.get('visited_marketplace')
+    from_valid_page = any(x in referrer for x in ['/marketplace', '/browse'])
+    
+    if not has_marketplace_session and not from_valid_page:
         return redirect(url_for('marketplace'))
 
     # Get available vehicles based on category
