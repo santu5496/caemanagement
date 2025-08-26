@@ -17,7 +17,7 @@
                 </h1>
                 <p class="lead mb-4">Quality pre-owned {{ current_category.lower() if current_category != 'all' else 'vehicles' }}. Find your perfect match at the best prices.</p>
                 <div class="mt-3">
-                    <a href="{{ url_for('marketplace') }}" class="btn btn-outline-light btn-lg">
+                    <a href="{{ url_for('marketplace') }}" class="btn btn-outline-light btn-lg" onclick="clearCategorySession()">
                         <i class="fas fa-arrow-left me-2"></i>Change Category
                     </a>
                 </div>
@@ -103,7 +103,7 @@
                         <i class="fas fa-times"></i>
                     </a>
                 {% endif %}
-                <a href="{{ url_for('marketplace') }}" class="btn btn-outline-primary btn-sm" title="Change category">
+                <a href="{{ url_for('marketplace') }}" class="btn btn-outline-primary btn-sm" title="Change category" onclick="clearCategorySession()">
                     <i class="fas fa-filter"></i>
                 </a>
             </div>
@@ -294,6 +294,12 @@
 </div>
 
 <script>
+function clearCategorySession() {
+    // Clear any category-related session data
+    sessionStorage.removeItem('current_category');
+    sessionStorage.removeItem('visited_marketplace');
+}
+
 function toggleFavorite(vehicleId) {
     const btn = event.target.closest('.favorite-btn');
     const icon = btn.querySelector('i');
