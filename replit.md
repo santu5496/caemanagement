@@ -1,4 +1,4 @@
-# AutoMarket - OLX-Style Vehicle Marketplace
+# Friendscars - OLX-Style Vehicle Marketplace
 
 ## Overview
 
