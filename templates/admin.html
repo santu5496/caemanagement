@@ -50,57 +50,101 @@
 }
 </style>
 <div class="container py-4">
-    <div class="row mb-4">
-        <div class="col-12">
+    <!-- Enhanced Admin Header -->
+    <div class="admin-header">
+        <div class="content">
             <div class="d-flex justify-content-between align-items-center">
-                <h1><i class="fas fa-cog me-2 text-primary"></i>Admin Dashboard</h1>
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#vehicleModal" onclick="openAddModal()">
-                    <i class="fas fa-plus me-1"></i>Add New Vehicle
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Statistics Cards -->
-    <div class="row mb-4">
-        <div class="col-md-3">
-            <div class="card text-center">
-                <div class="card-body">
-                    <h5 class="card-title">Total Vehicles</h5>
-                    <h2 class="text-primary" id="total-count">{{ vehicles|length }}</h2>
+                <div>
+                    <h1 class="display-5 mb-2"><i class="fas fa-tachometer-alt me-3"></i>Admin Dashboard</h1>
+                    <p class="mb-0 opacity-75 lead">Manage your vehicle inventory with advanced tools</p>
                 </div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card text-center">
-                <div class="card-body">
-                    <h5 class="card-title">Available</h5>
-                    <h2 class="text-success" id="available-count">{{ vehicles|selectattr("status", "equalto", "available")|list|length }}</h2>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card text-center">
-                <div class="card-body">
-                    <h5 class="card-title">Sold</h5>
-                    <h2 class="text-danger" id="sold-count">{{ vehicles|selectattr("status", "equalto", "sold")|list|length }}</h2>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card text-center">
-                <div class="card-body">
-                    <h5 class="card-title">Categories</h5>
-                    <h2 class="text-info">3</h2>
+                <div class="d-flex gap-3">
+                    <a href="{{ url_for('index') }}" class="btn btn-light btn-lg">
+                        <i class="fas fa-eye me-2"></i>View Marketplace
+                    </a>
+                    <button type="button" class="btn add-vehicle-btn" data-bs-toggle="modal" data-bs-target="#vehicleModal" onclick="openAddModal()">
+                        <i class="fas fa-plus me-2"></i>Add New Vehicle
+                    </button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Vehicles Management Table -->
-    <div class="card">
-        <div class="card-header">
-            <h5 class="mb-0"><i class="fas fa-car me-2"></i>Vehicle Management</h5>
+    <!-- Enhanced Statistics Cards -->
+    <div class="row mb-5">
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card stats-card h-100">
+                <div class="card-body text-center">
+                    <div class="stat-icon mx-auto">
+                        <i class="fas fa-car"></i>
+                    </div>
+                    <div class="stat-number" id="total-count">{{ vehicles|length }}</div>
+                    <div class="stat-label">Total Vehicles</div>
+                    <div class="mt-2">
+                        <small class="text-muted">Active inventory</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card stats-card h-100">
+                <div class="card-body text-center">
+                    <div class="stat-icon mx-auto" style="background: linear-gradient(135deg, #10b981, #059669);">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="stat-number text-success" id="available-count">{{ vehicles|selectattr("status", "equalto", "available")|list|length }}</div>
+                    <div class="stat-label">Available</div>
+                    <div class="mt-2">
+                        <small class="text-success">Ready for sale</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card stats-card h-100">
+                <div class="card-body text-center">
+                    <div class="stat-icon mx-auto" style="background: linear-gradient(135deg, #f59e0b, #d97706);">
+                        <i class="fas fa-handshake"></i>
+                    </div>
+                    <div class="stat-number text-warning" id="sold-count">{{ vehicles|selectattr("status", "equalto", "sold")|list|length }}</div>
+                    <div class="stat-label">Sold</div>
+                    <div class="mt-2">
+                        <small class="text-warning">Completed sales</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card stats-card h-100">
+                <div class="card-body text-center">
+                    <div class="stat-icon mx-auto" style="background: linear-gradient(135deg, #06b6d4, #0891b2);">
+                        <i class="fas fa-rupee-sign"></i>
+                    </div>
+                    <div class="stat-number text-info">₹{{ "{:,.0f}".format((vehicles|selectattr("status", "equalto", "available")|map(attribute="price")|sum)/100000) }}L</div>
+                    <div class="stat-label">Inventory Value</div>
+                    <div class="mt-2">
+                        <small class="text-info">Available stock</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Enhanced Vehicles Management Table -->
+    <div class="admin-table-card">
+        <div class="admin-table-header">
+            <div class="d-flex justify-content-between align-items-center">
+                <h5 class="mb-0"><i class="fas fa-list-alt me-2 text-primary"></i>Vehicle Management</h5>
+                <div class="d-flex gap-3 align-items-center">
+                    <div class="input-group" style="width: 300px;">
+                        <span class="input-group-text bg-light border-end-0"><i class="fas fa-search text-muted"></i></span>
+                        <input type="text" class="form-control border-start-0" placeholder="Search vehicles..." id="tableSearch">
+                    </div>
+                    <button type="button" class="btn btn-outline-primary" onclick="refreshTable()">
+                        <i class="fas fa-sync-alt me-1"></i>Refresh
+                    </button>
+                </div>
+            </div>
         </div>
         <div class="card-body">
             <div id="vehicles-container">
@@ -126,36 +170,42 @@
                                             {% if vehicle.images_list and vehicle.images_list|length > 0 and vehicle.images_list[0] and vehicle.images_list[0] != '' %}
                                                 <div class="position-relative">
                                                     <img src="{{ url_for('static', filename='uploads/' + vehicle.images_list[0]) }}"
-                                                         class="img-thumbnail" style="width: 60px; height: 45px; object-fit: cover; border-radius: 6px;"
+                                                         class="vehicle-image-thumb"
                                                          alt="{{ vehicle.title }}"
                                                          onerror="console.log('Image failed to load:', this.src); this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                                                    <div class="bg-light border d-none align-items-center justify-content-center"
-                                                         style="width: 60px; height: 45px; border-radius: 6px;">
-                                                        <i class="fas fa-car text-muted"></i>
+                                                    <div class="bg-gradient border d-none align-items-center justify-content-center vehicle-image-thumb">
+                                                        <i class="fas fa-car text-muted fa-2x"></i>
                                                     </div>
                                                     {% if vehicle.images_list|length > 1 %}
-                                                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-primary" style="font-size: 10px;">
+                                                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill" style="background: linear-gradient(135deg, #667eea, #764ba2); font-size: 10px;">
                                                             {{ vehicle.images_list|length }}
                                                         </span>
                                                     {% endif %}
                                                 </div>
                                             {% else %}
-                                                <div class="bg-light border d-flex align-items-center justify-content-center"
-                                                     style="width: 60px; height: 45px; border-radius: 6px;">
-                                                    <i class="fas fa-car text-muted"></i>
+                                                <div class="bg-gradient border d-flex align-items-center justify-content-center vehicle-image-thumb">
+                                                    <i class="fas fa-car text-muted fa-2x"></i>
                                                 </div>
                                             {% endif %}
                                         </td>
                                         <td>
-                                            <strong>{{ vehicle.title }}</strong><br>
-                                            <small class="text-muted">{{ vehicle.make }} {{ vehicle.model }}</small>
+                                            <div class="vehicle-info">
+                                                <h6 class="mb-1 fw-bold text-dark">{{ vehicle.title }}</h6>
+                                                <div class="d-flex align-items-center gap-2">
+                                                    <span class="badge bg-light text-dark">{{ vehicle.year }}</span>
+                                                    <small class="text-muted">{{ vehicle.make }} {{ vehicle.model }}</small>
+                                                </div>
+                                            </div>
                                         </td>
                                         <td>
                                             <span class="badge bg-secondary">{{ vehicle.category }}</span>
                                         </td>
                                         <td>{{ vehicle.year }}</td>
-                                        <td class="text-success">
-                                            <strong>${{ "{:,.0f}".format(vehicle.price) }}</strong>
+                                        <td>
+                                            <div class="price-display">
+                                                <strong class="text-success fs-5">₹{{ "{:,.0f}".format(vehicle.price) }}</strong>
+                                                <div class="small text-muted">{{ "{:,.0f}".format(vehicle.price/100000) }}L</div>
+                                            </div>
                                         </td>
                                         <td>{{ "{:,}".format(vehicle.mileage) }} mi</td>
                                         <td>
@@ -166,22 +216,26 @@
                                             {% endif %}
                                         </td>
                                         <td>
-                                            <div class="btn-group btn-group-sm" role="group">
+                                            <div class="action-button-group">
                                                 <a href="{{ url_for('vehicle_detail', vehicle_id=vehicle.id) }}"
-                                                   class="btn btn-outline-info" title="View">
+                                                   class="action-btn btn-outline-info" title="View Details">
                                                     <i class="fas fa-eye"></i>
                                                 </a>
-                                                <button type="button" class="btn btn-outline-warning" title="Edit"
+                                                <button type="button" class="action-btn btn-outline-warning" title="Edit Vehicle"
                                                         onclick="openEditModal('{{ vehicle.id }}')">
                                                     <i class="fas fa-edit"></i>
                                                 </button>
-                                                <button type="button" class="btn btn-outline-secondary" title="Toggle Status"
+                                                <button type="button" class="action-btn btn-outline-secondary" title="Toggle Status"
                                                         onclick="toggleStatus('{{ vehicle.id }}')">
-                                                    <i class="fas fa-exchange-alt"></i>
+                                                    {% if vehicle.status == 'available' %}
+                                                        <i class="fas fa-hand-paper"></i>
+                                                    {% else %}
+                                                        <i class="fas fa-undo"></i>
+                                                    {% endif %}
                                                 </button>
-                                                <button type="button" class="btn btn-outline-danger" title="Delete"
+                                                <button type="button" class="action-btn btn-outline-danger" title="Delete Vehicle"
                                                         onclick="deleteVehicle('{{ vehicle.id }}')">
-                                                    <i class="fas fa-trash"></i>
+                                                    <i class="fas fa-trash-alt"></i>
                                                 </button>
                                             </div>
                                         </td>
@@ -1659,5 +1713,176 @@ if (mileageInput) {
         this.value = this.value.replace(/[^\d]/g, ''); // Only allow digits
     });
 }
+
+// Enhanced Table Search Functionality
+function initializeTableSearch() {
+    const searchInput = document.getElementById('tableSearch');
+    if (searchInput) {
+        searchInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            const tableRows = document.querySelectorAll('#vehicles-table tbody tr');
+            
+            tableRows.forEach(row => {
+                const rowText = row.textContent.toLowerCase();
+                if (rowText.includes(searchTerm)) {
+                    row.style.display = '';
+                    row.style.animation = 'fadeIn 0.3s ease';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+            
+            // Show no results message if no rows visible
+            const visibleRows = Array.from(tableRows).filter(row => row.style.display !== 'none');
+            const tbody = document.querySelector('#vehicles-table tbody');
+            let noResultsRow = document.getElementById('no-results-row');
+            
+            if (visibleRows.length === 0 && searchTerm) {
+                if (!noResultsRow) {
+                    noResultsRow = document.createElement('tr');
+                    noResultsRow.id = 'no-results-row';
+                    noResultsRow.innerHTML = `
+                        <td colspan="8" class="text-center py-4">
+                            <i class="fas fa-search fa-2x text-muted mb-2"></i>
+                            <p class="text-muted mb-0">No vehicles found matching "${searchTerm}"</p>
+                        </td>
+                    `;
+                    tbody.appendChild(noResultsRow);
+                }
+            } else if (noResultsRow) {
+                noResultsRow.remove();
+            }
+        });
+    }
+}
+
+// Refresh Table Function
+function refreshTable() {
+    const refreshButton = document.querySelector('[onclick="refreshTable()"]');
+    if (refreshButton) {
+        refreshButton.innerHTML = '<i class="fas fa-sync-alt fa-spin me-1"></i>Refreshing...';
+        refreshButton.disabled = true;
+        
+        // Simulate refresh (you can replace this with actual API call)
+        setTimeout(() => {
+            location.reload();
+        }, 1000);
+    }
+}
+
+// Enhanced Toast Notifications
+function showEnhancedToast(message, type = 'info', duration = 5000) {
+    const toastContainer = document.querySelector('.toast-container') || createToastContainer();
+    
+    const toastId = 'toast-' + Date.now();
+    const iconMap = {
+        'success': 'check-circle',
+        'error': 'exclamation-triangle',
+        'warning': 'exclamation-triangle',
+        'info': 'info-circle'
+    };
+    
+    const colorMap = {
+        'success': 'text-success',
+        'error': 'text-danger',
+        'warning': 'text-warning',
+        'info': 'text-info'
+    };
+    
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.id = toastId;
+    toast.setAttribute('role', 'alert');
+    toast.innerHTML = `
+        <div class="toast-body d-flex align-items-center">
+            <i class="fas fa-${iconMap[type]} ${colorMap[type]} me-2"></i>
+            <span class="flex-grow-1">${message}</span>
+            <button type="button" class="btn-close ms-2" data-bs-dismiss="toast"></button>
+        </div>
+    `;
+    
+    toastContainer.appendChild(toast);
+    
+    const bsToast = new bootstrap.Toast(toast, { delay: duration });
+    bsToast.show();
+    
+    toast.addEventListener('hidden.bs.toast', () => {
+        toast.remove();
+    });
+}
+
+function createToastContainer() {
+    const container = document.createElement('div');
+    container.className = 'toast-container';
+    document.body.appendChild(container);
+    return container;
+}
+
+// Enhanced Statistics Animation
+function animateStatistics() {
+    const statNumbers = document.querySelectorAll('.stat-number');
+    statNumbers.forEach(stat => {
+        const finalValue = parseInt(stat.textContent) || 0;
+        let currentValue = 0;
+        const increment = Math.ceil(finalValue / 20);
+        
+        const timer = setInterval(() => {
+            currentValue += increment;
+            if (currentValue >= finalValue) {
+                currentValue = finalValue;
+                clearInterval(timer);
+            }
+            stat.textContent = currentValue;
+        }, 50);
+    });
+}
+
+// Loading overlay functions
+function showLoadingOverlay(message = 'Loading...') {
+    let overlay = document.getElementById('loading-overlay');
+    if (!overlay) {
+        overlay = document.createElement('div');
+        overlay.id = 'loading-overlay';
+        overlay.className = 'loading-overlay';
+        overlay.innerHTML = `
+            <div class="loading-spinner">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <p class="mt-3 text-muted">${message}</p>
+            </div>
+        `;
+        document.body.appendChild(overlay);
+    }
+    overlay.style.display = 'flex';
+}
+
+function hideLoadingOverlay() {
+    const overlay = document.getElementById('loading-overlay');
+    if (overlay) {
+        overlay.style.display = 'none';
+    }
+}
+
+// Initialize enhanced features
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize table search
+    initializeTableSearch();
+    
+    // Animate statistics on page load
+    setTimeout(animateStatistics, 500);
+    
+    // Add hover effects to cards
+    const statsCards = document.querySelectorAll('.stats-card');
+    statsCards.forEach(card => {
+        card.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-8px) scale(1.02)';
+        });
+        
+        card.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0) scale(1)';
+        });
+    });
+});
 </script>
 {% endblock %}
