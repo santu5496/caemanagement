@@ -91,7 +91,9 @@ def browse_vehicles():
         return redirect(url_for('marketplace'))
     
     # Check if user visited marketplace first (session-based check)
-    if not session.get('visited_marketplace'):
+    # Allow if they're switching categories from within browse page
+    referrer = request.referrer or ''
+    if not session.get('visited_marketplace') and '/browse' not in referrer:
         return redirect(url_for('marketplace'))
 
     # Get available vehicles based on category
