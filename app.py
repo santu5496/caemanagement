@@ -9,7 +9,8 @@ from werkzeug.middleware.proxy_fix import ProxyFix
 from flask_wtf.csrf import CSRFProtect
 
 # Setup logging
-logging.basicConfig(level=logging.DEBUG)
+log_level = logging.INFO if os.environ.get('FLASK_ENV') == 'production' else logging.DEBUG
+logging.basicConfig(level=log_level)
 
 class Base(DeclarativeBase):
     pass
