@@ -15,4 +15,5 @@ dependencies = [
     "sqlalchemy>=2.0.42",
     "requests>=2.32.4",
     "selenium>=4.34.2",
+    "flask-migrate>=4.1.0",
 ]
